@@ -1,0 +1,38 @@
+###########################################
+
+This contains the examples from Chapter 5.
+
+###########################################
+
+#### REQUIREMENTS #######
+
+This code is written against the Qt SDK version 4.7.  It includes
+a qmake project file, so building the examples should be
+very straightforward as long as you have the Qt SDK installed.
+It should also load into Qt Creator quite readily.
+
+The examples have been tested in Windows, but not on other OSs.
+It should be fairly straightforward to port over to Linux or
+MacOS X, so any help with this would be appreciated.
+
+###### RUNNING THE EXAMPLES #########
+
+Each example is broken up into a class that extends Scene.  Each
+one should have a class name that begins with "Scene".  There is not
+a one-to-one correspondence between recipes and scenes so
+you may need to look around a bit to find the example.  To select one
+of the scenes, edit the file mainview.cpp and change
+the line that starts with:
+
+scene = new Scene....(...);
+
+with the appropriate scene class.  For example, if I want
+to run the SceneSubroutine example, I'd use the following:
+
+scene = new SceneSubroutine();
+
+Also, you will need to update the include statement at the
+top of the file:
+
+#include "scenesubroutine.h"
+

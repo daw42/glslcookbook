@@ -1,0 +1,13 @@
+*.suo
+*~
+*.user
+*.aps
+*.ipch
+*.pdb
+*.ilk
+*.exe
+
+# Build/output directories
+obj/
+bin/
+build/

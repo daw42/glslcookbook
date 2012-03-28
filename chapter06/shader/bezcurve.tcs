@@ -1,0 +1,15 @@
+#version 400
+
+layout( vertices=4 ) out;
+
+uniform int NumSegments;
+uniform int NumStrips;
+
+void main()
+{
+    // Pass along the vertex position unmodified
+    gl_out[gl_InvocationID].gl_Position = gl_in[gl_InvocationID].gl_Position;
+
+    gl_TessLevelOuter[0] = float(NumSegments);
+    gl_TessLevelOuter[1] = float(NumStrips);
+}
