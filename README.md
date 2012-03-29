@@ -10,6 +10,4 @@ Example code from the OpenGL 4.0 Shading Language Cookbook.
 TODO
 --------------
 * Fix noise examples (chapter 8) to work properly with GLM noise
-* Debug the teapot tessellation examples.
-* Debug the instanced particles example.
 

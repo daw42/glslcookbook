@@ -105,8 +105,9 @@ void SceneParticlesInstanced::initBuffers()
     glVertexAttribPointer(4, 1, GL_FLOAT, GL_FALSE, 0, NULL);
     glEnableVertexAttribArray(4);
 
-    glVertexAttribDivisor(3, 1);
-    glVertexAttribDivisor(4, 1);
+	// Need to use the ARB version of these due to a bug in glload
+    glVertexAttribDivisorARB(3, 1);
+    glVertexAttribDivisorARB(4, 1);
 
     glBindVertexArray(0);
 }
