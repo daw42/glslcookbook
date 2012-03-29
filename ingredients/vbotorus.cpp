@@ -1,6 +1,6 @@
 #include "vbotorus.h"
 #include "defines.h"
-#include <glload/gl_4_0.h>
+#include "cookbookogl.h"
 
 #include "glutils.h"
 

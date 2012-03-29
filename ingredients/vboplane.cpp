@@ -2,7 +2,7 @@
 #include "defines.h"
 #include "glutils.h"
 
-#include <glload/gl_4_0.h>
+#include "cookbookogl.h"
 
 #include "glutils.h"
 

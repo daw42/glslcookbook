@@ -3,7 +3,7 @@
 
 #include "scene.h"
 
-#include <glload/gl_4_0.h>
+#include "cookbookogl.h"
 
 class SceneBasic : public Scene
 {

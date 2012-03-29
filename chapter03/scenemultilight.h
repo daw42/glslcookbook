@@ -6,7 +6,7 @@
 #include "vboplane.h"
 #include "vbomesh.h"
 
-#include <glload/gl_4_0.h>
+#include "cookbookogl.h"
 
 #include <glm/glm.hpp>
 using glm::mat4;

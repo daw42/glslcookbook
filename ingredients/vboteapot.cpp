@@ -2,11 +2,7 @@
 #include "teapotdata.h"
 #include "glutils.h"
 
-#include <glload/gl_4_0.h>
-
-#ifdef Q_OS_MAC
-#include <OpenGL/gl.h>
-#endif
+#include "cookbookogl.h"
 
 #include <cstdio>
 
