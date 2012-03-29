@@ -4,7 +4,12 @@
 
 #include "scene.h"
 #include "glutils.h"
+#include "sceneads.h"
+#include "scenediffuse.h"
+#include "scenediscard.h"
 #include "sceneflat.h"
+#include "scenesubroutine.h"
+#include "scenetwoside.h"
 
 Scene *scene;
 

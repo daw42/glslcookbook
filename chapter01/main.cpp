@@ -5,6 +5,9 @@
 
 #include "scene.h"
 #include "glutils.h"
+#include "scenebasic.h"
+#include "scenebasic_layout.h"
+#include "scenebasic_uniform.h"
 #include "scenebasic_uniformblock.h"
 
 Scene *scene;

@@ -1,6 +1,6 @@
 ###########################################
 
-This contains the examples from Chapter 7.
+This contains the examples from Chapter 3.
 
 ###########################################
 
@@ -16,7 +16,8 @@ the line that starts with:
 scene = new Scene....(...);
 
 with the appropriate scene class.  For example, if I want
-to run the ScenePcf example, I'd use the following:
+to run the SceneSubroutine example, I'd use the following:
 
-scene = new ScenePcf();
+scene = new SceneSubroutine();
+
 
