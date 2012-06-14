@@ -80,7 +80,7 @@ void SceneBasic_UniformBlock::initScene()
         shaderCode[i++] = c;
     }
     inFile.close();
-    shaderCode[i++] = '\0';
+    shaderCode[--i] = '\0';
     ////////////////////////////////////////////
 
     // Create the shader object
@@ -141,7 +141,7 @@ void SceneBasic_UniformBlock::initScene()
         shaderCode[i++] = c;
     }
     inFile.close();
-    shaderCode[i++] = '\0';
+    shaderCode[--i] = '\0';
     ////////////////////////////////////////////
 
     // Create the shader object
