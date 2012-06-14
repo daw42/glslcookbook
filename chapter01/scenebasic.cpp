@@ -24,7 +24,7 @@ void SceneBasic::initScene()
 
     // Load contents of file into shaderCode here…
     ifstream inFile( "shader/basic.vert", ifstream::in );
-    if( !inFile ) {
+    if (!inFile) {
         fprintf(stderr, "Error opening file: shader/basic.vert\n" );
         exit(1);
     }
@@ -32,24 +32,24 @@ void SceneBasic::initScene()
     shaderCode = (char *)malloc(10000);
     int i = 0;
     while( inFile.good() ) {
+        // NOTE: the last character read will be invalid
         int c = inFile.get();
         shaderCode[i++] = c;
     }
     inFile.close();
-    shaderCode[i++] = '\0';
+    shaderCode[--i] = '\0';     // null last character filled (invalid)
     ////////////////////////////////////////////
 
     // Create the shader object
     GLuint vertShader = glCreateShader( GL_VERTEX_SHADER );
-    if( 0 == vertShader )
-    {
+    if (0 == vertShader) {
       fprintf(stderr, "Error creating vertex shader.\n");
       exit(1);
     }
 
     // Load the source code into the shader object
     const GLchar* codeArray[] = {shaderCode};
-    glShaderSource( vertShader, 1, codeArray, NULL );
+    glShaderSource(vertShader, 1, codeArray, NULL);
     free(shaderCode); // can be removed from book.
 
     // Compile the shader
@@ -58,16 +58,13 @@ void SceneBasic::initScene()
     // Check compilation status
     GLint result;
     glGetShaderiv( vertShader, GL_COMPILE_STATUS, &result );
-    if( GL_FALSE == result )
-    {
-
+    if( GL_FALSE == result ) {
        fprintf( stderr, "Vertex shader compilation failed!\n" );
 
        GLint logLen;
        glGetShaderiv( vertShader, GL_INFO_LOG_LENGTH, &logLen );
 
-       if( logLen > 0 )
-       {
+       if (logLen > 0) {
            char * log = (char *)malloc(logLen);
 
            GLsizei written;
@@ -83,29 +80,26 @@ void SceneBasic::initScene()
     /////////// Fragment shader //////////////////////////
     //////////////////////////////////////////////////////
 
-    //GLchar * shaderCode;
-
     // Load contents of file into shaderCode here…
     ifstream fragFile( "shader/basic.frag", ifstream::in );
-    if( !fragFile ) {
+    if (!fragFile) {
         fprintf(stderr, "Error opening file: shader/basic.frag\n" );
         exit(1);
     }
 
     shaderCode = (char *)malloc(10000);
     i = 0;
-    while( fragFile.good() ) {
+    while (fragFile.good()) {
         int c = fragFile.get();
         shaderCode[i++] = c;
     }
     inFile.close();
-    shaderCode[i++] = '\0';
+    shaderCode[--i] = '\0';
     ////////////////////////////////////////////
 
     // Create the shader object
     GLuint fragShader = glCreateShader( GL_FRAGMENT_SHADER );
-    if( 0 == fragShader )
-    {
+    if (0 == fragShader) {
       fprintf(stderr, "Error creating fragment shader.\n");
       exit(1);
     }
@@ -122,16 +116,13 @@ void SceneBasic::initScene()
     // Check compilation status
     //GLint result;
     glGetShaderiv( fragShader, GL_COMPILE_STATUS, &result );
-    if( GL_FALSE == result )
-    {
-
+    if (GL_FALSE == result) {
        fprintf( stderr, "Fragment shader compilation failed!\n" );
 
        GLint logLen;
        glGetShaderiv( fragShader, GL_INFO_LOG_LENGTH, &logLen );
 
-       if( logLen > 0 )
-       {
+       if (logLen > 0) {
            char * log = (char *)malloc(logLen);
 
            GLsizei written;
@@ -186,8 +177,7 @@ void SceneBasic::linkMe(GLint vertShader, GLint fragShader)
 {
     // Create the program object
     GLuint programHandle = glCreateProgram();
-    if( 0 == programHandle )
-    {
+    if(0 == programHandle) {
         fprintf(stderr, "Error creating program object.\n");
         exit(1);
     }
@@ -207,15 +197,14 @@ void SceneBasic::linkMe(GLint vertShader, GLint fragShader)
     // Check for successful linking
     GLint status;
     glGetProgramiv( programHandle, GL_LINK_STATUS, &status );
-    if( GL_FALSE == status ) {
+    if (GL_FALSE == status) {
 
         fprintf( stderr, "Failed to link shader program!\n" );
 
         GLint logLen;
         glGetProgramiv( programHandle, GL_INFO_LOG_LENGTH, &logLen );
 
-        if( logLen > 0 )
-        {
+        if (logLen > 0) {
             char * log = (char *)malloc(logLen);
 
             GLsizei written;
@@ -225,9 +214,7 @@ void SceneBasic::linkMe(GLint vertShader, GLint fragShader)
 
             free(log);
         }
-    }
-    else
-    {
+    } else {
         glUseProgram( programHandle );
     }
 }

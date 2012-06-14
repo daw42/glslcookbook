@@ -37,7 +37,7 @@ void SceneBasic_Uniform::initScene()
         shaderCode[i++] = c;
     }
     inFile.close();
-    shaderCode[i++] = '\0';
+    shaderCode[--i] = '\0';
     ////////////////////////////////////////////
 
     // Create the shader object
@@ -98,7 +98,7 @@ void SceneBasic_Uniform::initScene()
         shaderCode[i++] = c;
     }
     inFile.close();
-    shaderCode[i++] = '\0';
+    shaderCode[--i] = '\0';
     ////////////////////////////////////////////
 
     // Create the shader object
