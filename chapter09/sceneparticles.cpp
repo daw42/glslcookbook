@@ -50,7 +50,7 @@ void SceneParticles::initScene()
 	try {
 		glimg::ImageSet * imgSet;
 		imgSet = glimg::loaders::stb::LoadFromFile(texName);
-		glimg::SingleImage &img = imgSet->GetImage(0);
+		const glimg::SingleImage &img = imgSet->GetImage(0);
 		glimg::OpenGLPixelTransferParams params = glimg::GetUploadFormatType(img.GetFormat(), 0);
 		glimg::Dimensions dims = img.GetDimensions();
 
@@ -98,7 +98,7 @@ void SceneParticles::initBuffers()
     vec3 v(0.0f);
     float velocity, theta, phi;
     GLfloat *data = new GLfloat[nParticles * 3];
-    for( int i = 0; i < nParticles; i++ ) {
+    for (unsigned int i = 0; i < nParticles; i++ ) {
 
         theta = glm::mix(0.0f, (float)PI / 6.0f, randFloat());
         phi = glm::mix(0.0f, (float)TWOPI, randFloat());

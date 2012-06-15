@@ -52,7 +52,7 @@ void SceneSmoke::initScene()
 	try {
 		glimg::ImageSet * imgSet;
 		imgSet = glimg::loaders::stb::LoadFromFile(texName);
-		glimg::SingleImage &img = imgSet->GetImage(0);
+		const glimg::SingleImage &img = imgSet->GetImage(0);
 		glimg::OpenGLPixelTransferParams params = glimg::GetUploadFormatType(img.GetFormat(), 0);
 		glimg::Dimensions dims = img.GetDimensions();
 
