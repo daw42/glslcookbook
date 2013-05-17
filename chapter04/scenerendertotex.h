@@ -28,6 +28,7 @@ private:
     mat4 view;
     mat4 projection;
     float angle;
+    float tPrev, rotSpeed;
 
     void setMatrices();
     void compileAndLinkShader();

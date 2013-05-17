@@ -7,7 +7,7 @@
 using std::cout;
 using std::endl;
 
-#include <glimg/glimg.h>
+#include "bmpreader.h"
 
 #include "glutils.h"
 #include "defines.h"
@@ -17,9 +17,7 @@ using glm::vec3;
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/transform2.hpp>
 
-SceneProjTex::SceneProjTex()
-{
-}
+SceneProjTex::SceneProjTex() : angle(0.0f), tPrev(0.0f), rotSpeed(PI/2.0) { }
 
 void SceneProjTex::initScene()
 {
@@ -42,35 +40,13 @@ void SceneProjTex::initScene()
     mat4 projScaleTrans = glm::translate(vec3(0.5f)) * glm::scale(vec3(0.5f));
     prog.setUniform("ProjectorMatrix", projScaleTrans * projProj * projView);
 
+    GLuint w, h;
     // Load texture file
-    const char * texName = "../media/texture/flower.png";
-	try {
-		glimg::ImageSet * imgSet;
-		imgSet = glimg::loaders::stb::LoadFromFile(texName);
-		const glimg::SingleImage &img = imgSet->GetImage(0);
-		glimg::OpenGLPixelTransferParams params = glimg::GetUploadFormatType(img.GetFormat(), 0);
-		glimg::Dimensions dims = img.GetDimensions();
-
-		glPixelStorei(GL_UNPACK_ALIGNMENT, img.GetFormat().LineAlign());
-
-		// Copy file to OpenGL
-		glActiveTexture(GL_TEXTURE0);
-		GLuint tid;
-		glGenTextures(1, &tid);
-		glBindTexture(GL_TEXTURE_2D, tid);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, dims.width, dims.height, 0,
-					 params.format, params.type, img.GetImageData());
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-
-		delete imgSet;
-
-	} catch( glimg::loaders::stb::StbLoaderException &e ) {
-		fprintf(stderr, "Unable to load texture %s: %s\n", texName, e.what());
-		exit(1);
-	}
+    const char * texName = "../media/texture/flower.bmp";
+    glActiveTexture(GL_TEXTURE0);
+    BMPReader::loadTex(texName, w, h);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
     
     prog.setUniform("ProjectorTex", 0);
     prog.setUniform("Light.Position", vec4(0.0f,0.0f,0.0f,1.0f) );
@@ -79,8 +55,12 @@ void SceneProjTex::initScene()
 
 void SceneProjTex::update( float t )
 {
-    angle += 0.0001f;
-    if( angle > TWOPI) angle -= TWOPI;
+	float deltaT = t - tPrev;
+	if(tPrev == 0.0f) deltaT = 0.0f;
+	tPrev = t;
+
+    angle += rotSpeed * deltaT;
+    if( angle > TWOPI_F) angle -= TWOPI_F;
 }
 
 void SceneProjTex::render()

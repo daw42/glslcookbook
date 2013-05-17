@@ -7,7 +7,7 @@
 using std::cout;
 using std::endl;
 
-#include <glimg/glimg.h>
+#include "bmpreader.h"
 
 #include "glutils.h"
 #include "defines.h"
@@ -17,9 +17,7 @@ using glm::vec3;
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/transform2.hpp>
 
-SceneRefractCube::SceneRefractCube()
-{
-}
+SceneRefractCube::SceneRefractCube() : angle(0.0f), tPrev(0.0f), rotSpeed(PI/4.0) { }
 
 void SceneRefractCube::initScene()
 {
@@ -56,24 +54,11 @@ void SceneRefractCube::loadCubeMap( const char * baseFileName )
     };
 
     for( int i = 0; i < 6; i++ ) {
-		string texName = string(baseFileName) + "_" + suffixes[i] + ".png";
-		cout << "Loading: " << texName << endl;
-		try {
-			glimg::ImageSet * imgSet;
-			imgSet = glimg::loaders::stb::LoadFromFile(texName.c_str());
-			const glimg::SingleImage &img = imgSet->GetImage(0);
-			glimg::OpenGLPixelTransferParams params = glimg::GetUploadFormatType(img.GetFormat(), 0);
-			glimg::Dimensions dims = img.GetDimensions();
-
-			glPixelStorei(GL_UNPACK_ALIGNMENT, img.GetFormat().LineAlign());
-			glTexImage2D(targets[i], 0, GL_RGBA, dims.width, dims.height, 0,
-						 params.format, params.type, img.GetImageData());
-			delete imgSet;
-
-		} catch( glimg::loaders::stb::StbLoaderException &e ) {
-			fprintf(stderr, "Unable to load texture %s: %s\n", texName.c_str(), e.what());
-			exit(1);
-		}
+		string texName = string(baseFileName) + "_" + suffixes[i] + ".bmp";
+		GLuint w, h;
+		GLubyte * data = BMPReader::load(texName.c_str(), w, h);
+		glTexImage2D(targets[i], 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+		delete [] data;
     }
 
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -87,8 +72,12 @@ void SceneRefractCube::loadCubeMap( const char * baseFileName )
 
 void SceneRefractCube::update( float t )
 {
-    angle += 0.0001f;
-    if( angle > TWOPI) angle -= TWOPI;
+	float deltaT = t - tPrev;
+	if(tPrev == 0.0f) deltaT = 0.0f;
+	tPrev = t;
+
+    angle += rotSpeed * deltaT;
+    if( angle > TWOPI_F) angle -= TWOPI_F;
 }
 
 void SceneRefractCube::render()
@@ -120,9 +109,6 @@ void SceneRefractCube::setMatrices()
 {
     mat4 mv = view * model;
     prog.setUniform("ModelMatrix", model);
-   // prog.setUniform("ModelViewMatrix", mv);
-    //prog.setUniform("NormalMatrix",
-    //                mat3( vec3(mv[0]), vec3(mv[1]), vec3(mv[2]) ));
     prog.setUniform("MVP", projection * mv);
 }
 
@@ -132,8 +118,6 @@ void SceneRefractCube::resize(int w, int h)
     width = w;
     height = h;
     projection = glm::perspective(50.0f, (float)w/h, 0.3f, 100.0f);
-    //float c = 2.0f;
-    //projection = glm::ortho( -0.4f * c, 0.4f * c, -0.3f * c, 0.3f * c, 0.1f, 100.0f);
 }
 
 void SceneRefractCube::compileAndLinkShader()

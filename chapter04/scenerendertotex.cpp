@@ -14,9 +14,7 @@ using glm::vec3;
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/transform2.hpp>
 
-SceneRenderToTex::SceneRenderToTex()
-{
-}
+SceneRenderToTex::SceneRenderToTex() : angle(0.0f), tPrev(0.0f), rotSpeed(PI/2.0) { }
 
 void SceneRenderToTex::initScene()
 {
@@ -89,7 +87,11 @@ void SceneRenderToTex::setupFBO() {
 
 void SceneRenderToTex::update( float t )
 {
-    angle += 0.0005f;
+	float deltaT = t - tPrev;
+	if(tPrev == 0.0f) deltaT = 0.0f;
+	tPrev = t;
+
+    angle += rotSpeed * deltaT;
     if( angle > TWOPI_F) angle -= TWOPI_F;
 }
 

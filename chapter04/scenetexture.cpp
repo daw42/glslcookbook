@@ -3,7 +3,7 @@
 #include <cstdio>
 #include <cstdlib>
 
-#include "pngloader.h"
+#include "bmpreader.h"
 #include "glutils.h"
 #include "defines.h"
 
@@ -31,10 +31,10 @@ void SceneTexture::initScene()
     prog.setUniform("Light.Intensity", vec3(1.0f,1.0f,1.0f) );
 
     // Load texture file
-	const char * texName = "../media/texture/brick1.png";
-	int w, h;
+	const char * texName = "../media/texture/brick1.bmp";
+	GLuint w, h;
 	glActiveTexture(GL_TEXTURE0);
-	GLuint tid = PngLoader::loadPng(texName, w, h);
+	GLuint tid = BMPReader::loadTex(texName, w, h);
 
     prog.setUniform("Tex1", 0);
 }

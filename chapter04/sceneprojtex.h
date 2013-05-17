@@ -1,5 +1,5 @@
-#ifndef SCENEREPROJTEX_H
-#define SCENEREPROJTEX_H
+#ifndef SCENEPROJTEX_H
+#define SCENEPROJTEX_H
 
 #include "scene.h"
 #include "glslprogram.h"
@@ -30,7 +30,7 @@ private:
     mat4 model;
     mat4 view;
     mat4 projection;
-    float angle;
+    float angle, tPrev, rotSpeed;
 
     void setMatrices();
     void compileAndLinkShader();
@@ -44,4 +44,4 @@ public:
     void resize(int, int);
 };
 
-#endif // SCENEREFRACTCUBE_H
+#endif

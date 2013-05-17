@@ -3,7 +3,7 @@
 #include <cstdio>
 #include <cstdlib>
 
-#include <glimg/glimg.h>
+#include "bmpreader.h"
 
 #include "glutils.h"
 #include "defines.h"
@@ -13,9 +13,7 @@ using glm::vec3;
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/transform2.hpp>
 
-SceneAlphaTest::SceneAlphaTest()
-{
-}
+SceneAlphaTest::SceneAlphaTest() : angle(0.0f), tPrev(0.0f), rotSpeed(PI/2.0f) { }
 
 void SceneAlphaTest::initScene()
 {
@@ -28,62 +26,19 @@ void SceneAlphaTest::initScene()
 
     projection = mat4(1.0f);
 
-    angle = 0.0;
-
     prog.setUniform("Light.Intensity", vec3(1.0f,1.0f,1.0f) );
 
-    GLuint texIDs[2];
-    glGenTextures(2, texIDs);
+    GLuint w, h;
 
     // Load brick texture file
-    const char * texName = "../media/texture/cement.jpg";
-    try {
-		glimg::ImageSet * imgSet;
-		imgSet = glimg::loaders::stb::LoadFromFile(texName);
-		const glimg::SingleImage &img = imgSet->GetImage(0);
-		glimg::OpenGLPixelTransferParams params = glimg::GetUploadFormatType(img.GetFormat(), 0);
-		glimg::Dimensions dims = img.GetDimensions();
-
-		glPixelStorei(GL_UNPACK_ALIGNMENT, img.GetFormat().LineAlign());
-
-		// Copy file to OpenGL
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, texIDs[0]);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, dims.width, dims.height, 0,
-					 params.format, params.type, img.GetImageData());
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-
-		delete imgSet;
-	} catch( glimg::loaders::stb::StbLoaderException &e ) {
-		fprintf(stderr, "Unable to load texture %s: %s\n", texName, e.what());
-		exit(1);
-	}
+    const char * texName = "../media/texture/cement.bmp";
+    glActiveTexture(GL_TEXTURE0);
+    BMPReader::loadTex(texName, w, h);
 
     // Load moss texture file
-    texName = "../media/texture/moss.png";
-	try {
-		glimg::ImageSet * imgSet;
-		imgSet = glimg::loaders::stb::LoadFromFile(texName);
-		const glimg::SingleImage &img = imgSet->GetImage(0);
-		glimg::OpenGLPixelTransferParams params = glimg::GetUploadFormatType(img.GetFormat(), 0);
-		glimg::Dimensions dims = img.GetDimensions();
-
-		glPixelStorei(GL_UNPACK_ALIGNMENT, img.GetFormat().LineAlign());
-
-		// Copy file to OpenGL
-		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, texIDs[1]);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, dims.width, dims.height, 0,
-					 params.format, params.type, img.GetImageData());
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-
-		delete imgSet;
-	} catch( glimg::loaders::stb::StbLoaderException &e ) {
-		fprintf(stderr, "Unable to load texture %s: %s\n", texName, e.what());
-		exit(1);
-	}
+    texName = "../media/texture/moss.bmp";
+    glActiveTexture(GL_TEXTURE1);
+    BMPReader::loadTex(texName, w, h);
 
 	prog.setUniform("BaseTex", 0);
     prog.setUniform("AlphaTex", 1);
@@ -91,7 +46,11 @@ void SceneAlphaTest::initScene()
 
 void SceneAlphaTest::update( float t )
 {
-    angle += 0.001f;
+	float deltaT = t - tPrev;
+	if(tPrev == 0.0f) deltaT = 0.0f;
+	tPrev = t;
+
+    angle += rotSpeed * deltaT;
     if( angle > TWOPI_F) angle -= TWOPI_F;
 }
 

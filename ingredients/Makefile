@@ -23,7 +23,7 @@ OBJECTS := \
 	glslprogram.o \
 	vbocube.o \
 	vboplane.o \
-	pngloader.o \
+	bmpreader.o \
 	
 GL_LOADER_OBJ := $(OBJDIR)/gl_core_4_3.o
 

@@ -3,7 +3,7 @@
 #include <cstdio>
 #include <cstdlib>
 
-#include <glimg/glimg.h>
+#include "bmpreader.h"
 
 #include "glutils.h"
 #include "defines.h"
@@ -13,9 +13,7 @@ using glm::vec3;
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/transform2.hpp>
 
-SceneNormalMap::SceneNormalMap()
-{
-}
+SceneNormalMap::SceneNormalMap() : angle(0.0f), tPrev(0.0f), rotSpeed(PI/2.0) { }
 
 void SceneNormalMap::initScene()
 {
@@ -32,58 +30,17 @@ void SceneNormalMap::initScene()
 
     prog.setUniform("Light.Intensity", vec3(0.9f,0.9f,0.9f) );
 
-    GLuint texIDs[2];
-    glGenTextures(2, texIDs);
+    GLuint w,h;
 
-    // Load brick texture file
-    const char * texName = "../media/texture/ogre_diffuse.png";
-	try {
-		glimg::ImageSet * imgSet;
-		imgSet = glimg::loaders::stb::LoadFromFile(texName);
-		const glimg::SingleImage &img = imgSet->GetImage(0);
-		glimg::OpenGLPixelTransferParams params = glimg::GetUploadFormatType(img.GetFormat(), 0);
-		glimg::Dimensions dims = img.GetDimensions();
+    // Load diffuse texture
+    const char * texName = "../media/texture/ogre_diffuse.bmp";
+	glActiveTexture(GL_TEXTURE0);
+	BMPReader::loadTex(texName, w, h);
 
-		glPixelStorei(GL_UNPACK_ALIGNMENT, img.GetFormat().LineAlign());
-
-		// Copy file to OpenGL
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, texIDs[0]);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, dims.width, dims.height, 0,
-					 params.format, params.type, img.GetImageData());
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-
-		delete imgSet;
-	} catch( glimg::loaders::stb::StbLoaderException &e ) {
-		fprintf(stderr, "Unable to load texture %s: %s\n", texName, e.what());
-		exit(1);
-	}
-
-    // Load moss texture file
-    texName = "../media/texture/ogre_normalmap.png";
-	try {
-		glimg::ImageSet * imgSet;
-		imgSet = glimg::loaders::stb::LoadFromFile(texName);
-		const glimg::SingleImage &img = imgSet->GetImage(0);
-		glimg::OpenGLPixelTransferParams params = glimg::GetUploadFormatType(img.GetFormat(), 0);
-		glimg::Dimensions dims = img.GetDimensions();
-
-		glPixelStorei(GL_UNPACK_ALIGNMENT, img.GetFormat().LineAlign());
-
-		// Copy file to OpenGL
-		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, texIDs[1]);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, dims.width, dims.height, 0,
-					 params.format, params.type, img.GetImageData());
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-
-		delete imgSet;
-	} catch( glimg::loaders::stb::StbLoaderException &e ) {
-		fprintf(stderr, "Unable to load texture %s: %s\n", texName, e.what());
-		exit(1);
-	}
+    // Load normal map
+    texName = "../media/texture/ogre_normalmap.bmp";
+    glActiveTexture(GL_TEXTURE1);
+    BMPReader::loadTex(texName, w, h);
     
     prog.setUniform("ColorTex", 0);
     prog.setUniform("NormalMapTex", 1);
@@ -91,8 +48,12 @@ void SceneNormalMap::initScene()
 
 void SceneNormalMap::update( float t )
 {
-    angle += 0.0001f;
-    if( angle > TWOPI) angle -= TWOPI;
+	float deltaT = t - tPrev;
+	if(tPrev == 0.0f) deltaT = 0.0f;
+	tPrev = t;
+
+    angle += rotSpeed * deltaT;
+    if( angle > TWOPI_F) angle -= TWOPI_F;
 }
 
 void SceneNormalMap::render()

@@ -21,12 +21,12 @@ string parseCLArgs(int argc, char ** argv);
 void printHelpInfo(const char *);
 
 void initializeGL() {
-    glClearColor(0.2f,0.2f,0.2f,1.0f);
+    glClearColor(0.5f,0.5f,0.5f,1.0f);
     scene->initScene();
 }
 
 void mainLoop() {
-	while( glfwGetWindowParam(GLFW_OPENED)) {
+	while( glfwGetWindowParam(GLFW_OPENED) && !glfwGetKey(GLFW_KEY_ESC) ) {
 		GLUtils::checkForOpenGLError(__FILE__,__LINE__);
 		scene->update(glfwGetTime());
 		scene->render();
@@ -57,7 +57,7 @@ int main(int argc, char *argv[])
 		glfwTerminate();
 		exit( EXIT_FAILURE );
 	}
-	string title = "Chapter 03 -- " + recipe;
+	string title = "Chapter 4 -- " + recipe;
 	glfwSetWindowTitle(title.c_str());
 
 	// Load the OpenGL functions.
@@ -91,19 +91,19 @@ string parseCLArgs(int argc, char ** argv) {
 	string recipe = argv[1];
 
 	if( recipe == "alpha-test" ) {
-		//scene = new SceneAlphaTest();
+		scene = new SceneAlphaTest();
 	} else if( recipe == "multi-tex") {
-		//scene = new SceneMultiTex();
+		scene = new SceneMultiTex();
 	} else if( recipe == "normal-map") {
-		//scene = new SceneNormalMap();
+		scene = new SceneNormalMap();
 	} else if( recipe == "proj-tex" ) {
-		//scene = new SceneProjTex();
+		scene = new SceneProjTex();
 	} else if( recipe == "reflect-cube") {
-		//scene = new SceneReflectCube();
+		scene = new SceneReflectCube();
 	} else if( recipe == "refract-cube" ) {
-		//scene = new SceneRefractCube();
+		scene = new SceneRefractCube();
 	} else if( recipe == "render-to-tex" ) {
-		//scene = new SceneRenderToTex();
+		scene = new SceneRenderToTex();
 	} else if( recipe == "texture" ) {
 		scene = new SceneTexture();
 	} else {

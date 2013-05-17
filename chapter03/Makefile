@@ -1,16 +1,13 @@
-ifndef verbose
-  SILENT = @
-endif
-
 OBJDIR     = obj
 TARGETDIR  = .
+BASEDIR    = ..
 TARGET     = $(TARGETDIR)/chapter03
 DEFINES   += -D_CRT_SECURE_NO_WARNINGS -D_SCL_SECURE_NO_WARNINGS -D_DEBUG
-INCLUDES  += -I../ingredients -I$(GLFW_INCLUDE) -I$(GLM_DIR)
+INCLUDES  += -I$(BASEDIR)/ingredients -I$(GLFW_INCLUDE) -I$(GLM_DIR)
 CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
 CFLAGS    += $(CPPFLAGS) $(ARCH) -g
 CXXFLAGS  += $(CFLAGS) 
-LDFLAGS   += -L../ingredients -L$(GLFW_DIR)/lib
+LDFLAGS   += -L$(BASEDIR)/ingredients -L$(GLFW_DIR)/lib
 LIBS      += -pthread -lglfw -lrt -lingredients -lGL
 RESFLAGS  += $(DEFINES) $(INCLUDES) 
 LDDEPS    += 
