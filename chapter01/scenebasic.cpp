@@ -3,16 +3,16 @@
 #include <cstdio>
 #include <cstdlib>
 
+#include <iostream>
 #include <fstream>
 using std::ifstream;
 #include <sstream>
-using std::ostringstream;
+#include <string>
+using std::string;
 
 #include "glutils.h"
 
-SceneBasic::SceneBasic()
-{
-}
+SceneBasic::SceneBasic() { }
 
 void SceneBasic::initScene()
 {
@@ -20,25 +20,17 @@ void SceneBasic::initScene()
     /////////// Vertex shader //////////////////////////
     //////////////////////////////////////////////////////
 
-    GLchar * shaderCode;
-
-    // Load contents of file into shaderCode here…
-    ifstream inFile( "shader/basic.vert", ifstream::in );
+    // Load contents of file
+    ifstream inFile( "shader/basic.vert" );
     if (!inFile) {
         fprintf(stderr, "Error opening file: shader/basic.vert\n" );
         exit(1);
     }
 
-    shaderCode = (char *)malloc(10000);
-    int i = 0;
-    while( inFile.good() ) {
-        // NOTE: the last character read will be invalid
-        int c = inFile.get();
-        shaderCode[i++] = c;
-    }
-    inFile.close();
-    shaderCode[--i] = '\0';     // null last character filled (invalid)
-    ////////////////////////////////////////////
+    std::stringstream code;
+    code << inFile.rdbuf();
+	inFile.close();
+	string codeStr(code.str());
 
     // Create the shader object
     GLuint vertShader = glCreateShader( GL_VERTEX_SHADER );
@@ -48,9 +40,8 @@ void SceneBasic::initScene()
     }
 
     // Load the source code into the shader object
-    const GLchar* codeArray[] = {shaderCode};
+    const GLchar* codeArray[] = {codeStr.c_str()};
     glShaderSource(vertShader, 1, codeArray, NULL);
-    free(shaderCode); // can be removed from book.
 
     // Compile the shader
     glCompileShader( vertShader );
@@ -80,22 +71,17 @@ void SceneBasic::initScene()
     /////////// Fragment shader //////////////////////////
     //////////////////////////////////////////////////////
 
-    // Load contents of file into shaderCode here…
-    ifstream fragFile( "shader/basic.frag", ifstream::in );
+    // Load contents of file into shaderCode here
+    ifstream fragFile( "shader/basic.frag" );
     if (!fragFile) {
         fprintf(stderr, "Error opening file: shader/basic.frag\n" );
         exit(1);
     }
 
-    shaderCode = (char *)malloc(10000);
-    i = 0;
-    while (fragFile.good()) {
-        int c = fragFile.get();
-        shaderCode[i++] = c;
-    }
-    inFile.close();
-    shaderCode[--i] = '\0';
-    ////////////////////////////////////////////
+    std::stringstream fragCode;
+    fragCode << fragFile.rdbuf();
+	fragFile.close();
+	codeStr = fragCode.str();
 
     // Create the shader object
     GLuint fragShader = glCreateShader( GL_FRAGMENT_SHADER );
@@ -105,16 +91,13 @@ void SceneBasic::initScene()
     }
 
     // Load the source code into the shader object
-    //const GLchar* codeArray[] = {shaderCode};
-    codeArray[0] = shaderCode;
+    codeArray[0] = codeStr.c_str();
     glShaderSource( fragShader, 1, codeArray, NULL );
-    free(shaderCode); // can be removed from book.
 
     // Compile the shader
     glCompileShader( fragShader );
 
     // Check compilation status
-    //GLint result;
     glGetShaderiv( fragShader, GL_COMPILE_STATUS, &result );
     if (GL_FALSE == result) {
        fprintf( stderr, "Fragment shader compilation failed!\n" );

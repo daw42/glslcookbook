@@ -6,7 +6,8 @@
 #include <fstream>
 using std::ifstream;
 #include <sstream>
-using std::ostringstream;
+#include <string>
+using std::string;
 
 #include "glutils.h"
 
@@ -20,22 +21,13 @@ void SceneBasic_Layout::initScene()
     /////////// Vertex shader //////////////////////////
     //////////////////////////////////////////////////////
 
-    GLchar * shaderCode;
+    // Load vertex shader
+    ifstream inFile( "shader/basic_layout.vert" );
 
-    // Load contents of file into shaderCode here…
-
-    /////////// REMOVE FROM BOOK ///////////////
-    ifstream inFile( "shader/basic_layout.vert", ifstream::in );
-
-    shaderCode = (char *)malloc(10000);
-    int i = 0;
-    while( inFile.good() ) {
-        int c = inFile.get();
-        shaderCode[i++] = c;
-    }
+    std::stringstream vertStrStream;
+    vertStrStream << inFile.rdbuf();
     inFile.close();
-    shaderCode[--i] = '\0';
-    ////////////////////////////////////////////
+    string vertCode( vertStrStream.str() );
 
     // Create the shader object
     GLuint vertShader = glCreateShader( GL_VERTEX_SHADER );
@@ -46,9 +38,8 @@ void SceneBasic_Layout::initScene()
     }
 
     // Load the source code into the shader object
-    const GLchar* codeArray[] = {shaderCode};
+    const GLchar* codeArray[] = { vertCode.c_str() };
     glShaderSource( vertShader, 1, codeArray, NULL );
-    free(shaderCode); // can be removed from book.
 
     // Compile the shader
     glCompileShader( vertShader );
@@ -81,22 +72,13 @@ void SceneBasic_Layout::initScene()
     /////////// Fragment shader //////////////////////////
     //////////////////////////////////////////////////////
 
-    //GLchar * shaderCode;
+    // Load fragment shader
+    ifstream fragFile( "shader/basic_layout.frag" );
 
-    // Load contents of file into shaderCode here…
-
-    /////////// REMOVE FROM BOOK ///////////////
-    ifstream fragFile( "shader/basic_layout.frag", ifstream::in );
-
-    shaderCode = (char *)malloc(10000);
-    i = 0;
-    while( fragFile.good() ) {
-        int c = fragFile.get();
-        shaderCode[i++] = c;
-    }
-    inFile.close();
-    shaderCode[--i] = '\0';
-    ////////////////////////////////////////////
+    std::stringstream fragStrStream;
+    fragStrStream << fragFile.rdbuf();
+    fragFile.close();
+    string fragCode( fragStrStream.str() );
 
     // Create the shader object
     GLuint fragShader = glCreateShader( GL_FRAGMENT_SHADER );
@@ -107,16 +89,13 @@ void SceneBasic_Layout::initScene()
     }
 
     // Load the source code into the shader object
-    //const GLchar* codeArray[] = {shaderCode};
-    codeArray[0] = shaderCode;
+    codeArray[0] = fragCode.c_str();
     glShaderSource( fragShader, 1, codeArray, NULL );
-    free(shaderCode); // can be removed from book.
 
     // Compile the shader
     glCompileShader( fragShader );
 
     // Check compilation status
-    //GLint result;
     glGetShaderiv( fragShader, GL_COMPILE_STATUS, &result );
     if( GL_FALSE == result )
     {

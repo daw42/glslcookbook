@@ -10,9 +10,7 @@ using glm::vec3;
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/transform2.hpp>
 
-SceneADS::SceneADS() : angle(0.0f)
-{
-}
+SceneADS::SceneADS() : angle(0.0f) { }
 
 void SceneADS::initScene()
 {

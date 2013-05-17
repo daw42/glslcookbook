@@ -3,8 +3,7 @@
 #include <cstdio>
 #include <cstdlib>
 
-#include <glimg/glimg.h>
-
+#include "pngloader.h"
 #include "glutils.h"
 #include "defines.h"
 
@@ -13,9 +12,7 @@ using glm::vec3;
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/transform2.hpp>
 
-SceneTexture::SceneTexture()
-{
-}
+SceneTexture::SceneTexture() { }
 
 void SceneTexture::initScene()
 {
@@ -34,32 +31,10 @@ void SceneTexture::initScene()
     prog.setUniform("Light.Intensity", vec3(1.0f,1.0f,1.0f) );
 
     // Load texture file
-	const char * texName = "../media/texture/brick1.jpg";
-	try {
-		glimg::ImageSet * imgSet;
-		imgSet = glimg::loaders::stb::LoadFromFile(texName);
-		const glimg::SingleImage &img = imgSet->GetImage(0);
-		glimg::OpenGLPixelTransferParams params = glimg::GetUploadFormatType(img.GetFormat(), 0);
-		glimg::Dimensions dims = img.GetDimensions();
-
-		glPixelStorei(GL_UNPACK_ALIGNMENT, img.GetFormat().LineAlign());
-
-		// Copy file to OpenGL
-		glActiveTexture(GL_TEXTURE0);
-		GLuint tid;
-		glGenTextures(1, &tid);
-		glBindTexture(GL_TEXTURE_2D, tid);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, dims.width, dims.height, 0,
-					 params.format, params.type, img.GetImageData());
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-
-		delete imgSet;
-
-	} catch( glimg::loaders::stb::StbLoaderException &e ) {
-		fprintf(stderr, "Unable to load texture %s: %s\n", texName, e.what());
-		exit(1);
-	}
+	const char * texName = "../media/texture/brick1.png";
+	int w, h;
+	glActiveTexture(GL_TEXTURE0);
+	GLuint tid = PngLoader::loadPng(texName, w, h);
 
     prog.setUniform("Tex1", 0);
 }

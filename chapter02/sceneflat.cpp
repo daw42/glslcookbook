@@ -10,9 +10,7 @@ using glm::vec3;
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/transform2.hpp>
 
-SceneFlat::SceneFlat() : angle(0.0f)
-{
-}
+SceneFlat::SceneFlat() : angle(0.0f) { }
 
 void SceneFlat::initScene()
 {
