@@ -11,11 +11,8 @@ using glm::vec3;
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/transform2.hpp>
 
-SceneGamma::SceneGamma()
-{
-    width = 800;
-    height = 600;
-}
+SceneGamma::SceneGamma() : width(800), height(600), angle(0.0f), tPrev(0.0f), rotSpeed(PI/4.0)
+{ }
 
 void SceneGamma::initScene()
 {
@@ -37,14 +34,17 @@ void SceneGamma::initScene()
 
     prog.setUniform("Light.Intensity", vec3(1.0f,1.0f,1.0f) );
     prog.setUniform("Gamma",2.2f);
-    //prog.setUniform("Gamma",1.0f);
 }
 
 
 void SceneGamma::update( float t )
 {
-    angle += 0.001f;
-    if( angle > TWOPI) angle -= TWOPI;
+	float deltaT = t - tPrev;
+	if(tPrev == 0.0f) deltaT = 0.0f;
+	tPrev = t;
+
+    angle += rotSpeed * deltaT;
+    if( angle > TWOPI_F) angle -= TWOPI_F;
 }
 
 void SceneGamma::render()
@@ -80,7 +80,6 @@ void SceneGamma::resize(int w, int h)
     glViewport(0,0,w,h);
     width = w;
     height = h;
-    //projection = glm::perspective(60.0f, (float)w/h, 0.3f, 100.0f);
 }
 
 void SceneGamma::compileAndLinkShader()

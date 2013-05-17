@@ -11,11 +11,8 @@ using glm::vec3;
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/transform2.hpp>
 
-SceneBloom::SceneBloom()
-{
-    width = 800;
-    height = 600;
-}
+SceneBloom::SceneBloom() : width(800), height(600), angle(0.0f), tPrev(0.0f), rotSpeed(PI/4.0)
+{}
 
 void SceneBloom::initScene()
 {
@@ -177,8 +174,12 @@ void SceneBloom::setupFBO() {
 
 void SceneBloom::update( float t )
 {
-    angle += 0.001f;
-    if( angle > TWOPI) angle -= TWOPI;
+	float deltaT = t - tPrev;
+	if(tPrev == 0.0f) deltaT = 0.0f;
+	tPrev = t;
+
+    angle += rotSpeed * deltaT;
+    if( angle > TWOPI_F) angle -= TWOPI_F;
 }
 
 void SceneBloom::render()

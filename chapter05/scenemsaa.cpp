@@ -11,11 +11,8 @@ using glm::vec3;
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/transform2.hpp>
 
-SceneMsaa::SceneMsaa()
-{
-    width = 800;
-    height = 600;
-}
+SceneMsaa::SceneMsaa() : width(800), height(600), angle(0.0f), tPrev(0.0f), rotSpeed(PI/8.0)
+{ }
 
 void SceneMsaa::initScene()
 {
@@ -77,8 +74,12 @@ void SceneMsaa::initScene()
 
 void SceneMsaa::update( float t )
 {
-    angle += 0.001f;
-    if( angle > TWOPI) angle -= TWOPI;
+	float deltaT = t - tPrev;
+	if(tPrev == 0.0f) deltaT = 0.0f;
+	tPrev = t;
+
+    angle += rotSpeed * deltaT;
+    if( angle > TWOPI_F) angle -= TWOPI_F;
 }
 
 void SceneMsaa::render()
@@ -108,7 +109,6 @@ void SceneMsaa::resize(int w, int h)
     glViewport(0,0,w,h);
     width = w;
     height = h;
-    //projection = glm::perspective(60.0f, (float)w/h, 0.3f, 100.0f);
 }
 
 void SceneMsaa::compileAndLinkShader()

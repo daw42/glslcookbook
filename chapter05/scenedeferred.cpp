@@ -11,17 +11,11 @@ using glm::vec3;
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/transform2.hpp>
 
-SceneDeferred::SceneDeferred()
-{
-    width = 800;
-    height = 600;
-}
+SceneDeferred::SceneDeferred() : width(800), height(600), angle(0.0f), tPrev(0.0f), rotSpeed(PI/4.0) { }
 
 void SceneDeferred::initScene()
 {
     compileAndLinkShader();
-
-    glClearColor(0.5f,0.5f,0.5f,1.0f);
 
     glEnable(GL_DEPTH_TEST);
 
@@ -131,8 +125,12 @@ void SceneDeferred::setupFBO()
 
 void SceneDeferred::update( float t )
 {
-    angle += 0.001f;
-    if( angle > TWOPI) angle -= TWOPI;
+	float deltaT = t - tPrev;
+	if(tPrev == 0.0f) deltaT = 0.0f;
+	tPrev = t;
+
+    angle += rotSpeed * deltaT;
+    if( angle > TWOPI_F) angle -= TWOPI_F;
 }
 
 void SceneDeferred::render()
@@ -211,7 +209,6 @@ void SceneDeferred::resize(int w, int h)
     glViewport(0,0,w,h);
     width = w;
     height = h;
-    //projection = glm::perspective(60.0f, (float)w/h, 0.3f, 100.0f);
 }
 
 void SceneDeferred::compileAndLinkShader()
