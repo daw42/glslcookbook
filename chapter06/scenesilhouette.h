@@ -19,14 +19,12 @@ class SceneSilhouette : public Scene
 private:
     GLSLProgram prog;
 
-    int width, height;
-
     VBOMeshAdj *ogre;
 
     mat4 model;
     mat4 view, viewport;
     mat4 projection;
-    float angle;
+    float angle, tPrev, rotSpeed;
 
     void setMatrices();
     void compileAndLinkShader();

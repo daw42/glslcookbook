@@ -16,14 +16,12 @@ private:
     GLSLProgram prog;
 
     GLuint vaoHandle;
-    int width, height;
 
     VBOTeapotPatch *teapot;
 
     mat4 model;
     mat4 view, viewport;
     mat4 projection;
-    float angle;
 
     void setMatrices();
     void compileAndLinkShader();

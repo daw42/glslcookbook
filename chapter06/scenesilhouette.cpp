@@ -15,11 +15,7 @@ using glm::vec3;
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/transform2.hpp>
 
-SceneSilhouette::SceneSilhouette()
-{
-    width = 800;
-    height = 600;
-}
+SceneSilhouette::SceneSilhouette() : angle(0.0f), tPrev(0.0f), rotSpeed(PI/4.0) { }
 
 void SceneSilhouette::initScene()
 {
@@ -47,7 +43,11 @@ void SceneSilhouette::initScene()
 
 void SceneSilhouette::update( float t )
 {
-    angle += 0.001f;
+	float deltaT = t - tPrev;
+	if(tPrev == 0.0f) deltaT = 0.0f;
+	tPrev = t;
+
+    angle += rotSpeed * deltaT;
     if( angle > TWOPI_F) angle -= TWOPI_F;
 }
 
@@ -79,8 +79,6 @@ void SceneSilhouette::setMatrices()
 void SceneSilhouette::resize(int w, int h)
 {
     glViewport(0,0,w,h);
-    width = w;
-    height = h;
     float c = 1.5f;
     projection = glm::ortho(-0.4f * c, 0.4f * c, -0.3f *c, 0.3f*c, 0.1f, 100.0f);
 }

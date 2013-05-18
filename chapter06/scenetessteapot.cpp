@@ -15,11 +15,7 @@ using glm::vec3;
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/transform2.hpp>
 
-SceneTessTeapot::SceneTessTeapot()
-{
-    width = 800;
-    height = 600;
-}
+SceneTessTeapot::SceneTessTeapot() :angle(0.0f), tPrev(0.0f), rotSpeed(PI/4.0) {}
 
 void SceneTessTeapot::initScene()
 {
@@ -47,7 +43,11 @@ void SceneTessTeapot::initScene()
 
 void SceneTessTeapot::update( float t )
 {
-    angle += 0.005f;
+	float deltaT = t - tPrev;
+	if(tPrev == 0.0f) deltaT = 0.0f;
+	tPrev = t;
+
+    angle += rotSpeed * deltaT;
     if( angle > TWOPI_F) angle -= TWOPI_F;
 }
 
@@ -81,9 +81,6 @@ void SceneTessTeapot::setMatrices()
 void SceneTessTeapot::resize(int w, int h)
 {
     glViewport(0,0,w,h);
-    width = w;
-    height = h;
-
     float w2 = w / 2.0f;
     float h2 = h / 2.0f;
     viewport = mat4( vec4(w2,0.0f,0.0f,0.0f),

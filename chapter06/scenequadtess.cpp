@@ -15,11 +15,7 @@ using glm::vec3;
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/transform2.hpp>
 
-SceneQuadTess::SceneQuadTess()
-{
-    width = 800;
-    height = 600;
-}
+SceneQuadTess::SceneQuadTess() { }
 
 void SceneQuadTess::initScene()
 {
@@ -32,7 +28,6 @@ void SceneQuadTess::initScene()
     float c = 3.5f;
     projection = glm::ortho(-0.4f * c, 0.4f * c, -0.3f *c, 0.3f*c, 0.1f, 100.0f);
 
-    angle = (float)(PI / 2.0);    
     ///////////// Uniforms ////////////////////
     prog.setUniform("Inner", 4);
     prog.setUniform("Outer", 4);
@@ -69,17 +64,13 @@ void SceneQuadTess::initScene()
 }
 
 
-void SceneQuadTess::update( float t )
-{
-    angle += 0.001f;
-    if( angle > TWOPI_F) angle -= TWOPI_F;
-}
+void SceneQuadTess::update( float t ) {}
 
 void SceneQuadTess::render()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    vec3 cameraPos(1.5f * cos(angle),0.0f,1.5f * sin(angle));
+    vec3 cameraPos(0.0f,0.0f,1.5f);
     view = glm::lookAt(cameraPos,
                        vec3(0.0f,0.0f,0.0f),
                        vec3(0.0f,1.0f,0.0f));
@@ -96,10 +87,6 @@ void SceneQuadTess::render()
 void SceneQuadTess::setMatrices()
 {
     mat4 mv = view * model;
-    //prog.setUniform("ModelViewMatrix", mv);
-    //prog.setUniform("ProjectionMatrix", projection);
-    //prog.setUniform("NormalMatrix",
-    //                mat3( vec3(mv[0]), vec3(mv[1]), vec3(mv[2]) ));
     prog.setUniform("MVP", projection * mv);
     prog.setUniform("ViewportMatrix", viewport);
 }
@@ -107,8 +94,6 @@ void SceneQuadTess::setMatrices()
 void SceneQuadTess::resize(int w, int h)
 {
     glViewport(0,0,w,h);
-    width = w;
-    height = h;
 
     float w2 = w / 2.0f;
     float h2 = h / 2.0f;

@@ -15,11 +15,7 @@ using glm::vec3;
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/transform2.hpp>
 
-SceneShadeWire::SceneShadeWire()
-{
-    width = 800;
-    height = 600;
-}
+SceneShadeWire::SceneShadeWire() {}
 
 void SceneShadeWire::initScene()
 {
@@ -32,7 +28,6 @@ void SceneShadeWire::initScene()
     float c = 1.5f;
     projection = glm::ortho(-0.4f * c, 0.4f * c, -0.3f *c, 0.3f*c, 0.1f, 100.0f);
 
-    angle = (float)(PI / 2.0);    
 	///////////// Uniforms ////////////////////
     prog.setUniform("Line.Width", 0.75f);
 	prog.setUniform("Line.Color", vec4(0.05f,0.0f,0.05f,1.0f));
@@ -46,17 +41,13 @@ void SceneShadeWire::initScene()
 }
 
 
-void SceneShadeWire::update( float t )
-{
-    angle += 0.001f;
-    if( angle > TWOPI_F) angle -= TWOPI_F;
-}
+void SceneShadeWire::update( float t ) { }
 
 void SceneShadeWire::render()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    vec3 cameraPos(3.0f * cos(angle),0.0f,3.0f * sin(angle));
+    vec3 cameraPos(0.0f, 0.0f, 3.0f);
     view = glm::lookAt(cameraPos,
                        vec3(0.0f,0.0f,0.0f),
                        vec3(0.0f,1.0f,0.0f));
@@ -81,11 +72,9 @@ void SceneShadeWire::setMatrices()
 void SceneShadeWire::resize(int w, int h)
 {
     glViewport(0,0,w,h);
-    width = w;
-    height = h;
 
-    float w2 = width / 2.0f;
-    float h2 = height / 2.0f;
+    float w2 = w / 2.0f;
+    float h2 = h / 2.0f;
     viewport = mat4( vec4(w2,0.0f,0.0f,0.0f),
                      vec4(0.0f,h2,0.0f,0.0f),
                      vec4(0.0f,0.0f,1.0f,0.0f),

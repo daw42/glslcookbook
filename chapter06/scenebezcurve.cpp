@@ -15,25 +15,18 @@ using glm::vec3;
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/transform2.hpp>
 
-SceneBezCurve::SceneBezCurve()
-{
-    width = 800;
-    height = 600;
-}
+SceneBezCurve::SceneBezCurve() {}
 
 void SceneBezCurve::initScene()
 {
     compileAndLinkShader();
-
+GLUtils::checkForOpenGLError(__FILE__,__LINE__);
     glClearColor(0.5f,0.5f,0.5f,1.0f);
-
+GLUtils::checkForOpenGLError(__FILE__,__LINE__);
     glEnable(GL_DEPTH_TEST);
 
     float c = 3.5f;
     projection = glm::ortho(-0.4f * c, 0.4f * c, -0.3f *c, 0.3f*c, 0.1f, 100.0f);
-
-    angle = (float)(PI / 2.0);
-    glLineWidth(3.5f);
     glPointSize(10.0f);
 
     // Set up patch VBO
@@ -59,17 +52,13 @@ void SceneBezCurve::initScene()
     glPatchParameteri( GL_PATCH_VERTICES, 4);
 }
 
-void SceneBezCurve::update( float t )
-{
-    angle += 0.001f;
-    if( angle > TWOPI_F) angle -= TWOPI_F;
-}
+void SceneBezCurve::update( float t ) {}
 
 void SceneBezCurve::render()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    vec3 cameraPos(1.5f * cos(angle),0.0f,1.5f * sin(angle));
+    vec3 cameraPos(0.0f ,0.0f,1.5f);
     view = glm::lookAt(cameraPos,
                        vec3(0.0f,0.0f,0.0f),
                        vec3(0.0f,1.0f,0.0f));
@@ -95,20 +84,13 @@ void SceneBezCurve::render()
 void SceneBezCurve::setMatrices()
 {
     mat4 mv = view * model;
-    //prog.setUniform("ModelViewMatrix", mv);
-    //prog.setUniform("ProjectionMatrix", projection);
-    //prog.setUniform("NormalMatrix",
-    //                mat3( vec3(mv[0]), vec3(mv[1]), vec3(mv[2]) ));
     prog.setUniform("MVP", projection * mv);
-    //prog.setUniform("ViewportMatrix", viewport);
     solidProg.setUniform("MVP", projection * mv);
 }
 
 void SceneBezCurve::resize(int w, int h)
 {
     glViewport(0,0,w,h);
-    width = w;
-    height = h;
 
     float w2 = w / 2.0f;
     float h2 = h / 2.0f;

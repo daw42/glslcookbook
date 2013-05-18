@@ -7,7 +7,7 @@ using std::srand;
 #include <ctime>
 using std::time;
 
-#include <glimg/glimg.h>
+#include "bmpreader.h"
 
 #include "glutils.h"
 #include "defines.h"
@@ -17,11 +17,7 @@ using glm::vec3;
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/transform2.hpp>
 
-ScenePointSprite::ScenePointSprite()
-{
-    width = 800;
-    height = 600;
-}
+ScenePointSprite::ScenePointSprite() {}
 
 void ScenePointSprite::initScene()
 {
@@ -30,11 +26,6 @@ void ScenePointSprite::initScene()
     glClearColor(0.5f,0.5f,0.5f,1.0f);
 
     glEnable(GL_DEPTH_TEST);
-
-    //float c = 2.5f;
-    //projection = glm::ortho(-0.4f * c, 0.4f * c, -0.3f *c, 0.3f*c, 0.1f, 100.0f);
-
-    angle = (float)(PI / 2.0);
 
     numSprites = 50;
     locations = new float[numSprites * 3];
@@ -68,49 +59,22 @@ void ScenePointSprite::initScene()
     glBindVertexArray(0);
 
     // Load texture file
-    const char * texName = "../media/texture/flower.png";
-	try {
-		glimg::ImageSet * imgSet;
-		imgSet = glimg::loaders::stb::LoadFromFile(texName);
-		const glimg::SingleImage &img = imgSet->GetImage(0);
-		glimg::OpenGLPixelTransferParams params = glimg::GetUploadFormatType(img.GetFormat(), 0);
-		glimg::Dimensions dims = img.GetDimensions();
-
-		glPixelStorei(GL_UNPACK_ALIGNMENT, img.GetFormat().LineAlign());
-
-		// Copy file to OpenGL
-		glActiveTexture(GL_TEXTURE0);
-		GLuint tid;
-		glGenTextures(1, &tid);
-		glBindTexture(GL_TEXTURE_2D, tid);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, dims.width, dims.height, 0,
-					 params.format, params.type, img.GetImageData());
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-
-		delete imgSet;
-
-	} catch( glimg::loaders::stb::StbLoaderException &e ) {
-		fprintf(stderr, "Unable to load texture %s: %s\n", texName, e.what());
-		exit(1);
-	}
+    GLuint w, h;
+    const char * texName = "../media/texture/flower.bmp";
+    BMPReader::loadTex(texName, w, h);
 
     prog.setUniform("SpriteTex", 0);
     prog.setUniform("Size2", 0.15f);
 }
 
 
-void ScenePointSprite::update( float t )
-{
-    angle += 0.001f;
-    if( angle > TWOPI_F) angle -= TWOPI_F;
-}
+void ScenePointSprite::update( float t ) { }
 
 void ScenePointSprite::render()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    vec3 cameraPos(3.0f * cos(angle),0.0f,3.0f * sin(angle));
+    vec3 cameraPos(0.0f,0.0f,3.0f);
     view = glm::lookAt(cameraPos,
                        vec3(0.0f,0.0f,0.0f),
                        vec3(0.0f,1.0f,0.0f));
@@ -134,8 +98,6 @@ void ScenePointSprite::setMatrices()
 void ScenePointSprite::resize(int w, int h)
 {
     glViewport(0,0,w,h);
-    width = w;
-    height = h;
     projection = glm::perspective(60.0f, (float)w/h, 0.3f, 100.0f);
 }
 

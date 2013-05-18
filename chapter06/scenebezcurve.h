@@ -21,12 +21,10 @@ private:
     GLSLProgram solidProg;
 
     GLuint vaoHandle;
-    int width, height;
 
     mat4 model;
     mat4 view, viewport;
     mat4 projection;
-    float angle;
 
     void setMatrices();
     void compileAndLinkShader();

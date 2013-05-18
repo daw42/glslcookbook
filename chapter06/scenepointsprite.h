@@ -19,7 +19,6 @@ class ScenePointSprite : public Scene
 private:
     GLSLProgram prog;
 
-    int width, height;
     GLuint sprites;
 
     VBOPlane *plane;
@@ -33,7 +32,6 @@ private:
     mat4 model;
     mat4 view;
     mat4 projection;
-    float angle;
 
     void setMatrices();
     void compileAndLinkShader();

@@ -15,22 +15,15 @@ using glm::vec3;
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/transform2.hpp>
 
-SceneTessTeapotDepth::SceneTessTeapotDepth()
-{
-    width = 800;
-    height = 600;
-}
+SceneTessTeapotDepth::SceneTessTeapotDepth() { }
 
 void SceneTessTeapotDepth::initScene()
 {
-
     compileAndLinkShader();
 
     glClearColor(0.5f,0.5f,0.5f,1.0f);
 
     glEnable(GL_DEPTH_TEST);
-
-    angle = (float)(PI / 2.0);
 
     teapot = new VBOTeapotPatch();
 
@@ -50,17 +43,13 @@ void SceneTessTeapotDepth::initScene()
 }
 
 
-void SceneTessTeapotDepth::update( float t )
-{
-    angle += 0.005f;
-    if( angle > TWOPI_F) angle -= TWOPI_F;
-}
+void SceneTessTeapotDepth::update( float t ) {}
 
 void SceneTessTeapotDepth::render()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    vec3 cameraPos(6.25f * cos(angle),1.0f,6.25f * sin(angle));
+    vec3 cameraPos(0.0f ,1.0f,6.25f);
     view = glm::lookAt(cameraPos,
                        vec3(0.0f,0.0f,0.0f),
                        vec3(0.0f,1.0f,0.0f));
@@ -109,8 +98,6 @@ void SceneTessTeapotDepth::setMatrices()
 void SceneTessTeapotDepth::resize(int w, int h)
 {
     glViewport(0,0,w,h);
-    width = w;
-    height = h;
 
     float w2 = w / 2.0f;
     float h2 = h / 2.0f;
