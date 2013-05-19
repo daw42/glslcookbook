@@ -47,11 +47,6 @@ void ScenePcf::initScene()
                         vec4(0.5f,0.5f,0.5f,1.0f)
                         );
 
-//    lightPos = vec3(0.0f,10.5f,15.0f);  // World coords
-//    lightView = glm::lookAt(lightPos, vec3(0.0f), vec3(0.0f,1.0f,0.0f));
-//    lightProjection = glm::perspective(50.0f, 1.0f, 0.1f, 100.0f);
-//    lightPV = shadowScale * lightProjection * lightView;
-
     lightFrustum = new Frustum(Projection::PERSPECTIVE);
     lightPos = vec3(-2.5f,2.0f,-2.5f);  // World coords
     lightFrustum->orient(lightPos,vec3(0.0f),vec3(0.0f,1.0f,0.0f));
@@ -128,8 +123,6 @@ void ScenePcf::render()
     glDisable(GL_POLYGON_OFFSET_FILL);
 
     // Pass 2 (render)
-//    vec3 cameraPos(11.5f * cos(angle),7.0f,11.5f * sin(angle));
-//    view = glm::lookAt(cameraPos,vec3(0.0f),vec3(0.0f,1.0f,0.0f));
     vec3 cameraPos(1.8f * cos(angle),0.7f,1.8f * sin(angle));
     view = glm::lookAt(cameraPos,vec3(0.0f,-0.175f,0.0f),vec3(0.0f,1.0f,0.0f));
 
@@ -154,7 +147,6 @@ void ScenePcf::drawBuildingScene()
     prog.setUniform("Material.Shininess", 1.0f);
     model = mat4(1.0f);
     model *= glm::translate(vec3(0.0f,0.0f,0.0f));
-    //model *= glm::rotate(-90.0f, vec3(1.0f,0.0f,0.0f));
     setMatrices();
     mesh->render();
 

@@ -146,3 +146,8 @@ GLuint BMPReader::loadTex(const char* fName, GLuint & width, GLuint &height) {
 
 	return 0;
 }
+
+GLuint BMPReader::loadTex(const char* fName) {
+	GLuint w,h;
+	return BMPReader::loadTex(fName, w, h);
+}

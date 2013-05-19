@@ -23,10 +23,8 @@ vec3 phongModelDiffuse()
     float sDotN = max( dot(s,n), 0.0 );
     vec3 diffColor = texture(DiffTex, TexCoord).rgb;
     diffColor = pow( diffColor, vec3(1.8) );   // Gamma un-correct
-    diffColor = vec3(1.0f);
-    vec3 diffuse = Light.Intensity * diffColor * sDotN;
-
-    return diffuse;
+    //diffColor = vec3(1.0f);
+    return Light.Intensity * diffColor * sDotN;
 }
 
 void main() {
@@ -34,8 +32,5 @@ void main() {
 
     vec4 aoFactor = texture(AOTex, TexCoord);
 
-    FragColor = vec4( diffuse, 1.0);
-
-    // Gamma correct
-    FragColor = pow( FragColor, vec4(1.0 / 2.2) );
+    FragColor = vec4( diffuse * aoFactor.r, 1.0);
 }

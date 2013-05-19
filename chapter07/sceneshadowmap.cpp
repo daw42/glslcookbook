@@ -55,9 +55,6 @@ void SceneShadowMap::initScene()
     prog.setUniform("Light.Intensity", vec3(0.85f));
 
     prog.setUniform("ShadowMap", 0);
-
-    glLineWidth(4.5f);
-    glPointSize(3.5f);
 }
 
 void SceneShadowMap::spitOutDepthBuffer() {

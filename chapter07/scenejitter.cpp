@@ -54,11 +54,6 @@ void SceneJitter::initScene()
                         vec4(0.5f,0.5f,0.5f,1.0f)
                         );
 
-//    lightPos = vec3(0.0f,10.5f,15.0f);  // World coords
-//    lightView = glm::lookAt(lightPos, vec3(0.0f), vec3(0.0f,1.0f,0.0f));
-//    lightProjection = glm::perspective(50.0f, 1.0f, 0.1f, 100.0f);
-//    lightPV = shadowScale * lightProjection * lightView;
-
     lightFrustum = new Frustum(Projection::PERSPECTIVE);
     lightPos = vec3(-2.5f,2.0f,-2.5f);  // World coords
     lightFrustum->orient(lightPos,vec3(0.0f),vec3(0.0f,1.0f,0.0f));
@@ -161,9 +156,6 @@ void SceneJitter::buildJitterTex()
     glTexImage3D(GL_TEXTURE_3D, 0, GL_RGBA32F, size, size, samples/2, 0, GL_RGBA, GL_FLOAT, data);
     glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-//    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-//    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-//    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_REPEAT);
 
     delete [] data;
 }
@@ -196,11 +188,6 @@ void SceneJitter::render()
     glDisable(GL_POLYGON_OFFSET_FILL);
 
     // Pass 2 (render)
-//    vec3 cameraPos(11.5f * cos(angle),7.0f,11.5f * sin(angle));
-//    view = glm::lookAt(cameraPos,vec3(0.0f),vec3(0.0f,1.0f,0.0f));
-//    prog.setUniform("Light.Position", view * vec4(lightPos,1.0f));
-//    projection = glm::perspective(50.0f, (float)width/height, 0.1f, 100.0f);
-
     vec3 cameraPos(1.8f * cos(angle),0.7f,1.8f * sin(angle));
     view = glm::lookAt(cameraPos,vec3(0.0f,-0.175f,0.0f),vec3(0.0f,1.0f,0.0f));
 

@@ -31,7 +31,7 @@ public:
 	 * @return the texture ID
 	 */
 	static GLuint loadTex( const char * fileName, GLuint &width /*out*/, GLuint &height /*out*/ );
-
+	static GLuint loadTex( const char * fileName );
 private:
 	/**
 	 * Read a little-endian short (2 bytes) from stream and return
