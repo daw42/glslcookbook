@@ -64,7 +64,7 @@ void SceneSky::initScene()
 
     prog.setUniform("NoiseTex", 0);
 
-    GLuint noiseTex = NoiseTex::generate2DTex(true);
+    GLuint noiseTex = NoiseTex::generate2DTex();
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, noiseTex);
 }

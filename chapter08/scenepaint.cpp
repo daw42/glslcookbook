@@ -29,7 +29,7 @@ void ScenePaint::initScene()
 
     prog.setUniform("NoiseTex", 0);
 
-    GLuint noiseTex = NoiseTex::generate2DTex(true, 32.0f);
+    GLuint noiseTex = NoiseTex::generate2DTex(32.0f);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, noiseTex);
 

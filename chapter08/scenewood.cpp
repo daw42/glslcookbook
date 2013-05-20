@@ -75,7 +75,7 @@ void SceneWood::initScene()
 
     prog.setUniform("Slice", slice);
 
-    GLuint noiseTex = NoiseTex::generate2DTex(true);
+    GLuint noiseTex = NoiseTex::generate2DTex();
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, noiseTex);
 }

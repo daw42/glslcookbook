@@ -5,7 +5,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/noise.hpp>
 
-int NoiseTex::generate2DTex(bool seamless, float baseFreq, float persistence, int w, int h) {
+int NoiseTex::generate2DTex(float baseFreq, float persistence, int w, int h) {
 
     int width = w;
     int height = h;
