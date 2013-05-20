@@ -3,7 +3,7 @@
 #include <cstdio>
 #include <cstdlib>
 
-#include <glimg/glimg.h>
+#include "bmpreader.h"
 
 #include "glutils.h"
 #include "defines.h"
@@ -48,32 +48,9 @@ void SceneParticlesFeedback::initScene()
 
     glGenQueries(1, &query);
 
-    const char * texName = "../media/texture/bluewater.png";
-	try {
-		glimg::ImageSet * imgSet;
-		imgSet = glimg::loaders::stb::LoadFromFile(texName);
-		const glimg::SingleImage &img = imgSet->GetImage(0);
-		glimg::OpenGLPixelTransferParams params = glimg::GetUploadFormatType(img.GetFormat(), 0);
-		glimg::Dimensions dims = img.GetDimensions();
-
-		glPixelStorei(GL_UNPACK_ALIGNMENT, img.GetFormat().LineAlign());
-
-		// Copy file to OpenGL
-		glActiveTexture(GL_TEXTURE0);
-		GLuint tid;
-		glGenTextures(1, &tid);
-		glBindTexture(GL_TEXTURE_2D, tid);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, dims.width, dims.height, 0,
-					 params.format, params.type, img.GetImageData());
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-
-		delete imgSet;
-
-	} catch( glimg::loaders::stb::StbLoaderException &e ) {
-		fprintf(stderr, "Unable to load texture %s: %s\n", texName, e.what());
-		exit(1);
-	}
+    const char * texName = "../media/texture/bluewater.bmp";
+    glActiveTexture(GL_TEXTURE0);
+    BMPReader::loadTex(texName);
 
     prog.setUniform("ParticleTex", 0);
     prog.setUniform("ParticleLifetime", 3.5f);

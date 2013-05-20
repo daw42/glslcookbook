@@ -5,13 +5,10 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/noise.hpp>
 
-int NoiseTex::generate2DTex(bool seamless, float baseFreq, int w, int h) {
+int NoiseTex::generate2DTex(bool seamless, float baseFreq, float persistence, int w, int h) {
 
     int width = w;
     int height = h;
-
-    // Base frequency for octave 1.
-    //perlinNoise.SetFrequency(baseFreq);
 
     printf("Generating noise texture...");
 
@@ -21,34 +18,34 @@ int NoiseTex::generate2DTex(bool seamless, float baseFreq, int w, int h) {
     double yRange = 1.0;
     double xFactor = xRange / width;
     double yFactor = yRange / height;
-    for( int oct = 0; oct < 4; oct++ ) {
-		
-		// Do something about octaves here
 
-        for( int i = 0; i < width; i++ ) {
-            for( int j = 0 ; j < height; j++ ) {
+	for( int i = 0; i < width; i++ ) {
+		for( int j = 0 ; j < height; j++ ) {
+			float x = xFactor * i;
+			float y = yFactor * j;
+			float sum = 0.0f;
+			float freq = baseFreq;
+			float persist = persistence;
+			for( int oct = 0; oct < 4; oct++ ) {
+				glm::vec2 p(x * freq, y * freq);
 
-				glm::vec2 p(xFactor * i * 16.0f, yFactor * j * 16.0f);
+				float val = glm::perlin(p) * persist;
 
-                float val = 0.0f;
-                if( !seamless ) {
-                    val = glm::perlin(p);
-                } else {
-                    val = glm::perlin(p, glm::vec2(16.0f));
-                }
-				
-                // Scale to roughly between 0 and 1
-                //val = (val + 1.0f) * 0.5f;
+				sum += val;
 
-                // Clamp strictly between 0 and 1
-                //val = val > 1.0f ? 1.0f : val;
-                //val = val < 0.0f ? 0.0f : val;
+				float result = sum + 0.5;
 
-                // Store in texture
-                data[((j * width + i) * 4) + oct] = (GLubyte) ( val * 255.0f );
-            }
-        }
-    }
+				// Clamp strictly between 0 and 1
+				result = result > 1.0f ? 1.0f : result;
+				result = result < 0.0f ? 0.0f : result;
+
+				// Store in texture
+				data[((j * width + i) * 4) + oct] = (GLubyte) ( result * 255.0f );
+				freq *= 2.0f;
+				persist *= persistence;
+			}
+		}
+	}
 
     GLuint texID;
     glGenTextures(1, &texID);

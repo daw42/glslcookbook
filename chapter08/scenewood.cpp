@@ -103,9 +103,6 @@ void SceneWood::drawScene()
 void SceneWood::setMatrices()
 {
     mat4 mv = view * model;
-    //prog.setUniform("ModelViewMatrix", mv);
-    //prog.setUniform("NormalMatrix",
-    //                mat3( vec3(mv[0]), vec3(mv[1]), vec3(mv[2]) ));
     prog.setUniform("MVP", projection * mv);
 }
 

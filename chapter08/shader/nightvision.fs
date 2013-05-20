@@ -66,7 +66,7 @@ vec4 pass2()
     float dist2 = length(gl_FragCoord.xy - vec2(3.0 * Width/4.0, Height/2.0));
     if( dist1 > Radius && dist2 > Radius ) green = 0.0;
 
-    return vec4(0.0, green * clamp( noise.a + 0.25, 0.0, 1.0) , 0.0 ,1.0);
+    return vec4(0.0, green * clamp( noise.a, 0.0, 1.0) , 0.0 ,1.0);
 }
 
 void main()
