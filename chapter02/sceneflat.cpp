@@ -16,7 +16,6 @@ void SceneFlat::initScene()
 {
     compileAndLinkShader();
 
-    glClearColor(0.0,0.0,0.0,1.0);
     glEnable(GL_DEPTH_TEST);
 
     ogre = new VBOMesh("../media/bs_ears.obj");

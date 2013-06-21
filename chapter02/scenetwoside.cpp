@@ -18,7 +18,6 @@ void SceneTwoSide::initScene()
 {
     compileAndLinkShader();
 
-    glClearColor(0.0,0.0,0.0,1.0);
     glEnable(GL_DEPTH_TEST);
 
     mat4 transform = glm::translate(mat4(1.0f),vec3(0.0f,1.5f,0.25f));

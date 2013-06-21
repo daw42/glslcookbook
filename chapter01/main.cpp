@@ -1,6 +1,6 @@
 
 #include "cookbookogl.h"
-#include <GL/glfw.h>
+#include <GLFW/glfw3.h>
 
 #include "scene.h"
 #include "glutils.h"
@@ -13,21 +13,23 @@
 using std::string;
 
 Scene *scene;
+GLFWwindow *window;
 
 string parseCLArgs(int argc, char ** argv);
 void printHelpInfo(const char *);
 
 void initializeGL() {
-    glClearColor(0.2f,0.2f,0.2f,1.0f);
+    glClearColor(0.5f,0.5f,0.5f,1.0f);
     scene->initScene();
 }
 
 void mainLoop() {
-	while( glfwGetWindowParam(GLFW_OPENED) && !glfwGetKey(GLFW_KEY_ESC) ) {
+	while( ! glfwWindowShouldClose(window) && !glfwGetKey(window, GLFW_KEY_ESCAPE) ) {
 		GLUtils::checkForOpenGLError(__FILE__,__LINE__);
 		scene->update(glfwGetTime());
 		scene->render();
-		glfwSwapBuffers();
+		glfwSwapBuffers(window);
+		glfwPollEvents();
 	}
 }
 
@@ -42,20 +44,21 @@ int main(int argc, char *argv[])
 	// Initialize GLFW
 	if( !glfwInit() ) exit( EXIT_FAILURE );
 
-	// Select OpenGL 3.2 with a forward compatible core profile.
-	glfwOpenWindowHint( GLFW_OPENGL_VERSION_MAJOR, 4 );
-	glfwOpenWindowHint( GLFW_OPENGL_VERSION_MINOR, 3 );
-	glfwOpenWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-	glfwOpenWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	glfwOpenWindowHint(GLFW_WINDOW_NO_RESIZE, GL_TRUE);
+	// Select OpenGL 4.3 with a forward compatible core profile.
+	glfwWindowHint( GLFW_CONTEXT_VERSION_MAJOR, 4 );
+	glfwWindowHint( GLFW_CONTEXT_VERSION_MINOR, 3 );
+	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
 	// Open the window
-	if( !glfwOpenWindow( 640, 640, 8,8,8,8,24,0, GLFW_WINDOW ) ) {
+	string title = "Chapter 01 -- " + recipe;
+	window = glfwCreateWindow( 640, 480, title.c_str(), NULL, NULL );
+	if( ! window ) {
 		glfwTerminate();
 		exit( EXIT_FAILURE );
 	}
-	string title = "Chapter 01 -- " + recipe;
-	glfwSetWindowTitle(title.c_str());
+	glfwMakeContextCurrent(window);
 
 	// Load the OpenGL functions.
 	if( ogl_LoadFunctions() == ogl_LOAD_FAILED ) {

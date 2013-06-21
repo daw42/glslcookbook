@@ -18,7 +18,6 @@ void SceneDiscard::initScene()
 {
     compileAndLinkShader();
 
-    glClearColor(0.0,0.0,0.0,1.0);
     glEnable(GL_DEPTH_TEST);
 
     teapot = new VBOTeapot(13, mat4(1.0f));

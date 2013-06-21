@@ -16,7 +16,6 @@ void SceneADS::initScene()
 {
     compileAndLinkShader();
 
-    glClearColor(0.0,0.0,0.0,1.0);
     glEnable(GL_DEPTH_TEST);
 
     torus = new VBOTorus(0.7f, 0.3f, 50, 50);

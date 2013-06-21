@@ -23,8 +23,6 @@ void SceneDecay::initScene()
 {
     compileAndLinkShader();
 
-    glClearColor(0.1f,0.1f,0.1f,1.0f);
-
     glEnable(GL_DEPTH_TEST);
 
     prog.setUniform("NoiseTex", 0);
