@@ -7,6 +7,10 @@
 
 using glm::vec3;
 
+#include <iostream>
+using std::cerr;
+using std::endl;
+
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/transform2.hpp>
 
@@ -241,43 +245,18 @@ void SceneShadowMap::resize(int w, int h)
 
 void SceneShadowMap::compileAndLinkShader()
 {
-    if( ! prog.compileShaderFromFile("shader/shadowmap.vs",GLSLShader::VERTEX) )
-    {
-        printf("Vertex shader failed to compile!\n%s",
-               prog.log().c_str());
-        exit(1);
-    }
-    if( ! prog.compileShaderFromFile("shader/shadowmap.fs",GLSLShader::FRAGMENT))
-    {
-        printf("Fragment shader failed to compile!\n%s",
-               prog.log().c_str());
-        exit(1);
-    }
-    if( ! prog.link() )
-    {
-        printf("Shader program failed to link!\n%s",
-               prog.log().c_str());
-        exit(1);
-    }
-
-    prog.use();
-
-    if( ! solidProg.compileShaderFromFile("shader/solid.vs",GLSLShader::VERTEX) )
-    {
-        printf("Vertex shader failed to compile!\n%s",
-               solidProg.log().c_str());
-        exit(1);
-    }
-    if( ! solidProg.compileShaderFromFile("shader/solid.fs",GLSLShader::FRAGMENT))
-    {
-        printf("Fragment shader failed to compile!\n%s",
-               solidProg.log().c_str());
-        exit(1);
-    }
-    if( ! solidProg.link() )
-    {
-        printf("Shader program failed to link!\n%s",
-               solidProg.log().c_str());
-        exit(1);
+	try {
+		prog.compileShader("shader/shadowmap.vs",GLSLShader::VERTEX);
+		prog.compileShader("shader/shadowmap.fs",GLSLShader::FRAGMENT);
+    	prog.link();
+    	prog.use();
+    	
+    	solidProg.compileShader("shader/solid.vs", GLSLShader::VERTEX);
+    	solidProg.compileShader("shader/solid.fs", GLSLShader::FRAGMENT);
+    	solidProg.link();
+    } catch(GLSLProgramException &e ) {
+    	cerr << e.what() << endl;
+ 		cerr << e.getLog() << endl;
+ 		exit( EXIT_FAILURE );
     }
 }

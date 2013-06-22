@@ -2,10 +2,9 @@
 
 #include <cstdio>
 #include <cstdlib>
-using std::rand;
-using std::srand;
-#include <ctime>
-using std::time;
+#include <iostream>
+using std::endl;
+using std::cerr;
 
 #include "glutils.h"
 #include "defines.h"
@@ -20,9 +19,6 @@ SceneBezCurve::SceneBezCurve() {}
 void SceneBezCurve::initScene()
 {
     compileAndLinkShader();
-GLUtils::checkForOpenGLError(__FILE__,__LINE__);
-    glClearColor(0.5f,0.5f,0.5f,1.0f);
-GLUtils::checkForOpenGLError(__FILE__,__LINE__);
     glEnable(GL_DEPTH_TEST);
 
     float c = 3.5f;
@@ -50,6 +46,15 @@ GLUtils::checkForOpenGLError(__FILE__,__LINE__);
 
     // Set the number of vertices per patch.  IMPORTANT!!
     glPatchParameteri( GL_PATCH_VERTICES, 4);
+    
+    // Segments and strips may be inverted on NVIDIA
+    prog.use();
+    prog.setUniform("NumSegments", 1);
+    prog.setUniform("NumStrips", 50);
+    prog.setUniform("LineColor", vec4(1.0f,1.0f,0.5f,1.0f));
+    
+    solidProg.use();
+    solidProg.setUniform("Color", vec4(0.5f,1.0f,1.0f,1.0f));
 }
 
 void SceneBezCurve::update( float t ) {}
@@ -64,18 +69,16 @@ void SceneBezCurve::render()
                        vec3(0.0f,1.0f,0.0f));
 
     model = mat4(1.0f);
-    setMatrices();
 
     glBindVertexArray(vaoHandle);
-
+	setMatrices();
+	
+	// Draw the curve
     prog.use();
-    prog.setUniform("NumSegments", 5);
-    prog.setUniform("NumStrips", 1);
-    prog.setUniform("LineColor", vec4(1.0f,1.0f,0.5f,1.0f));
     glDrawArrays(GL_PATCHES, 0, 4);
 
+	// Draw the control points
     solidProg.use();
-    solidProg.setUniform("Color", vec4(0.5f,1.0f,1.0f,1.0f));
     glDrawArrays(GL_POINTS, 0, 4);
 
     glFinish();
@@ -84,7 +87,9 @@ void SceneBezCurve::render()
 void SceneBezCurve::setMatrices()
 {
     mat4 mv = view * model;
+    prog.use();
     prog.setUniform("MVP", projection * mv);
+    solidProg.use();
     solidProg.setUniform("MVP", projection * mv);
 }
 
@@ -102,56 +107,20 @@ void SceneBezCurve::resize(int w, int h)
 
 void SceneBezCurve::compileAndLinkShader()
 {
-    if( ! prog.compileShaderFromFile("shader/bezcurve.vs",GLSLShader::VERTEX) )
-    {
-        printf("Vertex shader failed to compile!\n%s",
-               prog.log().c_str());
-        exit(1);
+	try {
+		prog.compileShader("shader/bezcurve.vs",GLSLShader::VERTEX);
+		prog.compileShader("shader/bezcurve.fs",GLSLShader::FRAGMENT);
+		prog.compileShader("shader/bezcurve.tes",GLSLShader::TESS_EVALUATION);
+		prog.compileShader("shader/bezcurve.tcs",GLSLShader::TESS_CONTROL);
+    	prog.link();
+    	prog.use();
+    	
+    	solidProg.compileShader("shader/solid.vs",GLSLShader::VERTEX);
+    	solidProg.compileShader("shader/solid.fs",GLSLShader::FRAGMENT);
+    	solidProg.link();
+    } catch(GLSLProgramException &e ) {
+    	cerr << e.what() << endl;
+ 		cerr << e.getLog() << endl;
+ 		exit( EXIT_FAILURE );
     }
-    if( ! prog.compileShaderFromFile("shader/bezcurve.fs",GLSLShader::FRAGMENT))
-    {
-        printf("Fragment shader failed to compile!\n%s",
-               prog.log().c_str());
-        exit(1);
-    }
-    if( ! prog.compileShaderFromFile("shader/bezcurve.tes",GLSLShader::TESS_EVALUATION))
-    {
-        printf("Tess evaluation shader failed to compile!\n%s",
-               prog.log().c_str());
-        exit(1);
-    }
-    if( ! prog.compileShaderFromFile("shader/bezcurve.tcs",GLSLShader::TESS_CONTROL))
-    {
-        printf("Tess control shader failed to compile!\n%s",
-               prog.log().c_str());
-        exit(1);
-    }
-    if( ! prog.link() )
-    {
-        printf("Shader program failed to link!\n%s",
-               prog.log().c_str());
-        exit(1);
-    }
-
-    prog.use();
-
-    if( ! solidProg.compileShaderFromFile("shader/solid.vs",GLSLShader::VERTEX) )
-    {
-        printf("Vertex shader failed to compile!\n%s",
-               solidProg.log().c_str());
-        exit(1);
-    }
-    if( ! solidProg.compileShaderFromFile("shader/solid.fs",GLSLShader::FRAGMENT))
-    {
-        printf("Fragment shader failed to compile!\n%s",
-               solidProg.log().c_str());
-        exit(1);
-    }
-    if( ! solidProg.link() )
-    {
-        printf("Shader program failed to link!\n%s",
-               solidProg.log().c_str());
-        exit(1);
-    }
-
 }

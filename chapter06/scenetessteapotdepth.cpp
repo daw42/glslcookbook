@@ -2,10 +2,9 @@
 
 #include <cstdio>
 #include <cstdlib>
-using std::rand;
-using std::srand;
-#include <ctime>
-using std::time;
+#include <iostream>
+using std::cerr;
+using std::endl;
 
 #include "glutils.h"
 #include "defines.h"
@@ -110,42 +109,17 @@ void SceneTessTeapotDepth::resize(int w, int h)
 
 void SceneTessTeapotDepth::compileAndLinkShader()
 {
-    if( ! prog.compileShaderFromFile("shader/tessteapotdepth.vs",GLSLShader::VERTEX) )
-    {
-        printf("Vertex shader failed to compile!\n%s",
-               prog.log().c_str());
-        exit(1);
+	try {
+		prog.compileShader("shader/tessteapotdepth.vs",GLSLShader::VERTEX);
+		prog.compileShader("shader/tessteapotdepth.fs",GLSLShader::FRAGMENT);
+		prog.compileShader("shader/tessteapotdepth.gs",GLSLShader::GEOMETRY);
+		prog.compileShader("shader/tessteapotdepth.tes",GLSLShader::TESS_EVALUATION);
+		prog.compileShader("shader/tessteapotdepth.tcs",GLSLShader::TESS_CONTROL);
+    	prog.link();
+    	prog.use();
+    } catch(GLSLProgramException &e ) {
+    	cerr << e.what() << endl;
+ 		cerr << e.getLog() << endl;
+ 		exit( EXIT_FAILURE );
     }
-    if( ! prog.compileShaderFromFile("shader/tessteapotdepth.gs",GLSLShader::GEOMETRY) )
-    {
-        printf("Geometry shader failed to compile!\n%s",
-               prog.log().c_str());
-        exit(1);
-    }
-    if( ! prog.compileShaderFromFile("shader/tessteapotdepth.fs",GLSLShader::FRAGMENT))
-    {
-        printf("Fragment shader failed to compile!\n%s",
-               prog.log().c_str());
-        exit(1);
-    }
-    if( ! prog.compileShaderFromFile("shader/tessteapotdepth.tes",GLSLShader::TESS_EVALUATION))
-    {
-        printf("Tess evaluation shader failed to compile!\n%s",
-               prog.log().c_str());
-        exit(1);
-    }
-    if( ! prog.compileShaderFromFile("shader/tessteapotdepth.tcs",GLSLShader::TESS_CONTROL))
-    {
-        printf("Tess control shader failed to compile!\n%s",
-               prog.log().c_str());
-        exit(1);
-    }
-    if( ! prog.link() )
-    {
-        printf("Shader program failed to link!\n%s",
-               prog.log().c_str());
-        exit(1);
-    }
-
-    prog.use();
 }

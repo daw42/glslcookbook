@@ -7,6 +7,10 @@ using std::srand;
 #include <ctime>
 using std::time;
 
+#include <iostream>
+using std::cerr;
+using std::endl;
+
 #include "bmpreader.h"
 
 #include "glutils.h"
@@ -103,30 +107,15 @@ void ScenePointSprite::resize(int w, int h)
 
 void ScenePointSprite::compileAndLinkShader()
 {
-    if( ! prog.compileShaderFromFile("shader/pointsprite.vs",GLSLShader::VERTEX) )
-    {
-        printf("Vertex shader failed to compile!\n%s",
-               prog.log().c_str());
-        exit(1);
+	try {
+		prog.compileShader("shader/pointsprite.vs",GLSLShader::VERTEX);
+		prog.compileShader("shader/pointsprite.fs",GLSLShader::FRAGMENT);
+		prog.compileShader("shader/pointsprite.gs",GLSLShader::GEOMETRY);
+    	prog.link();
+    	prog.use();
+    } catch(GLSLProgramException &e ) {
+    	cerr << e.what() << endl;
+ 		cerr << e.getLog() << endl;
+ 		exit( EXIT_FAILURE );
     }
-    if( ! prog.compileShaderFromFile("shader/pointsprite.gs",GLSLShader::GEOMETRY) )
-    {
-        printf("Geometry shader failed to compile!\n%s",
-               prog.log().c_str());
-        exit(1);
-    }
-    if( ! prog.compileShaderFromFile("shader/pointsprite.fs",GLSLShader::FRAGMENT))
-    {
-        printf("Fragment shader failed to compile!\n%s",
-               prog.log().c_str());
-        exit(1);
-    }
-    if( ! prog.link() )
-    {
-        printf("Shader program failed to link!\n%s",
-               prog.log().c_str());
-        exit(1);
-    }
-
-    prog.use();
 }

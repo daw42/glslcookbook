@@ -2,10 +2,9 @@
 
 #include <cstdio>
 #include <cstdlib>
-using std::rand;
-using std::srand;
-#include <ctime>
-using std::time;
+#include <iostream>
+using std::cerr;
+using std::endl;
 
 #include "glutils.h"
 #include "defines.h"
@@ -84,30 +83,15 @@ void SceneShadeWire::resize(int w, int h)
 
 void SceneShadeWire::compileAndLinkShader()
 {
-    if( ! prog.compileShaderFromFile("shader/shadewire.vs",GLSLShader::VERTEX) )
-    {
-        printf("Vertex shader %s failed to compile!\n%s",
-               "shadewire.vs", prog.log().c_str());
-        exit(1);
+	try {
+		prog.compileShader("shader/shadewire.vs",GLSLShader::VERTEX);
+		prog.compileShader("shader/shadewire.fs",GLSLShader::FRAGMENT);
+		prog.compileShader("shader/shadewire.gs",GLSLShader::GEOMETRY);
+		prog.link();
+    	prog.use();
+    } catch(GLSLProgramException &e ) {
+    	cerr << e.what() << endl;
+ 		cerr << e.getLog() << endl;
+ 		exit( EXIT_FAILURE );
     }
-    if( ! prog.compileShaderFromFile("shader/shadewire.gs",GLSLShader::GEOMETRY) )
-    {
-        printf("Geometry shader failed to compile!\n%s",
-               prog.log().c_str());
-        exit(1);
-    }
-    if( ! prog.compileShaderFromFile("shader/shadewire.fs",GLSLShader::FRAGMENT))
-    {
-        printf("Fragment shader failed to compile!\n%s",
-               prog.log().c_str());
-        exit(1);
-    }
-    if( ! prog.link() )
-    {
-        printf("Shader program failed to link!\n%s",
-               prog.log().c_str());
-        exit(1);
-    }
-
-    prog.use();
 }

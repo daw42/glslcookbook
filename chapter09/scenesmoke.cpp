@@ -2,6 +2,9 @@
 
 #include <cstdio>
 #include <cstdlib>
+#include <iostream>
+using std::endl;
+using std::cerr;
 
 #include "bmpreader.h"
 
@@ -261,32 +264,22 @@ void SceneSmoke::resize(int w, int h)
 
 void SceneSmoke::compileAndLinkShader()
 {
-    if( ! prog.compileShaderFromFile("shader/smoke.vs",GLSLShader::VERTEX) )
-    {
-        printf("Vertex shader failed to compile!\n%s",
-               prog.log().c_str());
-        exit(1);
+	try {
+		prog.compileShader("shader/smoke.vs",GLSLShader::VERTEX);
+		prog.compileShader("shader/smoke.fs",GLSLShader::FRAGMENT);
+		
+	    //////////////////////////////////////////////////////
+		// Setup the transform feedback (must be done before linking the program)
+		GLuint progHandle = prog.getHandle();
+		const char * outputNames[] = { "Position", "Velocity", "StartTime" };
+		glTransformFeedbackVaryings(progHandle, 3, outputNames, GL_SEPARATE_ATTRIBS);
+		///////////////////////////////////////////////////////
+		
+    	prog.link();
+    	prog.use();
+    } catch(GLSLProgramException &e ) {
+    	cerr << e.what() << endl;
+ 		cerr << e.getLog() << endl;
+ 		exit( EXIT_FAILURE );
     }
-    if( ! prog.compileShaderFromFile("shader/smoke.fs",GLSLShader::FRAGMENT))
-    {
-        printf("Fragment shader failed to compile!\n%s",
-               prog.log().c_str());
-        exit(1);
-    }
-
-    //////////////////////////////////////////////////////
-    // Setup the transform feedback (must be done before linking the program)
-    GLuint progHandle = prog.getHandle();
-    const char * outputNames[] = { "Position", "Velocity", "StartTime" };
-    glTransformFeedbackVaryings(progHandle, 3, outputNames, GL_SEPARATE_ATTRIBS);
-    ///////////////////////////////////////////////////////
-
-    if( ! prog.link() )
-    {
-        printf("Shader program failed to link!\n%s",
-               prog.log().c_str());
-        exit(1);
-    }
-
-    prog.use();
 }

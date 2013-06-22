@@ -8,6 +8,10 @@
 #include "glutils.h"
 #include "defines.h"
 
+#include <iostream>
+using std::endl;
+using std::cerr;
+
 using glm::vec3;
 
 #include <glm/gtc/matrix_transform.hpp>
@@ -80,24 +84,14 @@ void SceneMultiTex::resize(int w, int h)
 
 void SceneMultiTex::compileAndLinkShader()
 {
-    if( ! prog.compileShaderFromFile("shader/multitex.vs",GLSLShader::VERTEX) )
-    {
-        printf("Vertex shader failed to compile!\n%s",
-               prog.log().c_str());
-        exit(1);
+	try {
+		prog.compileShader("shader/multitex.vs",GLSLShader::VERTEX);
+		prog.compileShader("shader/multitex.fs",GLSLShader::FRAGMENT);
+    	prog.link();
+    	prog.use();
+    } catch(GLSLProgramException & e) {
+ 		cerr << e.what() << endl;
+ 		cerr << e.getLog() << endl;
+ 		exit( EXIT_FAILURE );
     }
-    if( ! prog.compileShaderFromFile("shader/multitex.fs",GLSLShader::FRAGMENT))
-    {
-        printf("Fragment shader failed to compile!\n%s",
-               prog.log().c_str());
-        exit(1);
-    }
-    if( ! prog.link() )
-    {
-        printf("Shader program failed to link!\n%s",
-               prog.log().c_str());
-        exit(1);
-    }
-
-    prog.use();
 }

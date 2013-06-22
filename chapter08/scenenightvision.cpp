@@ -2,7 +2,9 @@
 
 #include <cstdio>
 #include <cstdlib>
-
+#include <iostream>
+using std::cerr;
+using std::endl;
 #include "glutils.h"
 #include "defines.h"
 #include "noisetex.h"
@@ -218,24 +220,14 @@ void SceneNightVision::resize(int w, int h)
 
 void SceneNightVision::compileAndLinkShader()
 {
-    if( ! prog.compileShaderFromFile("shader/nightvision.vs",GLSLShader::VERTEX) )
-    {
-        printf("Vertex shader failed to compile!\n%s",
-               prog.log().c_str());
-        exit(1);
+	try {
+		prog.compileShader("shader/nightvision.vs",GLSLShader::VERTEX);
+		prog.compileShader("shader/nightvision.fs",GLSLShader::FRAGMENT);
+    	prog.link();
+    	prog.use();
+    } catch(GLSLProgramException &e ) {
+    	cerr << e.what() << endl;
+ 		cerr << e.getLog() << endl;
+ 		exit( EXIT_FAILURE );
     }
-    if( ! prog.compileShaderFromFile("shader/nightvision.fs",GLSLShader::FRAGMENT))
-    {
-        printf("Fragment shader failed to compile!\n%s",
-               prog.log().c_str());
-        exit(1);
-    }
-    if( ! prog.link() )
-    {
-        printf("Shader program failed to link!\n%s",
-               prog.log().c_str());
-        exit(1);
-    }
-
-    prog.use();
 }

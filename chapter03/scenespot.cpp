@@ -8,6 +8,10 @@
 
 using glm::vec3;
 
+#include <iostream>
+using std::endl;
+using std::cerr;
+
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/transform2.hpp>
 
@@ -102,24 +106,14 @@ void SceneSpot::resize(int w, int h)
 
 void SceneSpot::compileAndLinkShader()
 {
-    if( ! prog.compileShaderFromFile("shader/spot.vs",GLSLShader::VERTEX) )
-    {
-        printf("Vertex shader failed to compile!\n%s",
-               prog.log().c_str());
-        exit(1);
+	try {
+		prog.compileShader("shader/spot.vs",GLSLShader::VERTEX);
+		prog.compileShader("shader/spot.fs",GLSLShader::FRAGMENT);
+    	prog.link();
+    	prog.use();
+    } catch(GLSLProgramException & e) {
+ 		cerr << e.what() << endl;
+ 		cerr << e.getLog() << endl;
+ 		exit( EXIT_FAILURE );
     }
-    if( ! prog.compileShaderFromFile("shader/spot.fs",GLSLShader::FRAGMENT))
-    {
-        printf("Fragment shader failed to compile!\n%s",
-               prog.log().c_str());
-        exit(1);
-    }
-    if( ! prog.link() )
-    {
-        printf("Shader program failed to link!\n%s",
-               prog.log().c_str());
-        exit(1);
-    }
-
-    prog.use();
 }

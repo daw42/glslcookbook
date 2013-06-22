@@ -8,6 +8,10 @@
 
 using glm::vec3;
 
+#include <iostream>
+using std::endl;
+using std::cerr;
+
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/transform2.hpp>
 
@@ -85,24 +89,14 @@ void ScenePerFragment::resize(int w, int h)
 
 void ScenePerFragment::compileAndLinkShader()
 {
-    if( ! prog.compileShaderFromFile("shader/perfrag.vs",GLSLShader::VERTEX) )
-    {
-        printf("Vertex shader failed to compile!\n%s",
-               prog.log().c_str());
-        exit(1);
+	try {
+		prog.compileShader("shader/perfrag.vs",GLSLShader::VERTEX);
+		prog.compileShader("shader/perfrag.fs",GLSLShader::FRAGMENT);
+    	prog.link();
+    	prog.use();
+    } catch(GLSLProgramException & e) {
+ 		cerr << e.what() << endl;
+ 		cerr << e.getLog() << endl;
+ 		exit( EXIT_FAILURE );
     }
-    if( ! prog.compileShaderFromFile("shader/perfrag.fs",GLSLShader::FRAGMENT))
-    {
-        printf("Fragment shader failed to compile!\n%s",
-               prog.log().c_str());
-        exit(1);
-    }
-    if( ! prog.link() )
-    {
-        printf("Shader program failed to link!\n%s",
-               prog.log().c_str());
-        exit(1);
-    }
-
-    prog.use();
 }

@@ -13,6 +13,28 @@ using glm::vec4;
 using glm::mat4;
 using glm::mat3;
 
+#include <exception>
+
+class GLSLProgramException : public std::exception {
+public:
+	GLSLProgramException( const string & msg, const string & logStr = "") :
+		exception(), message(msg), log( logStr ) { }
+	
+	~GLSLProgramException() throw() { }
+		
+	string getLog() { return log; }
+	
+	const char * what() const throw() {
+		return message.c_str();
+	}
+	
+	
+	
+private:
+	string message;
+	string log;
+};
+
 namespace GLSLShader {
     enum GLSLShaderType {
         VERTEX, FRAGMENT, GEOMETRY,
@@ -25,7 +47,6 @@ class GLSLProgram
 private:
     int  handle;
     bool linked;
-    string logString;
 
     int  getUniformLocation(const char * name );
     bool fileExists( const string & fileName );
@@ -33,13 +54,12 @@ private:
 public:
     GLSLProgram();
 
-    bool   compileShaderFromFile( const char * fileName, GLSLShader::GLSLShaderType type );
-    bool   compileShaderFromString( const string & source, GLSLShader::GLSLShaderType type );
-    bool   link();
-    bool   validate();
-    void   use();
-
-    string log();
+    void   compileShader( const char * fileName, GLSLShader::GLSLShaderType type ) throw (GLSLProgramException);
+    void   compileShader( const string & source, GLSLShader::GLSLShaderType type, 
+                          const char *fileName = NULL ) throw (GLSLProgramException);
+    void   link() throw (GLSLProgramException);
+    void   validate() throw(GLSLProgramException);
+    void   use() throw (GLSLProgramException);
 
     int    getHandle();
     bool   isLinked();

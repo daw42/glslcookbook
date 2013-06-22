@@ -1,7 +1,9 @@
 #include "scenedecay.h"
 
 #include <cstdio>
-
+#include <iostream>
+using std::cerr;
+using std::endl;
 #include "glutils.h"
 #include "defines.h"
 #include "noisetex.h"
@@ -86,24 +88,14 @@ void SceneDecay::resize(int w, int h)
 
 void SceneDecay::compileAndLinkShader()
 {
-    if( ! prog.compileShaderFromFile("shader/decay.vs",GLSLShader::VERTEX) )
-    {
-        printf("Vertex shader failed to compile!\n%s",
-               prog.log().c_str());
-        exit(1);
+	try {
+		prog.compileShader("shader/decay.vs",GLSLShader::VERTEX);
+		prog.compileShader("shader/decay.fs",GLSLShader::FRAGMENT);
+    	prog.link();
+    	prog.use();
+    } catch(GLSLProgramException &e ) {
+    	cerr << e.what() << endl;
+ 		cerr << e.getLog() << endl;
+ 		exit( EXIT_FAILURE );
     }
-    if( ! prog.compileShaderFromFile("shader/decay.fs",GLSLShader::FRAGMENT))
-    {
-        printf("Fragment shader failed to compile!\n%s",
-               prog.log().c_str());
-        exit(1);
-    }
-    if( ! prog.link() )
-    {
-        printf("Shader program failed to link!\n%s",
-               prog.log().c_str());
-        exit(1);
-    }
-
-    prog.use();
 }

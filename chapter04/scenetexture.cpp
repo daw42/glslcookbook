@@ -2,6 +2,9 @@
 
 #include <cstdio>
 #include <cstdlib>
+#include <iostream>
+using std::endl;
+using std::cerr;
 
 #include "bmpreader.h"
 #include "glutils.h"
@@ -79,24 +82,14 @@ void SceneTexture::resize(int w, int h)
 
 void SceneTexture::compileAndLinkShader()
 {
-    if( ! prog.compileShaderFromFile("shader/texture.vs",GLSLShader::VERTEX) )
-    {
-        printf("Vertex shader failed to compile!\n%s",
-               prog.log().c_str());
-        exit(1);
+	try {
+		prog.compileShader("shader/texture.vs",GLSLShader::VERTEX);
+		prog.compileShader("shader/texture.fs",GLSLShader::FRAGMENT);
+    	prog.link();
+    	prog.use();
+    } catch(GLSLProgramException & e) {
+ 		cerr << e.what() << endl;
+ 		cerr << e.getLog() << endl;
+ 		exit( EXIT_FAILURE );
     }
-    if( ! prog.compileShaderFromFile("shader/texture.fs",GLSLShader::FRAGMENT))
-    {
-        printf("Fragment shader failed to compile!\n%s",
-               prog.log().c_str());
-        exit(1);
-    }
-    if( ! prog.link() )
-    {
-        printf("Shader program failed to link!\n%s",
-               prog.log().c_str());
-        exit(1);
-    }
-
-    prog.use();
 }

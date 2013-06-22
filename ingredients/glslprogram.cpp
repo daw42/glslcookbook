@@ -7,52 +7,51 @@ using std::ifstream;
 using std::ios;
 
 #include <sstream>
-using std::ostringstream;
 
 #include <sys/stat.h>
 
 GLSLProgram::GLSLProgram() : handle(0), linked(false) { }
 
-bool GLSLProgram::compileShaderFromFile( const char * fileName,
-                                         GLSLShader::GLSLShaderType type )
+void GLSLProgram::compileShader( const char * fileName,
+                                 GLSLShader::GLSLShaderType type )
+                                 throw( GLSLProgramException )
 {
     if( ! fileExists(fileName) )
     {
-        logString = "File not found.";
-        return false;
+        string message = string("Shader: ") + fileName + " not found.";
+        throw GLSLProgramException(message);
     }
 
     if( handle <= 0 ) {
         handle = glCreateProgram();
         if( handle == 0) {
-            logString = "Unable to create shader program.";
-            return false;
+            throw GLSLProgramException("Unable to create shader program.");
         }
     }
 
     ifstream inFile( fileName, ios::in );
     if( !inFile ) {
-        return false;
+    	string message = string("Unable to open: ") + fileName;
+		throw GLSLProgramException(message);
     }
 
-    ostringstream code;
-    while( inFile.good() ) {
-        int c = inFile.get();
-        if( ! inFile.eof() )
-            code << (char) c;
-    }
-    inFile.close();
+	// Get file contents
+	std::stringstream code;
+	code << inFile.rdbuf();
+	inFile.close();
 
-    return compileShaderFromString(code.str(), type);
+    compileShader(code.str(), type, fileName);
 }
 
-bool GLSLProgram::compileShaderFromString( const string & source, GLSLShader::GLSLShaderType type )
+void GLSLProgram::compileShader( const string & source, 
+                                 GLSLShader::GLSLShaderType type,
+                                 const char * fileName )
+                                 throw(GLSLProgramException)
 {
     if( handle <= 0 ) {
         handle = glCreateProgram();
         if( handle == 0) {
-            logString = "Unable to create shader program.";
-            return false;
+            throw GLSLProgramException("Unable to create shader program.");
         }
     }
 
@@ -75,22 +74,22 @@ bool GLSLProgram::compileShaderFromString( const string & source, GLSLShader::GL
         shaderHandle = glCreateShader(GL_TESS_EVALUATION_SHADER);
         break;
     default:
-        return false;
+        throw GLSLProgramException("Invalid shader type");
     }
 
     const char * c_code = source.c_str();
     glShaderSource( shaderHandle, 1, &c_code, NULL );
 
     // Compile the shader
-    glCompileShader(shaderHandle );
+    glCompileShader(shaderHandle);
 
     // Check for errors
     int result;
     glGetShaderiv( shaderHandle, GL_COMPILE_STATUS, &result );
     if( GL_FALSE == result ) {
-        // Compile failed, store log and return false
+        // Compile failed, get log
         int length = 0;
-        logString = "";
+        string logString;
         glGetShaderiv(shaderHandle, GL_INFO_LOG_LENGTH, &length );
         if( length > 0 ) {
             char * c_log = new char[length];
@@ -99,19 +98,26 @@ bool GLSLProgram::compileShaderFromString( const string & source, GLSLShader::GL
             logString = c_log;
             delete [] c_log;
         }
+        string msg;
+        if( fileName ) {
+        	msg = string(fileName) + ": shader compliation failed";
+        } else {
+        	msg = "Shader compilation failed.";
+        }
 
-        return false;
+        throw GLSLProgramException(msg, logString );
+        
     } else {
-        // Compile succeeded, attach shader and return true
+        // Compile succeeded, attach shader
         glAttachShader(handle, shaderHandle);
-        return true;
     }
 }
 
-bool GLSLProgram::link()
+void GLSLProgram::link() throw(GLSLProgramException)
 {
-    if( linked ) return true;
-    if( handle <= 0 ) return false;
+    if( linked ) return;
+    if( handle <= 0 ) 
+    	throw GLSLProgramException("Program has not been compiled.");
 
     glLinkProgram(handle);
 
@@ -120,7 +126,7 @@ bool GLSLProgram::link()
     if( GL_FALSE == status ) {
         // Store log and return false
         int length = 0;
-        logString = "";
+        string logString;
 
         glGetProgramiv(handle, GL_INFO_LOG_LENGTH, &length );
 
@@ -132,22 +138,18 @@ bool GLSLProgram::link()
             delete [] c_log;
         }
 
-        return false;
+        throw GLSLProgramException("Program link failed", logString);
     } else {
         linked = true;
-        return linked;
     }
+    
 }
 
-void GLSLProgram::use()
+void GLSLProgram::use() throw(GLSLProgramException)
 {
-    if( handle <= 0 || (! linked) ) return;
+    if( handle <= 0 || (! linked) ) 
+    	throw GLSLProgramException("Shader has not been linked");
     glUseProgram( handle );
-}
-
-string GLSLProgram::log()
-{
-    return logString;
 }
 
 int GLSLProgram::getHandle()
@@ -305,9 +307,10 @@ void GLSLProgram::printActiveAttribs() {
     free(name);
 }
 
-bool GLSLProgram::validate()
+void GLSLProgram::validate() throw(GLSLProgramException)
 {
-    if( ! isLinked() ) return false;
+    if( ! isLinked() ) 
+    	throw GLSLProgramException("Program is not linked");
 
     GLint status;
     glValidateProgram( handle );
@@ -316,7 +319,7 @@ bool GLSLProgram::validate()
     if( GL_FALSE == status ) {
         // Store log and return false
         int length = 0;
-        logString = "";
+        string logString;
 
         glGetProgramiv(handle, GL_INFO_LOG_LENGTH, &length );
 
@@ -328,9 +331,8 @@ bool GLSLProgram::validate()
             delete [] c_log;
         }
 
-        return false;
-    } else {
-       return true;
+        throw GLSLProgramException("Program failed to validate", logString);
+        
     }
 }
 

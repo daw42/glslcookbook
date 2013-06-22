@@ -6,14 +6,16 @@
 #include "glutils.h"
 #include "defines.h"
 
+#include <iostream>
+using std::endl;
+using std::cerr;
+
 using glm::vec3;
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/transform2.hpp>
 
-SceneToon::SceneToon()
-{
-}
+SceneToon::SceneToon() { }
 
 void SceneToon::initScene()
 {
@@ -92,24 +94,14 @@ void SceneToon::resize(int w, int h)
 
 void SceneToon::compileAndLinkShader()
 {
-    if( ! prog.compileShaderFromFile("shader/toon.vs",GLSLShader::VERTEX) )
-    {
-        printf("Vertex shader failed to compile!\n%s",
-               prog.log().c_str());
-        exit(1);
+	try {
+		prog.compileShader("shader/toon.vs",GLSLShader::VERTEX);
+		prog.compileShader("shader/toon.fs",GLSLShader::FRAGMENT);
+    	prog.link();
+    	prog.use();
+    } catch(GLSLProgramException & e) {
+ 		cerr << e.what() << endl;
+ 		cerr << e.getLog() << endl;
+ 		exit( EXIT_FAILURE );
     }
-    if( ! prog.compileShaderFromFile("shader/toon.fs",GLSLShader::FRAGMENT))
-    {
-        printf("Fragment shader failed to compile!\n%s",
-               prog.log().c_str());
-        exit(1);
-    }
-    if( ! prog.link() )
-    {
-        printf("Shader program failed to link!\n%s",
-               prog.log().c_str());
-        exit(1);
-    }
-
-    prog.use();
 }

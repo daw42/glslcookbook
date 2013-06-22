@@ -6,6 +6,10 @@
 #include "glutils.h"
 #include "defines.h"
 
+#include <iostream>
+using std::endl;
+using std::cerr;
+
 using glm::vec3;
 
 #include <glm/gtc/matrix_transform.hpp>
@@ -81,24 +85,14 @@ void SceneDirectional::resize(int w, int h)
 
 void SceneDirectional::compileAndLinkShader()
 {
-    if( ! prog.compileShaderFromFile("shader/directional.vs",GLSLShader::VERTEX) )
-    {
-        printf("Vertex shader failed to compile!\n%s",
-               prog.log().c_str());
-        exit(1);
-    }
-    if( ! prog.compileShaderFromFile("shader/directional.fs",GLSLShader::FRAGMENT))
-    {
-        printf("Fragment shader failed to compile!\n%s",
-               prog.log().c_str());
-        exit(1);
-    }
-    if( ! prog.link() )
-    {
-        printf("Shader program failed to link!\n%s",
-               prog.log().c_str());
-        exit(1);
-    }
-
-    prog.use();
+	try {
+		prog.compileShader("shader/directional.vs",GLSLShader::VERTEX);
+		prog.compileShader("shader/directional.fs",GLSLShader::FRAGMENT);
+    	prog.link();
+    	prog.use();
+    } catch(GLSLProgramException & e) {
+ 		cerr << e.what() << endl;
+ 		cerr << e.getLog() << endl;
+ 		exit( EXIT_FAILURE );
+    }   
 }
