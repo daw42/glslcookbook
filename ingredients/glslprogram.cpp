@@ -120,12 +120,13 @@ void GLSLProgram::compileShader( const string & source,
         }
         string msg;
         if( fileName ) {
-        	msg = string(fileName) + ": shader compliation failed";
+        	msg = string(fileName) + ": shader compliation failed\n";
         } else {
-        	msg = "Shader compilation failed.";
+        	msg = "Shader compilation failed.\n";
         }
+        msg += logString;
 
-        throw GLSLProgramException(msg, logString );
+        throw GLSLProgramException(msg);
         
     } else {
         // Compile succeeded, attach shader
@@ -158,7 +159,7 @@ void GLSLProgram::link() throw(GLSLProgramException)
             delete [] c_log;
         }
 
-        throw GLSLProgramException("Program link failed", logString);
+        throw GLSLProgramException(string("Program link failed:\n") + logString);
     } else {
         linked = true;
     }
@@ -351,7 +352,7 @@ void GLSLProgram::validate() throw(GLSLProgramException)
             delete [] c_log;
         }
 
-        throw GLSLProgramException("Program failed to validate", logString);
+        throw GLSLProgramException(string("Program failed to validate\n") + logString);
         
     }
 }

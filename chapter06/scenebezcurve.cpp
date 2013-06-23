@@ -120,7 +120,6 @@ void SceneBezCurve::compileAndLinkShader()
     	solidProg.link();
     } catch(GLSLProgramException &e ) {
     	cerr << e.what() << endl;
- 		cerr << e.getLog() << endl;
  		exit( EXIT_FAILURE );
     }
 }

@@ -13,26 +13,12 @@ using glm::vec4;
 using glm::mat4;
 using glm::mat3;
 
-#include <exception>
+#include <stdexcept>
 
-class GLSLProgramException : public std::exception {
+class GLSLProgramException : public std::runtime_error {
 public:
-	GLSLProgramException( const string & msg, const string & logStr = "") :
-		exception(), message(msg), log( logStr ) { }
-	
-	~GLSLProgramException() throw() { }
-		
-	string getLog() { return log; }
-	
-	const char * what() const throw() {
-		return message.c_str();
-	}
-	
-	
-	
-private:
-	string message;
-	string log;
+	GLSLProgramException( const string & msg ) :
+		std::runtime_error(msg.c_str()) { }
 };
 
 namespace GLSLShader {

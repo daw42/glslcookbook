@@ -113,7 +113,6 @@ void SceneSpot::compileAndLinkShader()
     	prog.use();
     } catch(GLSLProgramException & e) {
  		cerr << e.what() << endl;
- 		cerr << e.getLog() << endl;
  		exit( EXIT_FAILURE );
     }
 }

@@ -99,7 +99,6 @@ void SceneSubroutine::compileAndLinkShader()
     	prog.use();
     } catch(GLSLProgramException & e) {
  		cerr << e.what() << endl;
- 		cerr << e.getLog() << endl;
- 		exit( EXIT_FAILURE );
+  		exit( EXIT_FAILURE );
     }
 }
