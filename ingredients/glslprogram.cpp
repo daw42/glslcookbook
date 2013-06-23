@@ -7,10 +7,30 @@ using std::ifstream;
 using std::ios;
 
 #include <sstream>
-
 #include <sys/stat.h>
 
 GLSLProgram::GLSLProgram() : handle(0), linked(false) { }
+
+GLSLProgram::~GLSLProgram() {
+	if(handle == 0) return;
+
+	// Query the number of attached shaders
+	GLint numShaders = 0;
+	glGetProgramiv(handle, GL_ATTACHED_SHADERS, &numShaders);
+
+	// Get the shader names
+	GLuint * shaderNames = new GLuint[numShaders];
+	glGetAttachedShaders(handle, numShaders, NULL, shaderNames);
+
+	// Delete the shaders
+	for (int i = 0; i < numShaders; i++)
+		glDeleteShader(shaderNames[i]);
+
+	// Delete the program
+	glDeleteProgram (handle);
+	
+	delete[] shaderNames;
+}
 
 void GLSLProgram::compileShader( const char * fileName,
                                  GLSLShader::GLSLShaderType type )
