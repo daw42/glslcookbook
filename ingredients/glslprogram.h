@@ -18,7 +18,7 @@ using glm::mat3;
 class GLSLProgramException : public std::runtime_error {
 public:
 	GLSLProgramException( const string & msg ) :
-		std::runtime_error(msg.c_str()) { }
+		std::runtime_error(msg) { }
 };
 
 namespace GLSLShader {
