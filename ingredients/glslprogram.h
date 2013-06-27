@@ -69,7 +69,10 @@ public:
     void   setUniform( const char *name, bool val );
 
     void   printActiveUniforms();
+    void   printActiveUniformBlocks();
     void   printActiveAttribs();
+    
+    const char * getTypeString( GLenum type );
 };
 
 #endif // GLSLPROGRAM_H

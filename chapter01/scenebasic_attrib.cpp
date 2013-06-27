@@ -1,27 +1,25 @@
-#include "scenebasic_uniform.h"
+#include "scenebasic_attrib.h"
 
 #include <cstdio>
 #include <cstdlib>
 
 #include <string>
 using std::string;
-
 #include <iostream>
 using std::cerr;
 using std::endl;
 
 #include "glutils.h"
 
-#include <glm/gtc/matrix_transform.hpp>
-using glm::vec3;
-
-SceneBasic_Uniform::SceneBasic_Uniform() : angle(0.0f) {}
-
-void SceneBasic_Uniform::initScene()
+SceneBasic_Attrib::SceneBasic_Attrib()
 {
-    compile();
-    
-    prog.printActiveUniforms();
+}
+
+void SceneBasic_Attrib::initScene()
+{
+	compileShaderProgram();
+	
+	prog.printActiveAttribs();
 
     /////////////////// Create the VBO ////////////////////
     float positionData[] = {
@@ -61,11 +59,11 @@ void SceneBasic_Uniform::initScene()
 
 }
 
-void SceneBasic_Uniform::compile()
+void SceneBasic_Attrib::compileShaderProgram()
 {
 	try {
-		prog.compileShader("shader/basic_uniform.vert", GLSLShader::VERTEX );
-		prog.compileShader("shader/basic_uniform.frag", GLSLShader::FRAGMENT );
+		prog.compileShader("shader/basic_layout.vert", GLSLShader::VERTEX );
+		prog.compileShader("shader/basic_layout.frag", GLSLShader::FRAGMENT );
 		prog.link();
 		prog.use();	
 	} catch (GLSLProgramException &e) {
@@ -74,32 +72,18 @@ void SceneBasic_Uniform::compile()
 	}
 }
 
-void SceneBasic_Uniform::update( float t )
-{
-    angle += 1.0f;
-    if( angle >= 360.0f) angle -= 360.0f;
-}
+void SceneBasic_Attrib::update( float t ) { }
 
-void SceneBasic_Uniform::render()
+void SceneBasic_Attrib::render()
 {
     glClear(GL_COLOR_BUFFER_BIT);
-
-    rotationMatrix = glm::rotate(mat4(1.0f), angle, vec3(0.0f,0.0f,1.0f));
-
-	GLuint programHandle = prog.getHandle();
-    GLuint location = glGetUniformLocation(programHandle, "RotationMatrix");
-    if( location >= 0 )
-    {
-        glUniformMatrix4fv(location, 1, GL_FALSE, &rotationMatrix[0][0]);
-    }
 
     glBindVertexArray(vaoHandle);
     glDrawArrays(GL_TRIANGLES, 0, 3 );
 }
 
-void SceneBasic_Uniform::resize(int w, int h)
+void SceneBasic_Attrib::resize(int w, int h)
 {
     glViewport(0,0,w,h);
 }
-
 

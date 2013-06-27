@@ -4,6 +4,7 @@
 #include "scene.h"
 
 #include "cookbookogl.h"
+#include "glslprogram.h"
 
 #include <glm/glm.hpp>
 using glm::mat4;
@@ -14,13 +15,12 @@ private:
     int width, height;
     GLuint vboHandles[2];
     GLuint vaoHandle;
-    GLuint programHandle;
+    GLSLProgram prog;
     float angle;
 
     mat4 rotationMatrix;
 
-    void linkMe(GLint vertShader, GLint fragShader);
-    void printActiveUniforms(GLuint);
+    void compile();
 
 public:
     SceneBasic_Uniform();

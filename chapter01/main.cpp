@@ -5,7 +5,7 @@
 #include "scene.h"
 #include "glutils.h"
 #include "scenebasic.h"
-#include "scenebasic_layout.h"
+#include "scenebasic_attrib.h"
 #include "scenebasic_uniform.h"
 #include "scenebasic_uniformblock.h"
 
@@ -53,7 +53,7 @@ int main(int argc, char *argv[])
 
 	// Open the window
 	string title = "Chapter 01 -- " + recipe;
-	window = glfwCreateWindow( 640, 480, title.c_str(), NULL, NULL );
+	window = glfwCreateWindow( 500, 500, title.c_str(), NULL, NULL );
 	if( ! window ) {
 		glfwTerminate();
 		exit( EXIT_FAILURE );
@@ -91,8 +91,8 @@ string parseCLArgs(int argc, char ** argv) {
 
 	if( recipe == "basic" ) {
 		scene = new SceneBasic();
-	} else if( recipe == "basic-layout") {
-		scene = new SceneBasic_Layout();
+	} else if( recipe == "basic-attrib") {
+		scene = new SceneBasic_Attrib();
 	} else if( recipe == "basic-uniform") {
 		scene = new SceneBasic_Uniform();
 	} else if( recipe == "basic-uniform-block" ) {
@@ -108,8 +108,8 @@ string parseCLArgs(int argc, char ** argv) {
 void printHelpInfo(const char * exeFile) {
 	printf("Usage: %s recipe-name\n\n", exeFile);
 	printf("Recipe names: \n");
-	printf("  basic              : description...\n");
-	printf("  basic-layout       : description...\n");
-	printf("  basic-uniform      : description...\n");
-	printf("  basic-uniform-block: description...\n");
+	printf("  basic              : Basic scene.\n");
+	printf("  basic-attrib       : Prints active attributes.\n");
+	printf("  basic-uniform      : Basic scene with a uniform variable.\n");
+	printf("  basic-uniform-block: Scene with a uniform block variable.\n");
 }

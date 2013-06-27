@@ -36,7 +36,7 @@ void SceneBasic::initScene()
     GLuint vertShader = glCreateShader( GL_VERTEX_SHADER );
     if (0 == vertShader) {
       fprintf(stderr, "Error creating vertex shader.\n");
-      exit(1);
+      exit(EXIT_FAILURE);
     }
 
     // Load the source code into the shader object
@@ -166,9 +166,9 @@ void SceneBasic::linkMe(GLint vertShader, GLint fragShader)
     }
 
     // Bind index 0 to the shader input variable "VertexPosition"
-    glBindAttribLocation(programHandle, 0, "VertexPosition");
+    //glBindAttribLocation(programHandle, 0, "VertexPosition");
     // Bind index 1 to the shader input variable "VertexColor"
-    glBindAttribLocation(programHandle, 1, "VertexColor");
+    //glBindAttribLocation(programHandle, 1, "VertexColor");
 
     // Attach the shaders to the program object
     glAttachShader( programHandle, vertShader );

@@ -4,19 +4,20 @@
 #include "scene.h"
 
 #include "cookbookogl.h"
+#include "glslprogram.h"
 
-class SceneBasic_Layout : public Scene
+class SceneBasic_Attrib : public Scene
 {
 private:
     int width, height;
     GLuint vboHandles[2];
     GLuint vaoHandle;
+    GLSLProgram prog;
 
-    void linkMe(GLint vertShader, GLint fragShader);
-    void printActiveAttribs(GLuint handle);
+    void compileShaderProgram();
 
 public:
-    SceneBasic_Layout();
+    SceneBasic_Attrib();
 
     void initScene();
     void update( float t );
