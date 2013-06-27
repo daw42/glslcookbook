@@ -24,7 +24,7 @@ public:
 namespace GLSLShader {
     enum GLSLShaderType {
         VERTEX, FRAGMENT, GEOMETRY,
-        TESS_CONTROL, TESS_EVALUATION
+        TESS_CONTROL, TESS_EVALUATION, COMPUTE
     };
 };
 
@@ -36,6 +36,7 @@ private:
 
     int  getUniformLocation(const char * name );
     bool fileExists( const string & fileName );
+    string getExtension( const char * fileName );
 
 	// Make these private in order to make the object non-copyable
 	GLSLProgram( const GLSLProgram & other ) { }
@@ -45,6 +46,7 @@ public:
     GLSLProgram();
     ~GLSLProgram();
 
+	void   compileShader( const char *fileName ) throw (GLSLProgramException);
     void   compileShader( const char * fileName, GLSLShader::GLSLShaderType type ) throw (GLSLProgramException);
     void   compileShader( const string & source, GLSLShader::GLSLShaderType type, 
                           const char *fileName = NULL ) throw (GLSLProgramException);

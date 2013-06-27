@@ -122,8 +122,8 @@ void SceneBasic_UniformBlock::initScene()
 void SceneBasic_UniformBlock::compile()
 {
 	try {
-		prog.compileShader("shader/basic_uniformblock.vert", GLSLShader::VERTEX );
-		prog.compileShader("shader/basic_uniformblock.frag", GLSLShader::FRAGMENT );
+		prog.compileShader("shader/basic_uniformblock.vert");
+		prog.compileShader("shader/basic_uniformblock.frag");
 		prog.link();
 		prog.use();	
 	} catch (GLSLProgramException &e) {

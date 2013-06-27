@@ -62,8 +62,8 @@ void SceneBasic_Attrib::initScene()
 void SceneBasic_Attrib::compileShaderProgram()
 {
 	try {
-		prog.compileShader("shader/basic_layout.vert", GLSLShader::VERTEX );
-		prog.compileShader("shader/basic_layout.frag", GLSLShader::FRAGMENT );
+		prog.compileShader("shader/basic.vert" );
+		prog.compileShader("shader/basic.frag" );
 		prog.link();
 		prog.use();	
 	} catch (GLSLProgramException &e) {

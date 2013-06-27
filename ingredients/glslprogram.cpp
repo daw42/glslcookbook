@@ -9,6 +9,26 @@ using std::ios;
 #include <sstream>
 #include <sys/stat.h>
 
+namespace GLSLShaderInfo {
+	struct shader_file_extension {
+    	const char *ext;
+    	GLSLShader::GLSLShaderType type;
+    };
+    
+    struct shader_file_extension extensions[] = 
+    {
+    	{".vs", GLSLShader::VERTEX},
+     	{".vert", GLSLShader::VERTEX},
+    	{".gs", GLSLShader::GEOMETRY},
+    	{".geom", GLSLShader::GEOMETRY},
+    	{".tcs", GLSLShader::TESS_CONTROL},
+    	{".tes", GLSLShader::TESS_EVALUATION},
+    	{".fs", GLSLShader::FRAGMENT},
+    	{".frag", GLSLShader::FRAGMENT},
+    	{".cs", GLSLShader::COMPUTE}   
+    };
+}
+
 GLSLProgram::GLSLProgram() : handle(0), linked(false) { }
 
 GLSLProgram::~GLSLProgram() {
@@ -30,6 +50,42 @@ GLSLProgram::~GLSLProgram() {
 	glDeleteProgram (handle);
 	
 	delete[] shaderNames;
+}
+
+void GLSLProgram::compileShader( const char * fileName )
+                                 throw( GLSLProgramException ) {
+	int numExts = sizeof(GLSLShaderInfo::extensions) / sizeof(GLSLShaderInfo::shader_file_extension);
+	
+	// Check the file name's extension to determine the shader type
+	string ext = getExtension( fileName );
+	GLSLShader::GLSLShaderType type = GLSLShader::VERTEX;
+	bool matchFound = false;
+	for( int i = 0; i < numExts; i++ ) {
+		if( ext == GLSLShaderInfo::extensions[i].ext ) {
+			matchFound = true;
+			type = GLSLShaderInfo::extensions[i].type;
+			break;
+		}
+	}
+	
+	// If we didn't find a match, throw an exception
+	if( !matchFound ) {
+		string msg = "Unrecognized extension: " + ext;
+		throw GLSLProgramException(msg);
+	}
+	
+	// Pass the discovered shader type along
+	compileShader( fileName, type );
+}
+
+string GLSLProgram::getExtension( const char * name ) {
+	string nameStr(name);
+	
+	size_t loc = nameStr.find_last_of('.');
+	if( loc != string::npos ) {
+		return nameStr.substr(loc, string::npos);
+	}
+	return "";
 }
 
 void GLSLProgram::compileShader( const char * fileName,
@@ -332,7 +388,7 @@ void GLSLProgram::printActiveUniformBlocks() {
 			GLint nameBufSize = results[0] + 1;
 			char * name = new char[nameBufSize];
 			glGetProgramResourceName(handle, GL_UNIFORM, uniIndex, nameBufSize, NULL, name);
-			printf("%-5d %s (%s)\n", results[2], name, getTypeString(results[1]));
+			printf("    %s (%s)\n", name, getTypeString(results[1]));
 			delete [] name;
 		}
 		
