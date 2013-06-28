@@ -43,7 +43,6 @@ int GLUtils::checkForOpenGLError(const char * file, int line) {
         glErr = glGetError();
     }
     return retCode;
-
 }
 
 void GLUtils::dumpGLInfo(bool dumpExtensions) {
@@ -55,12 +54,14 @@ void GLUtils::dumpGLInfo(bool dumpExtensions) {
     GLint major, minor;
     glGetIntegerv(GL_MAJOR_VERSION, &major);
     glGetIntegerv(GL_MINOR_VERSION, &minor);
-
+	
+	printf("-------------------------------------------------------------\n");
     printf("GL Vendor    : %s\n", vendor);
     printf("GL Renderer  : %s\n", renderer);
     printf("GL Version   : %s\n", version);
     printf("GL Version   : %d.%d\n", major, minor);
     printf("GLSL Version : %s\n", glslVersion);
+    printf("-------------------------------------------------------------\n");
 
     if( dumpExtensions ) {
         GLint nExtensions;

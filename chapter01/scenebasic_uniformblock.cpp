@@ -66,6 +66,8 @@ void SceneBasic_UniformBlock::initScene()
 {
     compile();
     
+    std::cout << std::endl;
+    
     prog.printActiveUniformBlocks();
     
     initUniformBlockBuffer();
@@ -125,6 +127,7 @@ void SceneBasic_UniformBlock::compile()
 		prog.compileShader("shader/basic_uniformblock.vert");
 		prog.compileShader("shader/basic_uniformblock.frag");
 		prog.link();
+		prog.validate();
 		prog.use();	
 	} catch (GLSLProgramException &e) {
 		cerr << e.what() << endl;

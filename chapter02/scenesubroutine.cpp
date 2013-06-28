@@ -92,8 +92,8 @@ void SceneSubroutine::resize(int w, int h)
 void SceneSubroutine::compileAndLinkShader()
 {   
     try {
-    	prog.compileShader("shader/subroutine.vert", GLSLShader::VERTEX);
-    	prog.compileShader("shader/subroutine.frag", GLSLShader::FRAGMENT);
+    	prog.compileShader("shader/subroutine.vert");
+    	prog.compileShader("shader/subroutine.frag");
     	prog.link();
     	prog.validate();
     	prog.use();

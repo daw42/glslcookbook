@@ -38,9 +38,7 @@ void SceneTwoSide::initScene()
     prog.setUniform("Material.Shininess", 100.0f);
 }
 
-void SceneTwoSide::update( float t )
-{
-}
+void SceneTwoSide::update( float t ) { }
 
 void SceneTwoSide::render()
 {
@@ -79,8 +77,8 @@ void SceneTwoSide::resize(int w, int h)
 void SceneTwoSide::compileAndLinkShader()
 {
 	try {
-    	prog.compileShader("shader/twoside.vert", GLSLShader::VERTEX);
-    	prog.compileShader("shader/twoside.frag", GLSLShader::FRAGMENT);
+    	prog.compileShader("shader/twoside.vert");
+    	prog.compileShader("shader/twoside.frag");
     	prog.link();
     	prog.validate();
     	prog.use();

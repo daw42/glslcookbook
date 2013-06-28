@@ -217,9 +217,9 @@ void GLSLProgram::link() throw(GLSLProgramException)
 
         throw GLSLProgramException(string("Program link failed:\n") + logString);
     } else {
+    	uniformLocations.clear();
         linked = true;
-    }
-    
+    }    
 }
 
 void GLSLProgram::use() throw(GLSLProgramException)
@@ -287,8 +287,7 @@ void GLSLProgram::setUniform( const char *name, const vec2 & v)
 void GLSLProgram::setUniform( const char *name, const mat4 & m)
 {
     int loc = getUniformLocation(name);
-    if( loc >= 0 )
-    {
+    if( loc >= 0 ) {
         glUniformMatrix4fv(loc, 1, GL_FALSE, &m[0][0]);
     } else {
         printf("Uniform: %s not found.\n",name);
@@ -298,8 +297,7 @@ void GLSLProgram::setUniform( const char *name, const mat4 & m)
 void GLSLProgram::setUniform( const char *name, const mat3 & m)
 {
     int loc = getUniformLocation(name);
-    if( loc >= 0 )
-    {
+    if( loc >= 0 ) {
         glUniformMatrix3fv(loc, 1, GL_FALSE, &m[0][0]);
     } else {
         printf("Uniform: %s not found.\n",name);
@@ -309,8 +307,7 @@ void GLSLProgram::setUniform( const char *name, const mat3 & m)
 void GLSLProgram::setUniform( const char *name, float val )
 {
     int loc = getUniformLocation(name);
-    if( loc >= 0 )
-    {
+    if( loc >= 0 ) {
         glUniform1f(loc, val);
     } else {
         printf("Uniform: %s not found.\n",name);
@@ -320,8 +317,7 @@ void GLSLProgram::setUniform( const char *name, float val )
 void GLSLProgram::setUniform( const char *name, int val )
 {
     int loc = getUniformLocation(name);
-    if( loc >= 0 )
-    {
+    if( loc >= 0 ) {
         glUniform1i(loc, val);
     } else {
         printf("Uniform: %s not found.\n",name);
@@ -331,8 +327,7 @@ void GLSLProgram::setUniform( const char *name, int val )
 void GLSLProgram::setUniform( const char *name, bool val )
 {
     int loc = getUniformLocation(name);
-    if( loc >= 0 )
-    {
+    if( loc >= 0 ) {
         glUniform1i(loc, val);
     } else {
         printf("Uniform: %s not found.\n",name);
@@ -477,7 +472,14 @@ void GLSLProgram::validate() throw(GLSLProgramException)
 
 int GLSLProgram::getUniformLocation(const char * name )
 {
-    return glGetUniformLocation(handle, name);
+	std::map<string, int>::iterator pos;
+	pos = uniformLocations.find(name);
+	
+	if( pos == uniformLocations.end() ) {
+		uniformLocations[name] = glGetUniformLocation(handle, name);
+	}
+	
+    return uniformLocations[name];
 }
 
 bool GLSLProgram::fileExists( const string & fileName )

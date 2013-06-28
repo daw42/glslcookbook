@@ -75,8 +75,8 @@ void SceneADS::resize(int w, int h)
 void SceneADS::compileAndLinkShader()
 {
 	try {
-    	prog.compileShader("shader/phong.vert", GLSLShader::VERTEX);
-    	prog.compileShader("shader/phong.frag", GLSLShader::FRAGMENT);
+    	prog.compileShader("shader/phong.vert");
+    	prog.compileShader("shader/phong.frag");
     	prog.link();
     	prog.validate();
     	prog.use();

@@ -21,6 +21,8 @@ void SceneBasic_Uniform::initScene()
 {
     compile();
     
+    std::cout << std::endl;
+    
     prog.printActiveUniforms();
 
     /////////////////// Create the VBO ////////////////////

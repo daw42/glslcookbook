@@ -5,6 +5,7 @@
 
 #include <string>
 using std::string;
+#include <map>
 
 #include <glm/glm.hpp>
 using glm::vec2;
@@ -33,6 +34,7 @@ class GLSLProgram
 private:
     int  handle;
     bool linked;
+    std::map<string, int> uniformLocations;
 
     int  getUniformLocation(const char * name );
     bool fileExists( const string & fileName );
@@ -50,6 +52,7 @@ public:
     void   compileShader( const char * fileName, GLSLShader::GLSLShaderType type ) throw (GLSLProgramException);
     void   compileShader( const string & source, GLSLShader::GLSLShaderType type, 
                           const char *fileName = NULL ) throw (GLSLProgramException);
+                          
     void   link() throw (GLSLProgramException);
     void   validate() throw(GLSLProgramException);
     void   use() throw (GLSLProgramException);

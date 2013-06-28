@@ -11,13 +11,13 @@ using std::endl;
 
 #include "glutils.h"
 
-SceneBasic_Attrib::SceneBasic_Attrib()
-{
-}
+SceneBasic_Attrib::SceneBasic_Attrib() { }
 
 void SceneBasic_Attrib::initScene()
 {
 	compileShaderProgram();
+	
+	std::cout << std::endl;
 	
 	prog.printActiveAttribs();
 
@@ -30,7 +30,6 @@ void SceneBasic_Attrib::initScene()
         1.0f, 0.0f, 0.0f,
         0.0f, 1.0f, 0.0f,
         0.0f, 0.0f, 1.0f };
-
 
     // Create and populate the buffer objects
     GLuint vboHandles[2];
@@ -56,7 +55,6 @@ void SceneBasic_Attrib::initScene()
 
     glBindBuffer(GL_ARRAY_BUFFER, colorBufferHandle);
     glVertexAttribPointer( 1, 3, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL );
-
 }
 
 void SceneBasic_Attrib::compileShaderProgram()

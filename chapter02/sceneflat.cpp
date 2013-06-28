@@ -74,8 +74,8 @@ void SceneFlat::resize(int w, int h)
 void SceneFlat::compileAndLinkShader()
 {
 	try {
-    	prog.compileShader("shader/flat.vert", GLSLShader::VERTEX);
-    	prog.compileShader("shader/flat.frag", GLSLShader::FRAGMENT);
+    	prog.compileShader("shader/flat.vert");
+    	prog.compileShader("shader/flat.frag");
     	prog.link();
     	prog.validate();
     	prog.use();
