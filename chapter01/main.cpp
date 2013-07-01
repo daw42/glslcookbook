@@ -18,6 +18,13 @@ GLFWwindow *window;
 string parseCLArgs(int argc, char ** argv);
 void printHelpInfo(const char *);
 
+static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+    if (key == GLFW_KEY_SPACE && action == GLFW_RELEASE)
+        if( scene )
+        	scene->animate( ! (scene->animating()) );
+}
+
 void initializeGL() {
     glClearColor(0.5f,0.5f,0.5f,1.0f);
     scene->initScene();
@@ -59,6 +66,7 @@ int main(int argc, char *argv[])
 		exit( EXIT_FAILURE );
 	}
 	glfwMakeContextCurrent(window);
+	glfwSetKeyCallback(window, key_callback);
 
 	// Load the OpenGL functions.
 	if( ogl_LoadFunctions() == ogl_LOAD_FAILED ) {

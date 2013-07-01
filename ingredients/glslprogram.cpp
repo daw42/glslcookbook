@@ -335,13 +335,13 @@ void GLSLProgram::setUniform( const char *name, bool val )
 }
 
 void GLSLProgram::printActiveUniforms() {
-	GLint numAttribs = 0;
-	glGetProgramInterfaceiv( handle, GL_UNIFORM, GL_ACTIVE_RESOURCES, &numAttribs);
+	GLint numUniforms = 0;
+	glGetProgramInterfaceiv( handle, GL_UNIFORM, GL_ACTIVE_RESOURCES, &numUniforms);
 	
 	GLenum properties[] = {GL_NAME_LENGTH, GL_TYPE, GL_LOCATION, GL_BLOCK_INDEX};
 	
 	printf("Active uniforms:\n");
-	for( int i = 0; i < numAttribs; ++i ) {
+	for( int i = 0; i < numUniforms; ++i ) {
 		GLint results[3];
 		glGetProgramResourceiv(handle, GL_UNIFORM, i, 4, properties, 4, NULL, results);
 		

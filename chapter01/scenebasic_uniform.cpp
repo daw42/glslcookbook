@@ -78,8 +78,10 @@ void SceneBasic_Uniform::compile()
 
 void SceneBasic_Uniform::update( float t )
 {
-    angle += 1.0f;
-    if( angle >= 360.0f) angle -= 360.0f;
+	if( m_animate ) {
+    	angle += 1.0f;
+    	if( angle >= 360.0f) angle -= 360.0f;
+    }
 }
 
 void SceneBasic_Uniform::render()

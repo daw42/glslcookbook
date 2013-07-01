@@ -4,6 +4,8 @@
 class Scene
 {
 public:
+	Scene() : m_animate(true) { }
+	
     /**
       Load textures, initialize shaders, etc.
       */
@@ -24,6 +26,12 @@ public:
       Called when screen is resized
       */
     virtual void resize(int, int) = 0;
+    
+    void animate( bool value ) { m_animate = value; }
+    bool animating() { return m_animate; }
+    
+protected:
+	bool m_animate;
 };
 
 #endif // SCENE_H
