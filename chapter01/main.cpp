@@ -6,6 +6,7 @@
 #include "glutils.h"
 #include "scenebasic.h"
 #include "scenebasic_attrib.h"
+#include "scenebasic_debug.h"
 #include "scenebasic_uniform.h"
 #include "scenebasic_uniformblock.h"
 
@@ -57,6 +58,7 @@ int main(int argc, char *argv[])
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+	glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
 
 	// Open the window
 	string title = "Chapter 01 -- " + recipe;
@@ -105,6 +107,8 @@ string parseCLArgs(int argc, char ** argv) {
 		scene = new SceneBasic_Uniform();
 	} else if( recipe == "basic-uniform-block" ) {
 		scene = new SceneBasic_UniformBlock();
+	} else if( recipe == "basic-debug" ) {
+		scene = new SceneBasic_Debug();
 	} else {
 		printf("Unknown recipe: %s\n", recipe.c_str());
 		exit(EXIT_FAILURE);
@@ -118,6 +122,7 @@ void printHelpInfo(const char * exeFile) {
 	printf("Recipe names: \n");
 	printf("  basic              : Basic scene.\n");
 	printf("  basic-attrib       : Prints active attributes.\n");
+	printf("  basic-debug        : Display debug messages.\n");
 	printf("  basic-uniform      : Basic scene with a uniform variable.\n");
 	printf("  basic-uniform-block: Scene with a uniform block variable.\n");
 }

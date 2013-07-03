@@ -1,12 +1,12 @@
-#ifndef SCENEBASIC_ATTRIB_H
-#define SCENEBASIC_ATTRIB_H
+#ifndef SCENEBASIC_DEBUG_H
+#define SCENEBASIC_DEBUG_H
 
 #include "scene.h"
 
 #include "cookbookogl.h"
 #include "glslprogram.h"
 
-class SceneBasic_Attrib : public Scene
+class SceneBasic_Debug : public Scene
 {
 private:
     int width, height;
@@ -17,7 +17,7 @@ private:
     void compileShaderProgram();
 
 public:
-    SceneBasic_Attrib();
+    SceneBasic_Debug();
 
     void initScene();
     void update( float t );
@@ -25,4 +25,4 @@ public:
     void resize(int, int);
 };
 
-#endif // SCENEBASIC_ATTRIB_H
+#endif // SCENEBASIC_DEBUG_H

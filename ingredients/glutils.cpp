@@ -3,10 +3,95 @@
 #include "cookbookogl.h"
 
 #include <cstdio>
+#include <string>
+using std::string;
 
-GLUtils::GLUtils() {}
+namespace GLUtils {
 
-int GLUtils::checkForOpenGLError(const char * file, int line) {
+void debugCallback( GLenum source, GLenum type, GLuint id,
+	GLenum severity, GLsizei length, const GLchar * msg, void * param ) {
+	
+	string sourceStr;
+	switch(source) {
+	case GL_DEBUG_SOURCE_WINDOW_SYSTEM:
+		sourceStr = "WindowSys";
+		break;
+	case GL_DEBUG_SOURCE_APPLICATION:
+		sourceStr = "App";
+		break;
+	case GL_DEBUG_SOURCE_API:
+		sourceStr = "OpenGL";
+		break;
+	case GL_DEBUG_SOURCE_SHADER_COMPILER:
+		sourceStr = "ShaderCompiler";
+		break;
+	case GL_DEBUG_SOURCE_THIRD_PARTY:
+		sourceStr = "3rdParty";
+		break;
+	case GL_DEBUG_SOURCE_OTHER:
+		sourceStr = "Other";
+		break;
+	default:
+		sourceStr = "Unknown";
+	}
+	
+	string typeStr;
+	switch(type) {
+	case GL_DEBUG_TYPE_ERROR:
+		typeStr = "Error";
+		break;
+	case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR:
+		typeStr = "Deprecated";
+		break;
+	case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR:
+		typeStr = "Undefined";
+		break;
+	case GL_DEBUG_TYPE_PORTABILITY:
+		typeStr = "Portability";
+		break;
+	case GL_DEBUG_TYPE_PERFORMANCE:
+		typeStr = "Performance";
+		break;
+	case GL_DEBUG_TYPE_MARKER:
+		typeStr = "Marker";
+		break;
+	case GL_DEBUG_TYPE_PUSH_GROUP:
+		typeStr = "PushGrp";
+		break;
+	case GL_DEBUG_TYPE_POP_GROUP:
+		typeStr = "PopGrp";
+		break;
+	case GL_DEBUG_TYPE_OTHER:
+		typeStr = "Other";
+		break;
+	default:
+		typeStr = "Unknown";
+	}
+	
+	string sevStr;
+	switch(severity) {
+	case GL_DEBUG_SEVERITY_HIGH:
+		sevStr = "HIGH";
+		break;
+	case GL_DEBUG_SEVERITY_MEDIUM:
+		sevStr = "MED";
+		break;
+	case GL_DEBUG_SEVERITY_LOW:
+		sevStr = "LOW";
+		break;
+	case GL_DEBUG_SEVERITY_NOTIFICATION:
+		sevStr = "NOTIFY";
+		break;
+	default:
+		sevStr = "UNK";
+	}
+	
+	printf("%s:%s[%s](%d): %s\n", sourceStr.c_str(), typeStr.c_str(), sevStr.c_str(), 
+		id, msg);		
+}
+
+
+int checkForOpenGLError(const char * file, int line) {
     //
     // Returns 1 if an OpenGL error occurred, 0 otherwise.
     //
@@ -45,7 +130,7 @@ int GLUtils::checkForOpenGLError(const char * file, int line) {
     return retCode;
 }
 
-void GLUtils::dumpGLInfo(bool dumpExtensions) {
+void dumpGLInfo(bool dumpExtensions) {
     const GLubyte *renderer = glGetString( GL_RENDERER );
     const GLubyte *vendor = glGetString( GL_VENDOR );
     const GLubyte *version = glGetString( GL_VERSION );
@@ -71,3 +156,5 @@ void GLUtils::dumpGLInfo(bool dumpExtensions) {
         }
     }
 }
+
+} // namespace GLUtils
