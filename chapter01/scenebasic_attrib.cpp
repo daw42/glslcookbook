@@ -15,6 +15,11 @@ SceneBasic_Attrib::SceneBasic_Attrib() { }
 
 void SceneBasic_Attrib::initScene()
 {
+	glDebugMessageCallback(GLUtils::debugCallback, NULL);
+	glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, NULL, GL_TRUE);
+	glDebugMessageInsert(GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_MARKER, 0, 
+		GL_DEBUG_SEVERITY_NOTIFICATION, -1 , "Start debugging");
+
 	compileShaderProgram();
 	
 	std::cout << std::endl;
@@ -50,11 +55,21 @@ void SceneBasic_Attrib::initScene()
     glEnableVertexAttribArray(0);  // Vertex position
     glEnableVertexAttribArray(1);  // Vertex color
 
-    glBindBuffer(GL_ARRAY_BUFFER, positionBufferHandle);
-    glVertexAttribPointer( 0, 3, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL );
+//    glBindBuffer(GL_ARRAY_BUFFER, positionBufferHandle);
+//    glVertexAttribPointer( 0, 3, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL );
 
-    glBindBuffer(GL_ARRAY_BUFFER, colorBufferHandle);
-    glVertexAttribPointer( 1, 3, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL );
+//    glBindBuffer(GL_ARRAY_BUFFER, colorBufferHandle);
+//    glVertexAttribPointer( 1, 3, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL );
+
+	glBindVertexBuffer(0, positionBufferHandle, 0, sizeof(GLfloat)*3);
+	glBindVertexBuffer(1, colorBufferHandle, 0, sizeof(GLfloat)*3);
+	
+	glVertexAttribFormat(0, 3, GL_FLOAT, GL_FALSE, 0);
+	glVertexAttribBinding(0, 0);
+	glVertexAttribFormat(1, 3, GL_FLOAT, GL_FALSE, 0);    
+    glVertexAttribBinding(1, 1);
+    
+    glBindVertexArray(0);
 }
 
 void SceneBasic_Attrib::compileShaderProgram()

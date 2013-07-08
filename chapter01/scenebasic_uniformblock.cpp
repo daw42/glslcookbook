@@ -59,7 +59,10 @@ void SceneBasic_UniformBlock::initUniformBlockBuffer()
     glBufferData( GL_UNIFORM_BUFFER, blockSize, blockBuffer, GL_DYNAMIC_DRAW );
 
     // Bind the buffer object to the uniform block
-    glBindBufferBase( GL_UNIFORM_BUFFER, blockIndex, uboHandle );
+    glBindBufferBase( GL_UNIFORM_BUFFER, 1, uboHandle );
+    
+    // We don't need this if we specify the binding within the shader
+//    glUniformBlockBinding(programHandle, blockIndex, 0);
 }
 
 void SceneBasic_UniformBlock::initScene()

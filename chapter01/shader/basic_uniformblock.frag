@@ -1,9 +1,9 @@
-#version 400
+#version 430
 
 in vec3 TexCoord;
 layout (location = 0) out vec4 FragColor;
 
-uniform BlobSettings {
+layout (binding = 1) uniform BlobSettings {
   vec4 InnerColor;
   vec4 OuterColor;
   float RadiusInner;
