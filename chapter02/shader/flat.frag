@@ -1,4 +1,4 @@
-#version 400
+#version 430
 
 flat in vec3 LightIntensity;
 

@@ -3,7 +3,7 @@
 #include <cstdio>
 #include <cstdlib>
 
-#include "bmpreader.h"
+#include "tgaio.h"
 
 #include "glutils.h"
 #include "defines.h"
@@ -33,16 +33,13 @@ void SceneMultiTex::initScene()
 
     prog.setUniform("Light.Intensity", vec3(1.0f,1.0f,1.0f) );
 
-    GLuint w,h;
     // Load brick texture file into channel 0
-    const char * texName = "../media/texture/brick1.bmp";
     glActiveTexture(GL_TEXTURE0);
-    BMPReader::loadTex(texName, w, h);
+    TGAIO::loadTex("../media/texture/brick1.tga");
 
     // Load moss texture file into channel 1
-    texName = "../media/texture/moss.bmp";
     glActiveTexture(GL_TEXTURE1);
-    BMPReader::loadTex(texName, w, h);
+    TGAIO::loadTex("../media/texture/moss.tga");
 
     prog.setUniform("BrickTex", 0);
     prog.setUniform("MossTex", 1);

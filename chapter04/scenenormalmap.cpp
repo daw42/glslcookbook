@@ -3,7 +3,7 @@
 #include <cstdio>
 #include <cstdlib>
 
-#include "bmpreader.h"
+#include "tgaio.h"
 
 #include "glutils.h"
 #include "defines.h"
@@ -34,17 +34,13 @@ void SceneNormalMap::initScene()
 
     prog.setUniform("Light.Intensity", vec3(0.9f,0.9f,0.9f) );
 
-    GLuint w,h;
-
     // Load diffuse texture
-    const char * texName = "../media/texture/ogre_diffuse.bmp";
-	glActiveTexture(GL_TEXTURE0);
-	BMPReader::loadTex(texName, w, h);
+    glActiveTexture(GL_TEXTURE0);
+    TGAIO::loadTex("../media/texture/ogre_diffuse.tga");
 
     // Load normal map
-    texName = "../media/texture/ogre_normalmap.bmp";
     glActiveTexture(GL_TEXTURE1);
-    BMPReader::loadTex(texName, w, h);
+    TGAIO::loadTex("../media/texture/ogre_normalmap.tga");
     
     prog.setUniform("ColorTex", 0);
     prog.setUniform("NormalMapTex", 1);
@@ -52,12 +48,14 @@ void SceneNormalMap::initScene()
 
 void SceneNormalMap::update( float t )
 {
-	float deltaT = t - tPrev;
-	if(tPrev == 0.0f) deltaT = 0.0f;
-	tPrev = t;
-
-    angle += rotSpeed * deltaT;
-    if( angle > TWOPI_F) angle -= TWOPI_F;
+    float deltaT = t - tPrev;
+    if(tPrev == 0.0f) deltaT = 0.0f;
+    tPrev = t;
+    
+    if( this->m_animate) {
+	angle += rotSpeed * deltaT;
+	if( angle > TWOPI_F) angle -= TWOPI_F;
+    }
 }
 
 void SceneNormalMap::render()
@@ -94,9 +92,9 @@ void SceneNormalMap::resize(int w, int h)
 
 void SceneNormalMap::compileAndLinkShader()
 {
-	try {
-		prog.compileShader("shader/normalmap.vs",GLSLShader::VERTEX);
-		prog.compileShader("shader/normalmap.fs",GLSLShader::FRAGMENT);
+    try {
+	prog.compileShader("shader/normalmap.vs");
+	prog.compileShader("shader/normalmap.fs");
     	prog.link();
     	prog.use();
     } catch(GLSLProgramException & e) {

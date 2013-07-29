@@ -3,7 +3,7 @@
 #include <cstdio>
 #include <cstdlib>
 
-#include "bmpreader.h"
+#include "tgaio.h"
 
 #include "glutils.h"
 #include "defines.h"
@@ -34,28 +34,28 @@ void SceneAlphaTest::initScene()
 
     GLuint w, h;
 
-    // Load brick texture file
-    const char * texName = "../media/texture/cement.bmp";
+    // Load cement texture file
     glActiveTexture(GL_TEXTURE0);
-    BMPReader::loadTex(texName, w, h);
+    TGAIO::loadTex("../media/texture/cement.tga");
 
     // Load moss texture file
-    texName = "../media/texture/moss.bmp";
     glActiveTexture(GL_TEXTURE1);
-    BMPReader::loadTex(texName, w, h);
+    TGAIO::loadTex("../media/texture/moss.tga");
 
-	prog.setUniform("BaseTex", 0);
+    prog.setUniform("BaseTex", 0);
     prog.setUniform("AlphaTex", 1);
 }
 
 void SceneAlphaTest::update( float t )
 {
-	float deltaT = t - tPrev;
-	if(tPrev == 0.0f) deltaT = 0.0f;
-	tPrev = t;
-
-    angle += rotSpeed * deltaT;
-    if( angle > TWOPI_F) angle -= TWOPI_F;
+    float deltaT = t - tPrev;
+    if(tPrev == 0.0f) deltaT = 0.0f;
+    tPrev = t;
+	
+    if( this->m_animate ) {
+	angle += rotSpeed * deltaT;
+	if( angle > TWOPI_F) angle -= TWOPI_F;
+    }
 }
 
 void SceneAlphaTest::render()

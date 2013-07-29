@@ -21,6 +21,12 @@ void printHelpInfo(const char *);
 
 void initializeGL() {
     glClearColor(0.5f,0.5f,0.5f,1.0f);
+    
+    glDebugMessageCallback(GLUtils::debugCallback, NULL);
+    glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, NULL, GL_TRUE);
+    glDebugMessageInsert(GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_MARKER, 0, 
+		GL_DEBUG_SEVERITY_NOTIFICATION, -1 , "Start debugging");
+
     scene->initScene();
 }
 
@@ -51,6 +57,7 @@ int main(int argc, char *argv[])
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+	glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
 
 	// Open the window
 	string title = "Chapter 03 -- " + recipe;
@@ -114,10 +121,10 @@ string parseCLArgs(int argc, char ** argv) {
 void printHelpInfo(const char * exeFile) {
 	printf("Usage: %s recipe-name\n\n", exeFile);
 	printf("Recipe names: \n");
-	printf("  directional : description...\n");
-	printf("  fog         : description...\n");
-	printf("  multi-light : description...\n");
-	printf("  per-frag    : description...\n");
-	printf("  spot        : description...\n");
-	printf("  toon        : description...\n");
+	printf("  directional : Directional light source\n");
+	printf("  fog         : Fog\n");
+	printf("  multi-light : Multiple light sources\n");
+	printf("  per-frag    : Per-fragment shading\n");
+	printf("  spot        : Spot light\n");
+	printf("  toon        : Toon shading\n");
 }

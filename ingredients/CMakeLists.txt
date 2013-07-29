@@ -8,6 +8,8 @@ set( ingredients_SOURCES vboteapotpatch.cpp
 	glslprogram.cpp 
 	vbocube.cpp 
 	vboplane.cpp 
-	bmpreader.cpp gl_core_4_3.c)
+	bmpreader.cpp
+	tgaio.cpp
+	gl_core_4_3.c)
 
 add_library( ingredients STATIC ${ingredients_SOURCES} )

@@ -8,7 +8,7 @@ using std::cout;
 using std::cerr;
 using std::endl;
 
-#include "bmpreader.h"
+#include "tgaio.h"
 
 #include "glutils.h"
 #include "defines.h"
@@ -54,12 +54,12 @@ void SceneRefractCube::loadCubeMap( const char * baseFileName )
         GL_TEXTURE_CUBE_MAP_POSITIVE_Z, GL_TEXTURE_CUBE_MAP_NEGATIVE_Z
     };
 
+    GLint w, h;
     for( int i = 0; i < 6; i++ ) {
-		string texName = string(baseFileName) + "_" + suffixes[i] + ".bmp";
-		GLuint w, h;
-		GLubyte * data = BMPReader::load(texName.c_str(), w, h);
-		glTexImage2D(targets[i], 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-		delete [] data;
+	string texName = string(baseFileName) + "_" + suffixes[i] + ".tga";
+	GLubyte * data = TGAIO::read(texName.c_str(), w, h);
+	glTexImage2D(targets[i], 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+	delete [] data;
     }
 
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -67,7 +67,8 @@ void SceneRefractCube::loadCubeMap( const char * baseFileName )
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAX_LEVEL, 0);
+    
     prog.setUniform("CubeMapTex", 0);
 }
 

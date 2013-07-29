@@ -8,7 +8,7 @@ using std::cout;
 using std::cerr;
 using std::endl;
 
-#include "bmpreader.h"
+#include "tgaio.h"
 
 #include "glutils.h"
 #include "defines.h"
@@ -41,13 +41,11 @@ void SceneProjTex::initScene()
     mat4 projScaleTrans = glm::translate(vec3(0.5f)) * glm::scale(vec3(0.5f));
     prog.setUniform("ProjectorMatrix", projScaleTrans * projProj * projView);
 
-    GLuint w, h;
     // Load texture file
-    const char * texName = "../media/texture/flower.bmp";
     glActiveTexture(GL_TEXTURE0);
-    BMPReader::loadTex(texName, w, h);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+    TGAIO::loadTex("../media/texture/flower.tga");
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
     
     prog.setUniform("ProjectorTex", 0);
     prog.setUniform("Light.Position", vec4(0.0f,0.0f,0.0f,1.0f) );

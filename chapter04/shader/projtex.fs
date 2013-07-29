@@ -1,4 +1,4 @@
-#version 400
+#version 430
 
 in vec3 EyeNormal;       // Normal in eye coordinates
 in vec4 EyePosition;     // Position in eye coordinates

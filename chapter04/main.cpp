@@ -21,8 +21,21 @@ GLFWwindow *window;
 string parseCLArgs(int argc, char ** argv);
 void printHelpInfo(const char *);
 
+static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+    if (key == GLFW_KEY_SPACE && action == GLFW_RELEASE)
+        if( scene )
+        	scene->animate( ! (scene->animating()) );
+}
+
 void initializeGL() {
     glClearColor(0.5f,0.5f,0.5f,1.0f);
+    
+    glDebugMessageCallback(GLUtils::debugCallback, NULL);
+    glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, NULL, GL_TRUE);
+    glDebugMessageInsert(GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_MARKER, 0, 
+		GL_DEBUG_SEVERITY_NOTIFICATION, -1 , "Start debugging");
+	
     scene->initScene();
 }
 
@@ -53,6 +66,7 @@ int main(int argc, char *argv[])
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+	glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
 
 	// Open the window
 	string title = "Chapter 4 -- " + recipe;
@@ -62,6 +76,7 @@ int main(int argc, char *argv[])
 		exit( EXIT_FAILURE );
 	}
 	glfwMakeContextCurrent(window);
+	glfwSetKeyCallback(window, key_callback);
 
 	// Load the OpenGL functions.
 	if( ogl_LoadFunctions() == ogl_LOAD_FAILED ) {
@@ -118,14 +133,14 @@ string parseCLArgs(int argc, char ** argv) {
 }
 
 void printHelpInfo(const char * exeFile) {
-	printf("Usage: %s recipe-name\n\n", exeFile);
-	printf("Recipe names: \n");
-	printf("  alpha-test    : description...\n");
-	printf("  multi-tex     : description...\n");
-	printf("  normal-map    : description...\n");
-	printf("  proj-tex      : description...\n");
-	printf("  reflect-cube  : description...\n");
-	printf("  refract-cube  : description...\n");
-	printf("  render-to-tex : description...\n");
-	printf("  texture       : description...\n");
+    printf("Usage: %s recipe-name\n\n", exeFile);
+    printf("Recipe names: \n");
+    printf("  alpha-test    : Discard fragments based on an alpha test.\n");
+    printf("  multi-tex     : Multiple textures\n");
+    printf("  normal-map    : Normal map\n");
+    printf("  proj-tex      : Projected texture\n");
+    printf("  reflect-cube  : Reflection with a cube map\n");
+    printf("  refract-cube  : Refraction with a cube map\n");
+    printf("  render-to-tex : Render to a texture using framebuffer objects\n");
+    printf("  texture       : Basic texture mapping\n");
 }

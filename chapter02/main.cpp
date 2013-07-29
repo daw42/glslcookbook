@@ -21,6 +21,12 @@ void printHelpInfo(const char *);
 
 void initializeGL() {
     glClearColor(0.5f,0.5f,0.5f,1.0f);
+    
+    glDebugMessageCallback(GLUtils::debugCallback, NULL);
+    glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, NULL, GL_TRUE);
+    glDebugMessageInsert(GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_MARKER, 0, 
+		GL_DEBUG_SEVERITY_NOTIFICATION, -1 , "Start debugging");
+    
     scene->initScene();
 }
 
@@ -51,6 +57,7 @@ int main(int argc, char *argv[])
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+	glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
 
 	// Open the window
 	string title = "Chapter 02 -- " + recipe;
@@ -114,10 +121,10 @@ string parseCLArgs(int argc, char ** argv) {
 void printHelpInfo(const char * exeFile) {
 	printf("Usage: %s recipe-name\n\n", exeFile);
 	printf("Recipe names: \n");
-	printf("  ads          : description...\n");
-	printf("  diffuse      : description...\n");
-	printf("  discard      : description...\n");
-	printf("  flat         : description...\n");
-	printf("  subroutine   : description...\n");
-	printf("  two-side     : description...\n");
+	printf("  ads          : Ambient, diffuse, and specular shading.\n");
+	printf("  diffuse      : Diffuse shading only\n");
+	printf("  discard      : Example of discarding fragments\n");
+	printf("  flat         : Flat shading\n");
+	printf("  subroutine   : Using a shader subroutine\n");
+	printf("  two-side     : Two-sided lighting\n");
 }

@@ -1,4 +1,4 @@
-#version 400
+#version 430
 
 in vec3 LightDir;
 in vec2 TexCoord;

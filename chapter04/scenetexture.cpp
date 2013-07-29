@@ -6,7 +6,7 @@
 using std::endl;
 using std::cerr;
 
-#include "bmpreader.h"
+#include "tgaio.h"
 #include "glutils.h"
 #include "defines.h"
 
@@ -34,11 +34,21 @@ void SceneTexture::initScene()
     prog.setUniform("Light.Intensity", vec3(1.0f,1.0f,1.0f) );
 
     // Load texture file
-	const char * texName = "../media/texture/brick1.bmp";
-	GLuint w, h;
-	glActiveTexture(GL_TEXTURE0);
-	GLuint tid = BMPReader::loadTex(texName, w, h);
+    GLint w, h;
+    glActiveTexture(GL_TEXTURE0);
+    GLubyte * data = TGAIO::read("../media/texture/brick1.tga", w, h);
 
+    GLuint texID;
+    glGenTextures(1, &texID);
+
+    glBindTexture(GL_TEXTURE_2D, texID);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
+
+    delete [] data;
+    
     prog.setUniform("Tex1", 0);
 }
 
