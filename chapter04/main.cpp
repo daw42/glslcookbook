@@ -11,6 +11,7 @@
 #include "scenereflectcube.h"
 #include "scenerefractcube.h"
 #include "scenerendertotex.h"
+#include "scenesamplerobj.h"
 
 #define WIN_WIDTH 800
 #define WIN_HEIGHT 600
@@ -122,6 +123,8 @@ string parseCLArgs(int argc, char ** argv) {
 		scene = new SceneRefractCube();
 	} else if( recipe == "render-to-tex" ) {
 		scene = new SceneRenderToTex();
+	} else if( recipe == "sampler-obj" ) {
+		scene = new SceneSamplerObj();
 	} else if( recipe == "texture" ) {
 		scene = new SceneTexture();
 	} else {
@@ -142,5 +145,6 @@ void printHelpInfo(const char * exeFile) {
     printf("  reflect-cube  : Reflection with a cube map\n");
     printf("  refract-cube  : Refraction with a cube map\n");
     printf("  render-to-tex : Render to a texture using framebuffer objects\n");
+    printf("  sampler-obj   : Sampler objects \n");
     printf("  texture       : Basic texture mapping\n");
 }
