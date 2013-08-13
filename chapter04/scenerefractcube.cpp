@@ -69,7 +69,6 @@ void SceneRefractCube::loadCubeMap( const char * baseFileName )
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAX_LEVEL, 0);
     
-    prog.setUniform("CubeMapTex", 0);
 }
 
 void SceneRefractCube::update( float t )

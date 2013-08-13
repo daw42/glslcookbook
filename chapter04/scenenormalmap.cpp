@@ -42,8 +42,6 @@ void SceneNormalMap::initScene()
     glActiveTexture(GL_TEXTURE1);
     TGAIO::loadTex("../media/texture/ogre_normalmap.tga");
     
-    prog.setUniform("ColorTex", 0);
-    prog.setUniform("NormalMapTex", 1);
 }
 
 void SceneNormalMap::update( float t )

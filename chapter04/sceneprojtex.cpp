@@ -47,7 +47,6 @@ void SceneProjTex::initScene()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
     
-    prog.setUniform("ProjectorTex", 0);
     prog.setUniform("Light.Position", vec4(0.0f,0.0f,0.0f,1.0f) );
     prog.setUniform("Light.Intensity", vec3(1.0f,1.0f,1.0f));
 }

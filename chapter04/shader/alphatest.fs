@@ -4,8 +4,8 @@ in vec3 Position;
 in vec3 Normal;
 in vec2 TexCoord;
 
-uniform sampler2D BaseTex;
-uniform sampler2D AlphaTex;
+layout(binding=0) uniform sampler2D BaseTex;
+layout(binding=1) uniform sampler2D AlphaTex;
 
 struct LightInfo {
   vec4 Position;  // Light position in eye coords.

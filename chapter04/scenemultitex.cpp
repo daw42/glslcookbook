@@ -40,9 +40,6 @@ void SceneMultiTex::initScene()
     // Load moss texture file into channel 1
     glActiveTexture(GL_TEXTURE1);
     TGAIO::loadTex("../media/texture/moss.tga");
-
-    prog.setUniform("BrickTex", 0);
-    prog.setUniform("MossTex", 1);
 }
 
 void SceneMultiTex::update( float t ) { }

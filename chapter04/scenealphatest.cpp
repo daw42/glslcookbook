@@ -42,8 +42,6 @@ void SceneAlphaTest::initScene()
     glActiveTexture(GL_TEXTURE1);
     TGAIO::loadTex("../media/texture/moss.tga");
 
-    prog.setUniform("BaseTex", 0);
-    prog.setUniform("AlphaTex", 1);
 }
 
 void SceneAlphaTest::update( float t )

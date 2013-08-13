@@ -48,8 +48,7 @@ void SceneTexture::initScene()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
 
     delete [] data;
-    
-    prog.setUniform("Tex1", 0);
+
 }
 
 void SceneTexture::update( float t )

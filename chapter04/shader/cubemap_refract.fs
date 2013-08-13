@@ -3,7 +3,7 @@
 in vec3 ReflectDir;
 in vec3 RefractDir;
 
-uniform samplerCube CubeMapTex;
+layout(binding=0) uniform samplerCube CubeMapTex;
 
 uniform bool DrawSkyBox;
 
