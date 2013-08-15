@@ -8,6 +8,8 @@
 #include "sceneedge.h"
 #include "scenegamma.h"
 #include "scenemsaa.h"
+#include "scenetonemap.h"
+#include "scenehdrbloom.h"
 
 #define WIN_WIDTH 800
 #define WIN_HEIGHT 600
@@ -103,6 +105,10 @@ string parseCLArgs(int argc, char ** argv) {
 		scene = new SceneGamma();
 	} else if( recipe == "msaa" ) {
 		scene = new SceneMsaa();
+        } else if( recipe == "tone-map" ) {
+            scene = new SceneToneMap();
+        } else if( recipe == "hdr-bloom" ) {
+          scene = new SceneHdrBloom();
 	} else {
 		printf("Unknown recipe: %s\n", recipe.c_str());
 		exit(EXIT_FAILURE);
@@ -120,5 +126,7 @@ void printHelpInfo(const char * exeFile) {
 	printf("  edge     : description...\n");
 	printf("  gamma    : description...\n");
 	printf("  msaa     : description...\n");
+        printf("  tone-map : tone mapping example.\n");
+        printf("  hdr-bloom: bloom example with HDR tone mapping.\n");
 }
 

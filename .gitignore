@@ -6,6 +6,7 @@
 *.pdb
 *.ilk
 *.exe
+*.swp
 
 # cmake build/output
 CMakeFiles/

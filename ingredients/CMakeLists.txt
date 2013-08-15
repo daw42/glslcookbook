@@ -8,6 +8,7 @@ set( ingredients_SOURCES vboteapotpatch.cpp
 	glslprogram.cpp 
 	vbocube.cpp 
 	vboplane.cpp 
+        vbosphere.cpp
 	bmpreader.cpp
 	tgaio.cpp
 	gl_core_4_3.c)
