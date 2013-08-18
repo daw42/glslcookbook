@@ -101,7 +101,6 @@ vec4 pass3()
          sum += texture( BlurTex1, TexCoord - vec2(0.0,PixOffset[i]) * dy ) * Weight[i];
     }
     return sum;
-   // return 0.6 * texture(BlurTex1, TexCoord);
 }
 
 // Second blur (read from BlurTex2, write to BlurTex1) 
@@ -158,7 +157,7 @@ vec4 pass5()
    //    return texture( BlurTex1, vec2(gl_FragCoord.x / blurSize.x,
    //    gl_FragCoord.y / blurSize.y ) );
   //  else
-     return toneMapColor /*+ blurTex*/;
+     return toneMapColor + blurTex;
 }
 
 void main()

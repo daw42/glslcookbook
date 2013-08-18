@@ -72,6 +72,7 @@ public:
     void   setUniform( const char *name, float val );
     void   setUniform( const char *name, int val );
     void   setUniform( const char *name, bool val );
+    void   setUniform( const char *name, GLuint val );
 
     void   printActiveUniforms();
     void   printActiveUniformBlocks();

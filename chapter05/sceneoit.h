@@ -1,32 +1,41 @@
-#ifndef SCENEBLOOM_H
-#define SCENEBLOOM_H
+#ifndef SCENEOIT_H
+#define SCENEOIT_H
 
 #include "scene.h"
 #include "glslprogram.h"
 #include "vboplane.h"
 #include "vbocube.h"
-#include "vbotorus.h"
-#include "vboteapot.h"
+#include "vbosphere.h"
 
 #include "cookbookogl.h"
 
 #include <glm/glm.hpp>
 using glm::mat4;
 
-class SceneBloom : public Scene
+enum BufferNames {
+  COUNTER_BUFFER = 0,
+  LINKED_LIST_BUFFER
+};
+
+struct ListNode {
+  glm::vec4 color;
+  GLfloat depth;
+  GLuint next;
+};
+
+class SceneOit : public Scene
 {
 private:
     GLSLProgram prog;
 
     int width, height;
-    GLuint fsQuad, pass1Index, pass2Index, pass3Index, pass4Index;
-    GLuint renderFBO, fbo1, fbo2;
-    GLuint renderTex, tex1, tex2;
+    GLuint buffers[2], fsQuad, headPtrTex;
+    GLuint pass1Index, pass2Index;
+    GLuint headPtrTexSize;
+    GLuint *headPtrClearBuf;
 
-    VBOPlane *plane;
-    VBOTorus *torus;
-    VBOTeapot *teapot;
     VBOCube *cube;
+    VBOSphere *sphere;
 
     mat4 model;
     mat4 view;
@@ -36,19 +45,20 @@ private:
     void setMatrices();
     void compileAndLinkShader();
     void setupFBO();
+    void drawScene();
+    void initShaderStorage();
     void pass1();
     void pass2();
-    void pass3();
-    void pass4();
-    float gauss(float, float);
+    void clearBuffers();
 
 public:
-    SceneBloom();
+    SceneOit();
 
     void initScene();
     void update( float t );
     void render();
     void resize(int, int);
+
 };
 
-#endif // SCENEBLOOM_H
+#endif // SCENEOIT_H

@@ -324,6 +324,16 @@ void GLSLProgram::setUniform( const char *name, int val )
     }
 }
 
+void GLSLProgram::setUniform( const char *name, GLuint val )
+{
+  int loc = getUniformLocation(name);
+  if( loc >=0 ) {
+    glUniform1ui(loc, val);
+  } else {
+    printf("Uniform %s not found.\n", name);
+  }
+}
+
 void GLSLProgram::setUniform( const char *name, bool val )
 {
     int loc = getUniformLocation(name);

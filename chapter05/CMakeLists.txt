@@ -1,5 +1,4 @@
 set( chapter05_SOURCES 	
-	scenebloom.cpp
 	main.cpp
 	sceneblur.cpp
 	scenedeferred.cpp
@@ -7,7 +6,8 @@ set( chapter05_SOURCES
 	scenegamma.cpp
 	scenemsaa.cpp
         scenetonemap.cpp
-        scenehdrbloom.cpp)
+        scenehdrbloom.cpp
+        sceneoit.cpp)
 
 add_executable( chapter05 ${chapter05_SOURCES} )
 target_link_libraries( chapter05 ${GLSLCOOKBOOK_LIBS} )
