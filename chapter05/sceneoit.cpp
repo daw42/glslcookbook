@@ -16,12 +16,7 @@ using glm::vec3;
 
 SceneOit::SceneOit() : width(800), height(600), angle(0.0f), tPrev(0.0f), 
   rotSpeed(PI/8.0)
-{ 
-  headPtrTexSize = width * height * sizeof(GLuint);
-  headPtrClearBuf = new GLuint[headPtrTexSize];
-  for( int i = 0; i < headPtrTexSize; i++ )
-    headPtrClearBuf[i] = 0;
-}
+{ }
 
 void SceneOit::initScene()
 {
@@ -124,9 +119,10 @@ void SceneOit::clearBuffers() {
   glBindBufferBase(GL_ATOMIC_COUNTER_BUFFER, 0, buffers[COUNTER_BUFFER] );
   glBufferSubData(GL_ATOMIC_COUNTER_BUFFER, 0, sizeof(GLuint), &zero);
 
+  glBindBuffer(GL_PIXEL_UNPACK_BUFFER, clearBuf);
   glBindTexture(GL_TEXTURE_2D, headPtrTex);
   glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, GL_RED_INTEGER,
-      GL_UNSIGNED_INT, headPtrClearBuf);
+      GL_UNSIGNED_INT, NULL);
 }
 
 void SceneOit::setMatrices()
@@ -234,4 +230,16 @@ void SceneOit::initShaderStorage()
   glBufferData(GL_SHADER_STORAGE_BUFFER, maxNodes * nodeSize, NULL, GL_DYNAMIC_DRAW);
 
   prog.setUniform("MaxNodes", maxNodes);
+
+  GLuint headPtrTexSize = width * height * sizeof(GLuint);
+  GLuint * headPtrClearBuf = new GLuint[headPtrTexSize];
+  for( int i = 0; i < width*height; i++ )
+    headPtrClearBuf[i] = 0xffffffff;
+
+  glGenBuffers(1, &clearBuf);
+  glBindBuffer(GL_PIXEL_UNPACK_BUFFER, clearBuf);
+  glBufferData(GL_PIXEL_UNPACK_BUFFER, headPtrTexSize, headPtrClearBuf,
+      GL_STATIC_COPY);
+
+  delete [] headPtrClearBuf;
 }

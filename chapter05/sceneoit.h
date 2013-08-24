@@ -31,8 +31,7 @@ private:
     int width, height;
     GLuint buffers[2], fsQuad, headPtrTex;
     GLuint pass1Index, pass2Index;
-    GLuint headPtrTexSize;
-    GLuint *headPtrClearBuf;
+    GLuint clearBuf;
 
     VBOCube *cube;
     VBOSphere *sphere;

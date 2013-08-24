@@ -21,7 +21,7 @@ struct NodeType {
 
 layout( binding = 0, r32ui) uniform uimage2D headPointers;
 layout( binding = 0, offset = 0) uniform atomic_uint nextNodeCounter;
-layout( std430, binding = 0 ) buffer linkedLists {
+layout( binding = 0, std430 ) buffer linkedLists {
   NodeType nodes[];
 };
 uniform uint MaxNodes;
@@ -78,7 +78,7 @@ void pass2()
   uint n = imageLoad(headPointers, ivec2(gl_FragCoord.xy)).r;
 
   // Copy the linked list for this fragment into an array
-  while( n != 0 && count < MAX_FRAGMENTS) {
+  while( n != 0xffffffff && count < MAX_FRAGMENTS) {
     frags[count] = nodes[n];
     n = frags[count].next;
     count++;
@@ -100,13 +100,9 @@ void pass2()
   // Traverse the array, and combine the colors using the alpha
   // channel.
   vec4 color = vec4(0.5, 0.5, 0.5, 1.0);
-  float depthPrev = 1.0;
   for( int i = 0; i < count; i++ )
   { 
-    if( frags[i].depth != depthPrev ) { 
-      color = mix( color, frags[i].color, frags[i].color.a);
-    }
-    depthPrev = frags[i].depth;
+    color = mix( color, frags[i].color, frags[i].color.a);
   }
   
   // Output the final color
