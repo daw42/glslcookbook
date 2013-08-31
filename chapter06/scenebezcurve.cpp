@@ -49,8 +49,8 @@ void SceneBezCurve::initScene()
     
     // Segments and strips may be inverted on NVIDIA
     prog.use();
-    prog.setUniform("NumSegments", 1);
-    prog.setUniform("NumStrips", 50);
+    prog.setUniform("NumSegments", 50);
+    prog.setUniform("NumStrips", 1);
     prog.setUniform("LineColor", vec4(1.0f,1.0f,0.5f,1.0f));
     
     solidProg.use();
