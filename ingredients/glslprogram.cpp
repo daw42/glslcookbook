@@ -254,9 +254,7 @@ void GLSLProgram::setUniform( const char *name, float x, float y, float z)
     int loc = getUniformLocation(name);
     if( loc >= 0 ) {
         glUniform3f(loc,x,y,z);
-    } else {
-        printf("Uniform: %s not found.\n",name);
-    }
+    } 
 }
 
 void GLSLProgram::setUniform( const char *name, const vec3 & v)
@@ -269,9 +267,7 @@ void GLSLProgram::setUniform( const char *name, const vec4 & v)
     int loc = getUniformLocation(name);
     if( loc >= 0 ) {
         glUniform4f(loc,v.x,v.y,v.z,v.w);
-    } else {
-        printf("Uniform: %s not found.\n",name);
-    }
+    } 
 }
 
 void GLSLProgram::setUniform( const char *name, const vec2 & v)
@@ -279,9 +275,7 @@ void GLSLProgram::setUniform( const char *name, const vec2 & v)
     int loc = getUniformLocation(name);
     if( loc >= 0 ) {
         glUniform2f(loc,v.x,v.y);
-    } else {
-        printf("Uniform: %s not found.\n",name);
-    }
+    } 
 }
 
 void GLSLProgram::setUniform( const char *name, const mat4 & m)
@@ -289,8 +283,6 @@ void GLSLProgram::setUniform( const char *name, const mat4 & m)
     int loc = getUniformLocation(name);
     if( loc >= 0 ) {
         glUniformMatrix4fv(loc, 1, GL_FALSE, &m[0][0]);
-    } else {
-        printf("Uniform: %s not found.\n",name);
     }
 }
 
@@ -299,9 +291,7 @@ void GLSLProgram::setUniform( const char *name, const mat3 & m)
     int loc = getUniformLocation(name);
     if( loc >= 0 ) {
         glUniformMatrix3fv(loc, 1, GL_FALSE, &m[0][0]);
-    } else {
-        printf("Uniform: %s not found.\n",name);
-    }
+    } 
 }
 
 void GLSLProgram::setUniform( const char *name, float val )
@@ -309,9 +299,7 @@ void GLSLProgram::setUniform( const char *name, float val )
     int loc = getUniformLocation(name);
     if( loc >= 0 ) {
         glUniform1f(loc, val);
-    } else {
-        printf("Uniform: %s not found.\n",name);
-    }
+    } 
 }
 
 void GLSLProgram::setUniform( const char *name, int val )
@@ -319,9 +307,7 @@ void GLSLProgram::setUniform( const char *name, int val )
     int loc = getUniformLocation(name);
     if( loc >= 0 ) {
         glUniform1i(loc, val);
-    } else {
-        printf("Uniform: %s not found.\n",name);
-    }
+    } 
 }
 
 void GLSLProgram::setUniform( const char *name, GLuint val )
@@ -329,9 +315,7 @@ void GLSLProgram::setUniform( const char *name, GLuint val )
   int loc = getUniformLocation(name);
   if( loc >=0 ) {
     glUniform1ui(loc, val);
-  } else {
-    printf("Uniform %s not found.\n", name);
-  }
+  } 
 }
 
 void GLSLProgram::setUniform( const char *name, bool val )
@@ -339,9 +323,7 @@ void GLSLProgram::setUniform( const char *name, bool val )
     int loc = getUniformLocation(name);
     if( loc >= 0 ) {
         glUniform1i(loc, val);
-    } else {
-        printf("Uniform: %s not found.\n",name);
-    }
+    } 
 }
 
 void GLSLProgram::printActiveUniforms() {

@@ -4,7 +4,9 @@ set( chapter07_SOURCES
 	sceneao.cpp
 	scenejitter.cpp
 	scenepcf.cpp
-	sceneshadowmap.cpp )
+	sceneshadowmap.cpp
+        sceneshadowvolume.cpp 
+        )
 
 add_executable( chapter07 ${chapter07_SOURCES} )
 target_link_libraries( chapter07 ${GLSLCOOKBOOK_LIBS} )

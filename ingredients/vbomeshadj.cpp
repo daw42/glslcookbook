@@ -12,6 +12,9 @@ using std::ifstream;
 #include <sstream>
 using std::istringstream;
 
+#include <map>
+using std::map;
+
 #include "cookbookogl.h"
 
 VBOMeshAdj::VBOMeshAdj(const char * fileName, bool center)
@@ -126,127 +129,138 @@ void VBOMeshAdj::determineAdjacency(vector<int> &el)
 
 void VBOMeshAdj::loadOBJ( const char * fileName, bool reCenterMesh ) {
 
-    vector <vec3> points;
-    vector <vec3> normals;
-    vector <vec2> texCoords;
-    vector <int> faces;
+  vector <vec3> p;
+  vector <vec3> n;
+  vector <vec2> tc;         // Holds tex coords from OBJ file
+  vector <int> faces, faceTC;
 
-    int nFaces = 0;
+  int nFaces = 0;
 
-    ifstream objStream( fileName, std::ios::in );
+  ifstream objStream( fileName, std::ios::in );
 
-    if( !objStream ) {
-        cerr << "Unable to open OBJ file: " << fileName << endl;
-        exit(1);
-    }
+  if( !objStream ) {
+    cerr << "Unable to open OBJ file: " << fileName << endl;
+    exit(1);
+  }
 
-	cout << "Loading OBJ mesh: " << fileName << endl;
-    string line, token;
-    vector<int> face;
+  cout << "Loading OBJ mesh: " << fileName << endl;
+  string line, token;
 
-    getline( objStream, line );
-    while( !objStream.eof() ) {
-        trimString(line);
-        if( line.length( ) > 0 && line.at(0) != '#' ) {
-            istringstream lineStream( line );
+  getline( objStream, line );
+  while( !objStream.eof() ) {
+    trimString(line);
+    if( line.length( ) > 0 && line.at(0) != '#' ) {
+      istringstream lineStream( line );
 
-            lineStream >> token;
+      lineStream >> token;
 
-            if (token == "v" ) {
-                float x, y, z;
-                lineStream >> x >> y >> z;
-                points.push_back( vec3(x,y,z) );
-            } else if (token == "vt" ) {
-                // Process texture coordinate
-                float s,t;
-                lineStream >> s >> t;
-                texCoords.push_back( vec2(s,t) );
-            } else if (token == "vn" ) {
-                float x, y, z;
-                lineStream >> x >> y >> z;
-                normals.push_back( vec3(x,y,z) );
-            } else if (token == "f" ) {
-                nFaces++;
+      if (token == "v" ) {
+        float x, y, z;
+        lineStream >> x >> y >> z;
+        p.push_back( vec3(x,y,z) );
+      } else if (token == "vt" ) {
+        // Process texture coordinate
+        float s,t;
+        lineStream >> s >> t;
+        tc.push_back( vec2(s,t) );
+      } else if (token == "vn" ) {
+        float x, y, z;
+        lineStream >> x >> y >> z;
+        n.push_back( vec3(x,y,z) );
+      } else if (token == "f" ) {
+        nFaces++;
 
-                // Process face
-                face.clear();
-                size_t slash1, slash2;
-                //int point, texCoord, normal;
-                while( lineStream.good() ) {
-                    string vertString;
-                    lineStream >> vertString;
-                    int pIndex = -1, nIndex = -1 , tcIndex = -1;
+        // Process face
+        size_t slash1, slash2;
+        int faceVerts = 0;
+        while( lineStream.good() ) {
+          faceVerts++;
+          string vertString;
+          lineStream >> vertString;
+          int pIndex = -1, nIndex = -1 , tcIndex = -1;
 
-                    slash1 = vertString.find("/");
-                    if( slash1 == string::npos ){
-                        pIndex = atoi( vertString.c_str() ) - 1;
-                    } else {
-                        slash2 = vertString.find("/", slash1 + 1 );
-                        pIndex = atoi( vertString.substr(0,slash1).c_str() )
-                                        - 1;
-                        if( slash2 > slash1 + 1 ) {
-                                tcIndex =
-                                        atoi( vertString.substr(slash1 + 1, slash2).c_str() )
-                                        - 1;
-                        }
-                        nIndex =
-                                atoi( vertString.substr(slash2 + 1,vertString.length()).c_str() )
-                                - 1;
-                    }
-                    if( pIndex == -1 ) {
-                        printf("Missing point index!!!");
-                    } else {
-                        face.push_back(pIndex);
-                    }
-
-                    if( tcIndex != -1 && pIndex != nIndex ) {
-                        printf("Texture and point indices are not consistent.\n");
-                    }
-                    if ( nIndex != -1 && nIndex != pIndex ) {
-                        printf("Normal and point indices are not consistent.\n");
-                    }
-                }
-                if( face.size() != 3 ) {
-                    printf("Found non-triangular face.\n");
-                } else {
-                    faces.push_back(face[0]);
-                    faces.push_back(face[1]);
-                    faces.push_back(face[2]);
-                }
+          slash1 = vertString.find("/");
+          if( slash1 == string::npos ){
+            pIndex = atoi( vertString.c_str() ) - 1 ;
+          } else {
+            slash2 = vertString.find("/", slash1 + 1 );
+            pIndex = atoi( vertString.substr(0,slash1).c_str() ) - 1;
+            if( slash2 == string::npos || slash2 > slash1 + 1) {
+              tcIndex =
+                atoi( vertString.substr(slash1 + 1, slash2).c_str() ) - 1;
             }
+            if( slash2 != string::npos )
+              nIndex =
+                atoi( vertString.substr(slash2 + 1,string::npos).c_str() ) - 1;
+          }
+          if( pIndex == -1 ) {
+            printf("Missing point index!!!");
+          } else {
+            faces.push_back(pIndex);
+          }
+          if( tcIndex != -1 ) faceTC.push_back(tcIndex);
+
+          if ( nIndex != -1 && nIndex != pIndex ) {
+            printf("Normal and point indices are not consistent.\n");
+          }
         }
-        getline( objStream, line );
+        if( faceVerts != 3 ) {
+          printf("Found non-triangular face.\n");
+        } 
+      }
     }
+    getline( objStream, line );
+  }
 
-    objStream.close();
+  objStream.close();
 
-    if( normals.size() == 0 ) {
-		cout << "Generating normal vectors" << endl;
-        generateAveragedNormals(points,normals,faces);
+  // 2nd pass, re-do the lists to make the indices consistent
+  vector<vec2> texCoords;
+  for( int i = 0; i < p.size(); i++ ) texCoords.push_back(vec2(0.0f));
+  std::map<int, int> pToTex;
+  for( int i = 0; i < faces.size(); i++ ) {
+    int point = faces[i];
+    int texCoord = faceTC[i];
+    std::map<int, int>::iterator it = pToTex.find(point);
+    if( it == pToTex.end() ) {
+      pToTex[point] = texCoord;
+      texCoords[point] = tc[texCoord];
+    } else {
+      if( texCoord != it->second ) {
+        p.push_back( p[point] );  // Dup the point
+        texCoords.push_back( tc[texCoord] );
+        faces[i] = p.size() - 1; 
+      }
     }
+  }
 
-    vector<vec4> tangents;
-    if( texCoords.size() > 0 ) {
-		cout << "Generating tangents" << endl;
-        generateTangents(points,normals,faces,texCoords,tangents);
-    }
+  if( n.size() == 0 ) {
+    cout << "Generating normal vectors" << endl;
+    generateAveragedNormals(p,n,faces);
+  }
 
-    if( reCenterMesh ) {
-        center(points);
-    }
+  vector<vec4> tangents;
+  if( texCoords.size() > 0 ) {
+    cout << "Generating tangents" << endl;
+    generateTangents(p,n,faces,texCoords,tangents);
+  }
 
-    // Determine the adjacency information
-	cout << "Determining mesh adjacencies" << endl;
-    determineAdjacency(faces);
+  if( reCenterMesh ) {
+    center(p);
+  }
 
-    storeVBO(points, normals, texCoords, tangents, faces);
+  // Determine the adjacency information
+  cout << "Determining mesh adjacencies" << endl;
+  determineAdjacency(faces);
 
-    cout << "Loaded mesh from: " << fileName << endl;
-    cout << " " << points.size() << " points" << endl;
-    cout << " " << nFaces << " faces" << endl;
-    cout << " " << normals.size() << " normals" << endl;
-    cout << " " << tangents.size() << " tangents " << endl;
-    cout << " " << texCoords.size() << " texture coordinates." << endl;
+  storeVBO(p, n, texCoords, tangents, faces);
+
+  cout << "Loaded mesh from: " << fileName << endl;
+  cout << " " << p.size() << " points" << endl;
+  cout << " " << nFaces << " faces" << endl;
+  cout << " " << n.size() << " normals" << endl;
+  cout << " " << tangents.size() << " tangents " << endl;
+  cout << " " << texCoords.size() << " texture coordinates." << endl;
 }
 
 void VBOMeshAdj::center( vector<vec3> & points ) {

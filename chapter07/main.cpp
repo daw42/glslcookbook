@@ -6,6 +6,7 @@
 #include "scenejitter.h"
 #include "scenepcf.h"
 #include "sceneshadowmap.h"
+#include "sceneshadowvolume.h"
 
 #define WIN_WIDTH 800
 #define WIN_HEIGHT 600
@@ -15,6 +16,13 @@ GLFWwindow *window;
 
 string parseCLArgs(int argc, char ** argv);
 void printHelpInfo(const char *);
+
+static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+  if (key == GLFW_KEY_SPACE && action == GLFW_RELEASE)
+    if( scene )
+      scene->animate( ! (scene->animating()) );
+}
 
 void initializeGL() {
     glClearColor(0.5f,0.5f,0.5f,1.0f);
@@ -58,6 +66,8 @@ int main(int argc, char *argv[])
 	}
 	glfwMakeContextCurrent(window);
 
+        glfwSetKeyCallback(window, key_callback);
+
 	// Load the OpenGL functions.
 	if( ogl_LoadFunctions() == ogl_LOAD_FAILED ) {
 		glfwTerminate();
@@ -96,6 +106,8 @@ string parseCLArgs(int argc, char ** argv) {
 		scene = new ScenePcf();
 	} else if( recipe == "shadow-map" ) {
 		scene = new SceneShadowMap();
+        } else if( recipe == "shadow-volume" ) {
+          scene = new SceneShadowVolume();
 	} else {
 		printf("Unknown recipe: %s\n", recipe.c_str());
 		printHelpInfo(argv[0]);
@@ -112,4 +124,5 @@ void printHelpInfo(const char * exeFile) {
 	printf("  jitter      : description...\n");
 	printf("  pcf         : description...\n");
 	printf("  shadow-map  : description...\n");
+        printf("  shadow-volume: Shadow Volumes using geometry shader.\n");
 }

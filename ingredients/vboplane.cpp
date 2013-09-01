@@ -9,7 +9,7 @@
 #include <cstdio>
 #include <cmath>
 
-VBOPlane::VBOPlane(float xsize, float zsize, int xdivs, int zdivs)
+VBOPlane::VBOPlane(float xsize, float zsize, int xdivs, int zdivs, float smax, float tmax)
 {
     
     faces = xdivs * zdivs;
@@ -22,8 +22,8 @@ VBOPlane::VBOPlane(float xsize, float zsize, int xdivs, int zdivs)
     float z2 = zsize / 2.0f;
     float iFactor = (float)zsize / zdivs;
     float jFactor = (float)xsize / xdivs;
-    float texi = 1.0f / zdivs;
-    float texj = 1.0f / xdivs;
+    float texi = smax / zdivs;
+    float texj = tmax / xdivs;
     float x, z;
     int vidx = 0, tidx = 0;
     for( int i = 0; i <= zdivs; i++ ) {
