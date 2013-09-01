@@ -138,6 +138,9 @@ void SceneShadowVolume::render()
   pass3();
 }
 
+// Just renders the geometry normally with shading.  The ambient component
+// is rendered to one buffer, and the diffuse and specular componenets are
+// written to a texture.
 void SceneShadowVolume::pass1() {
   glDepthMask(GL_TRUE);
   glDisable(GL_STENCIL_TEST);
@@ -153,20 +156,27 @@ void SceneShadowVolume::pass1() {
   drawScene(renderProg, false);
 }
 
+// This is the pass that generates the shadow volumes using the 
+// geometry shader
 void SceneShadowVolume::pass2() {
   volumeProg.use();
   volumeProg.setUniform("LightPosition", view * lightPos);
 
-  // Copy the depth buffer from the FBO into the default FBO
+  // Copy the depth and color buffers from the FBO into the default FBO
+  // The color buffer should contain the ambient component.
   glBindFramebuffer(GL_READ_FRAMEBUFFER, colorDepthFBO); 
   glBindFramebuffer(GL_DRAW_FRAMEBUFFER,0);
   glBlitFramebuffer(0,0,width-1,height-1,0,0,width-1,height-1,GL_DEPTH_BUFFER_BIT|GL_COLOR_BUFFER_BIT,GL_NEAREST);
 
-  glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);  // Don't write to the color buffer
+  // Disable writing to the color buffer and depth buffer
+  glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE); 
   glDepthMask(GL_FALSE);
 
+  // Re-bind to the default framebuffer
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
+  // Set up the stencil test so that it always succeeds, increments
+  // for front faces, and decrements for back faces.
   glClear(GL_STENCIL_BUFFER_BIT);
   glEnable(GL_STENCIL_TEST);
   glStencilFunc(GL_ALWAYS, 0, 0xffff);
@@ -176,26 +186,34 @@ void SceneShadowVolume::pass2() {
   // Draw only the shadow casters
   drawScene(volumeProg, true);
 
+  // Enable writing to the color buffer
   glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
 }
 
+// In this pass, we read the diffuse and specular component from a texture
+// and combine it with the ambient component if the stencil test succeeds.
 void SceneShadowVolume::pass3() {
-  glDisable(GL_DEPTH_TEST);    // Not needed here
-  glEnable(GL_BLEND);          
-  glBlendFunc(GL_ONE,GL_ONE);  // Just sum the values
+  // We don't need the depth test
+  glDisable(GL_DEPTH_TEST); 
 
+  // We want to just sum the ambient component and the diffuse + specular
+  // when the stencil test succeeds, so we'll use this simple blend function.
+  glEnable(GL_BLEND);          
+  glBlendFunc(GL_ONE,GL_ONE); 
+
+  // We want to only render those pixels that have a stencil value
+  // equal to zero.
   glStencilFunc(GL_EQUAL, 0, 0xffff);
   glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
 
   compProg.use();
-  glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
+  // Just draw a screen filling quad
   model = mat4(1.0f);
   projection = model;
   view = model;
   setMatrices(compProg);
 
-  // Draw a screen filler
   glBindVertexArray(fsQuad);
   glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
   glBindVertexArray(0);   
