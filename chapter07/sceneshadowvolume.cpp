@@ -238,7 +238,7 @@ void SceneShadowVolume::drawScene(GLSLProgram &prog, bool onlyShadowCasters)
   }
 
   model = mat4(1.0f);
-  model *= glm::translate(vec3(-2.3f,1.0f,1.2f));
+  model *= glm::translate(vec3(-2.3f,1.0f,0.2f));
   model *= glm::rotate(180.0f, vec3(0.0f,1.0f,0.0f));
   model = glm::scale(model, vec3(1.5f));
   setMatrices(prog);
@@ -246,6 +246,13 @@ void SceneShadowVolume::drawScene(GLSLProgram &prog, bool onlyShadowCasters)
   
   model = mat4(1.0f);
   model *= glm::translate(vec3(2.5f,1.0f,-1.2f));
+  model *= glm::rotate(180.0f, vec3(0.0f,1.0f,0.0f));
+  model = glm::scale(model, vec3(1.5f));
+  setMatrices(prog);
+  spot->render();
+
+  model = mat4(1.0f);
+  model *= glm::translate(vec3(0.5f,1.0f,2.7f));
   model *= glm::rotate(180.0f, vec3(0.0f,1.0f,0.0f));
   model = glm::scale(model, vec3(1.5f));
   setMatrices(prog);
@@ -264,6 +271,7 @@ void SceneShadowVolume::drawScene(GLSLProgram &prog, bool onlyShadowCasters)
     plane->render();
     model = mat4(1.0f);
     model *= glm::translate(vec3(-5.0f,5.0f,0.0f));
+    model *= glm::rotate(90.0f, vec3(1,0,0));
     model *= glm::rotate(-90.0f,vec3(0.0f,0.0f,1.0f));
     setMatrices(prog);
     plane->render();
