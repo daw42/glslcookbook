@@ -6,6 +6,7 @@ set( chapter08_SOURCES
 	scenenightvision.cpp
 	scenepaint.cpp
 	scenewood.cpp
+        scenenoise.cpp
 )
 
 add_executable( chapter08 ${chapter08_SOURCES} )

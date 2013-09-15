@@ -1,9 +1,10 @@
-#include "scenesky.h"
+#include "scenenoise.h"
 
 #include <cstdio>
 #include <iostream>
 using std::cerr;
 using std::endl;
+
 #include "glutils.h"
 #include "defines.h"
 #include "noisetex.h"
@@ -11,33 +12,35 @@ using std::endl;
 using glm::vec3;
 
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform2.hpp>
 
 #include<iostream>
 
-SceneSky::SceneSky()
+SceneNoise::SceneNoise()
 {
     width = 800;
     height = 600;
 }
 
-void SceneSky::initScene()
+void SceneNoise::initScene()
 {
     compileAndLinkShader();
 
-    glClearColor(0.5f,0.5f,0.5f,1.0f);
+    glClearColor(1.0f,1.0f,1.0f,1.0f);
 
     glEnable(GL_DEPTH_TEST);
 
-    projection = mat4(1.0f);
+    float c = 0.75f;
+    projection = glm::ortho(c * -2.0f,c*2.0f,c *(-1.5f), c * 1.5f);
+
     // Array for quad
     GLfloat verts[] = {
         -1.0f, -1.0f, 0.0f, 1.0f, -1.0f, 0.0f, 1.0f, 1.0f, 0.0f,
         -1.0f, -1.0f, 0.0f, 1.0f, 1.0f, 0.0f, -1.0f, 1.0f, 0.0f
     };
+    float max = 2.0f;
     GLfloat tc[] = {
-        0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f,
-        0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f
+        0.0f, 0.0f, max, 0.0f, max, max,
+        0.0f, 0.0f, max, max, 0.0f, max 
     };
 
     // Set up the buffers
@@ -55,34 +58,32 @@ void SceneSky::initScene()
     glBindVertexArray(quad);
 
     glBindBuffer(GL_ARRAY_BUFFER, handle[0]);
-    glVertexAttribPointer( (GLuint)0, 3, GL_FLOAT, GL_FALSE, 0, ((GLubyte *)NULL + (0)) );
+    glVertexAttribPointer( 0, 3, GL_FLOAT, GL_FALSE, 0, 0 );
     glEnableVertexAttribArray(0);  // Vertex position
 
     glBindBuffer(GL_ARRAY_BUFFER, handle[1]);
-    glVertexAttribPointer( (GLuint)2, 2, GL_FLOAT, GL_FALSE, 0, ((GLubyte *)NULL + (0)) );
+    glVertexAttribPointer( 2, 2, GL_FLOAT, GL_FALSE, 0, 0 );
     glEnableVertexAttribArray(2);  // Texture coordinates
 
     glBindVertexArray(0);
 
-    prog.setUniform("NoiseTex", 0);
-
-    GLuint noiseTex = NoiseTex::generate2DTex(6.0f);
+    GLuint noiseTex = NoiseTex::generatePeriodic2DTex();
+    //GLuint noiseTex = NoiseTex::generate2DTex();
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, noiseTex);
 }
 
-void SceneSky::update( float t ) { }
+void SceneNoise::update( float t ) { }
 
-void SceneSky::render()
+void SceneNoise::render()
 {
     view = mat4(1.0f);
-
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     drawScene();
     glFinish();
 }
 
-void SceneSky::drawScene()
+void SceneNoise::drawScene()
 {
     model = mat4(1.0f);
     setMatrices();
@@ -91,28 +92,28 @@ void SceneSky::drawScene()
     glDrawArrays(GL_TRIANGLES, 0, 6);
 }
 
-void SceneSky::setMatrices()
+void SceneNoise::setMatrices()
 {
     mat4 mv = view * model;
     prog.setUniform("MVP", projection * mv);
 }
 
-void SceneSky::resize(int w, int h)
+void SceneNoise::resize(int w, int h)
 {
     glViewport(0,0,w,h);
     width = w;
     height = h;
 }
 
-void SceneSky::compileAndLinkShader()
+void SceneNoise::compileAndLinkShader()
 {
-	try {
-		prog.compileShader("shader/sky.vs",GLSLShader::VERTEX);
-		prog.compileShader("shader/sky.fs",GLSLShader::FRAGMENT);
+    try {
+	prog.compileShader("shader/noisetex.vs");
+	prog.compileShader("shader/noisetex.fs");
     	prog.link();
     	prog.use();
     } catch(GLSLProgramException &e ) {
     	cerr << e.what() << endl;
- 		exit( EXIT_FAILURE );
+ 	exit( EXIT_FAILURE );
     }
 }

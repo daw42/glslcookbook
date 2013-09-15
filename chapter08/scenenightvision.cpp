@@ -86,7 +86,7 @@ void SceneNightVision::initScene()
     prog.setUniform("RenderTex", 0);
     prog.setUniform("Light.Intensity", vec3(1.0f,1.0f,1.0f) );
 
-    noiseTex = NoiseTex::generate2DTex(200.0f, 0.5f, 512, 512);
+    noiseTex = NoiseTex::generatePeriodic2DTex(200.0f, 0.5f, 512, 512);
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, noiseTex);
     prog.setUniform("NoiseTex", 1);

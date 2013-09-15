@@ -7,6 +7,7 @@
 #include "scenepaint.h"
 #include "scenesky.h"
 #include "scenewood.h"
+#include "scenenoise.h"
 
 #define WIN_WIDTH 800
 #define WIN_HEIGHT 600
@@ -91,7 +92,9 @@ string parseCLArgs(int argc, char ** argv) {
 
 	if( recipe == "decay" ) {
 		scene = new SceneDecay();
-	} else if( recipe == "night-vision") {
+	} else if( recipe == "noise" ) {
+          scene = new SceneNoise(); 
+        } else if( recipe == "night-vision") {
 		scene = new SceneNightVision();
 	} else if( recipe == "paint") {
 		scene = new ScenePaint();
@@ -111,9 +114,11 @@ string parseCLArgs(int argc, char ** argv) {
 void printHelpInfo(const char * exeFile) {
 	printf("Usage: %s recipe-name\n\n", exeFile);
 	printf("Recipe names: \n");
-	printf("  decay        : description...\n");
-	printf("  night-vision : description...\n");
-	printf("  paint        : description...\n");
-	printf("  sky          : description...\n");
-	printf("  wood         : description...\n");
+        printf("  noise        : just display the raw noise texture\n");
+	printf("  decay        : decay of a teapot\n");
+	printf("  night-vision : night vision goggles\n");
+	printf("  paint        : paint spatters on a teapot\n");
+	printf("  sky          : clouds and sky\n");
+	printf("  wood         : wood \n");
+
 }

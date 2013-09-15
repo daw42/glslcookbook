@@ -16,12 +16,8 @@ layout ( location = 0 ) out vec4 FragColor;
 void main()
 {
     vec4 noise = texture(NoiseTex, TexCoord);
-
     float t = (cos( noise.a * PI ) + 1.0) / 2.0;
-   // t = clamp(t, 0.0, 1.0);
-
     vec4 color = mix( SkyColor, CloudColor, t );
 
     FragColor = vec4( color.rgb , 1.0 );
-    //FragColor = vec4( noise.a, noise.a, noise.a, 1 );
 }

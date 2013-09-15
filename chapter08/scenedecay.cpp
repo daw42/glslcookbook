@@ -29,7 +29,7 @@ void SceneDecay::initScene()
 
     prog.setUniform("NoiseTex", 0);
 
-    GLuint noiseTex = NoiseTex::generate2DTex();
+    GLuint noiseTex = NoiseTex::generate2DTex(10.0f);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, noiseTex);
 
@@ -37,7 +37,7 @@ void SceneDecay::initScene()
 
     prog.setUniform("Light.Intensity", vec3(1.0f,1.0f,1.0f));
     lightPos = vec4(0.0f,0.0f,0.0f,1.0f);
-    prog.setUniform("LowThreshold", 0.35f);
+    prog.setUniform("LowThreshold", 0.45f);
     prog.setUniform("HighThreshold", 0.65f);
 }
 

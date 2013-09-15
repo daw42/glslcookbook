@@ -5,60 +5,72 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/noise.hpp>
 
-int NoiseTex::generate2DTex(float baseFreq, float persistence, int w, int h) {
+int NoiseTex::storeTex( GLubyte * data, int w, int h ) {
+  GLuint texID;
+  glGenTextures(1, &texID);
 
-    int width = w;
-    int height = h;
+  glBindTexture(GL_TEXTURE_2D, texID);
+  glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,w,h,0,GL_RGBA,GL_UNSIGNED_BYTE,data);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+  
+  return texID;
+}
 
-    printf("Generating noise texture...");
+int NoiseTex::generate2DTex(float baseFreq, float persistence, int w, int h, bool periodic) {
 
-    GLubyte *data = new GLubyte[ width * height * 4 ];
+  int width = w;
+  int height = h;
 
-    double xRange = 1.0;
-    double yRange = 1.0;
-    double xFactor = xRange / width;
-    double yFactor = yRange / height;
+  printf("Generating noise texture...");
 
-	for( int i = 0; i < width; i++ ) {
-		for( int j = 0 ; j < height; j++ ) {
-			float x = xFactor * i;
-			float y = yFactor * j;
-			float sum = 0.0f;
-			float freq = baseFreq;
-			float persist = persistence;
-			for( int oct = 0; oct < 4; oct++ ) {
-				glm::vec2 p(x * freq, y * freq);
+  GLubyte *data = new GLubyte[ width * height * 4 ];
 
-				float val = glm::perlin(p) * persist;
+  double xFactor = 1.0f / (width - 1);
+  double yFactor = 1.0f / (height - 1);
 
-				sum += val;
+  for( int row = 0; row < height; row++ ) {
+    for( int col = 0 ; col < width; col++ ) {
+      float x = xFactor * col;
+      float y = yFactor * row;
+      float sum = 0.0f;
+      float freq = baseFreq;
+      float persist = persistence;
+      for( int oct = 0; oct < 4; oct++ ) {
+        glm::vec2 p(x * freq, y * freq);
 
-				float result = sum + 0.5;
+        float val = 0.0f;
+        if (periodic) {
+          val = glm::perlin(p, glm::vec2(freq)) * persist;
+        } else {
+          val = glm::perlin(p) * persist;
+        }
 
-				// Clamp strictly between 0 and 1
-				result = result > 1.0f ? 1.0f : result;
-				result = result < 0.0f ? 0.0f : result;
+        sum += val;
 
-				// Store in texture
-				data[((j * width + i) * 4) + oct] = (GLubyte) ( result * 255.0f );
-				freq *= 2.0f;
-				persist *= persistence;
-			}
-		}
-	}
+        float result = (sum + 1.0f) / 2.0f;
 
-    GLuint texID;
-    glGenTextures(1, &texID);
+        // Clamp strictly between 0 and 1
+        result = result > 1.0f ? 1.0f : result;
+        result = result < 0.0f ? 0.0f : result;
 
-    glBindTexture(GL_TEXTURE_2D, texID);
-    glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,width,height,0,GL_RGBA,GL_UNSIGNED_BYTE,data);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        // Store in texture
+        data[((row * width + col) * 4) + oct] = (GLubyte) ( result * 255.0f );
+        freq *= 2.0f;
+        persist *= persistence;
+      }
+    }
+  }
 
-    delete [] data;
+  int texID = NoiseTex::storeTex(data, width, height);
+  delete [] data;
 
-    printf("done.\n");
-    return texID;
+  printf("done.\n");
+  return texID;
+}
+
+int NoiseTex::generatePeriodic2DTex(float baseFreq, float persist, int w, int h) {
+  NoiseTex::generate2DTex(baseFreq, persist, w, h, true);
 }
