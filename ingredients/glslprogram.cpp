@@ -149,6 +149,9 @@ void GLSLProgram::compileShader( const string & source,
     case GLSLShader::TESS_EVALUATION:
         shaderHandle = glCreateShader(GL_TESS_EVALUATION_SHADER);
         break;
+    case GLSLShader::COMPUTE:
+        shaderHandle = glCreateShader(GL_COMPUTE_SHADER);
+        break;
     default:
         throw GLSLProgramException("Invalid shader type");
     }
