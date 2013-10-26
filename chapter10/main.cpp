@@ -3,6 +3,7 @@
 
 #include "glutils.h"
 #include "scenemandelbrot.h"
+#include "scenecloth.h"
 
 #define WIN_WIDTH 800
 #define WIN_HEIGHT 600
@@ -45,9 +46,9 @@ int main(int argc, char *argv[])
 	// Initialize GLFW
 	if( !glfwInit() ) exit( EXIT_FAILURE );
 
-	// Select OpenGL 4.3 with a forward compatible core profile.
+	// Select OpenGL 4.4 with a forward compatible core profile.
 	glfwWindowHint( GLFW_CONTEXT_VERSION_MAJOR, 4 );
-	glfwWindowHint( GLFW_CONTEXT_VERSION_MINOR, 3 );
+	glfwWindowHint( GLFW_CONTEXT_VERSION_MINOR, 4 );
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
@@ -94,6 +95,8 @@ string parseCLArgs(int argc, char ** argv) {
 
 	if( recipe == "mandelbrot" ) {
 		scene = new SceneMandelbrot();
+        } else if( recipe == "cloth" ) {
+          scene = new SceneCloth();
 	} else {
 		printf("Unknown recipe: %s\n", recipe.c_str());
 		printHelpInfo(argv[0]);
@@ -107,4 +110,5 @@ void printHelpInfo(const char * exeFile) {
 	printf("Usage: %s recipe-name\n\n", exeFile);
 	printf("Recipe names: \n");
 	printf("  mandelbrot           : Mandelbrot set with compute shader\n");
+        printf("  cloth                : Cloth simulation with compute shader\n");
 }
