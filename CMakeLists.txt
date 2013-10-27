@@ -50,3 +50,4 @@ add_subdirectory( chapter08 )
 add_subdirectory( chapter09 )
 add_subdirectory( chapter10 )
 
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/media DESTINATION ${CMAKE_CURRENT_BINARY_DIR})

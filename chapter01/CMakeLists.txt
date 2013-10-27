@@ -8,3 +8,5 @@ set( chapter01_SOURCES
 
 add_executable( chapter01 ${chapter01_SOURCES} )
 target_link_libraries( chapter01 ${GLSLCOOKBOOK_LIBS} )
+
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/shader DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
