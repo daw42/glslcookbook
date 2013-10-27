@@ -36,8 +36,6 @@ void SceneCloth::initScene()
   compileAndLinkShader();
   initBuffers();
 
-  groundPlane = new VBOPlane(20.0f, 20.0f, 1, 1);
-
   projection = glm::perspective( 50.0f, (float)width/height, 1.0f, 100.0f);
 
   renderProg.use();
@@ -102,7 +100,7 @@ void SceneCloth::initBuffers()
   }
 
   // We need buffers for position (2), element index,
-  // and velocity (2).
+  // velocity (2), normal, and texture coordinates.
   GLuint bufs[7];
   glGenBuffers(7, bufs);
   posBufs[0] = bufs[0];

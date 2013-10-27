@@ -4,6 +4,7 @@
 #include "glutils.h"
 #include "scenemandelbrot.h"
 #include "scenecloth.h"
+#include "sceneparticles.h"
 
 #define WIN_WIDTH 800
 #define WIN_HEIGHT 600
@@ -13,6 +14,13 @@ GLFWwindow *window;
 
 string parseCLArgs(int argc, char ** argv);
 void printHelpInfo(const char *);
+
+static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+  if (key == GLFW_KEY_SPACE && action == GLFW_RELEASE)
+    if( scene )
+      scene->animate( ! (scene->animating()) );
+}
 
 void initializeGL() {
 
@@ -62,6 +70,8 @@ int main(int argc, char *argv[])
 		exit( EXIT_FAILURE );
 	}
 	glfwMakeContextCurrent(window);
+
+        glfwSetKeyCallback(window, key_callback); 
 	
 	// Load the OpenGL functions.
 	if( ogl_LoadFunctions() == ogl_LOAD_FAILED ) {
@@ -97,6 +107,8 @@ string parseCLArgs(int argc, char ** argv) {
 		scene = new SceneMandelbrot();
         } else if( recipe == "cloth" ) {
           scene = new SceneCloth();
+        } else if( recipe == "particles" ) {
+          scene = new SceneParticles();
 	} else {
 		printf("Unknown recipe: %s\n", recipe.c_str());
 		printHelpInfo(argv[0]);
@@ -109,6 +121,7 @@ string parseCLArgs(int argc, char ** argv) {
 void printHelpInfo(const char * exeFile) {
 	printf("Usage: %s recipe-name\n\n", exeFile);
 	printf("Recipe names: \n");
+        printf("  particles            : Simple particle simulation\n");
 	printf("  mandelbrot           : Mandelbrot set with compute shader\n");
         printf("  cloth                : Cloth simulation with compute shader\n");
 }

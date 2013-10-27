@@ -1,5 +1,5 @@
-#ifndef SCENECLOTH_H
-#define SCENECLOTH_H
+#ifndef SCENEPARTICLES_H
+#define SCENEPARTICLES_H
 
 #include "scene.h"
 #include "glslprogram.h"
@@ -9,22 +9,21 @@
 #include <glm/glm.hpp>
 using glm::mat4;
 
-class SceneCloth : public Scene
+class SceneParticles : public Scene
 {
 private:
-    GLSLProgram renderProg, computeProg, computeProgNorm;
+    GLSLProgram renderProg, computeProg;
 
     int width, height;
-    GLuint clothVao;
-    GLuint numElements;
+    glm::vec3 nParticles;
+    GLuint totalParticles;
 
-    glm::ivec2 nParticles;  // Number of particles in each dimension
-    glm::vec2 clothSize;    // Size of cloth in x and y
-
-    float time, deltaT, speed;
-    GLuint readBuf;
+    float time, deltaT, speed, angle;
     GLuint posBufs[2], velBufs[2];
-    GLuint normBuf, elBuf, tcBuf;
+    GLuint readBuf;
+    GLuint particlesVao;
+    GLuint bhVao, bhBuf;  // black hole VAO and buffer
+    glm::vec4 bh1, bh2;
 
     glm::mat4 view, model, projection;
 
@@ -33,7 +32,7 @@ private:
     void setMatrices();
 
 public:
-    SceneCloth();
+    SceneParticles();
 
     void initScene();
     void update( float t );
@@ -41,4 +40,4 @@ public:
     void resize(int, int);
 };
 
-#endif // SCENECLOTH_H
+#endif // SceneParticles_H
