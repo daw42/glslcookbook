@@ -261,7 +261,13 @@ vec3 VBOTeapot::evaluateNormal( int gridU, int gridV, float *B, float *dB, vec3 
             dv += patch[i][j] * B[gridU*4+i] * dB[gridV*4+j];
         }
     }
-    return glm::normalize( glm::cross( du, dv ) );
+
+    vec3 norm = glm::cross(du, dv);
+    if (glm::length(norm) != 0.0f) {
+        norm = glm::normalize(norm);
+    }
+
+    return norm;
 }
 
 void VBOTeapot::render() const {
