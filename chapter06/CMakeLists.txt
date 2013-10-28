@@ -1,4 +1,4 @@
-set( chapter06_SOURCES 	
+set( chapter06_SOURCES
 	scenebezcurve.cpp
 	main.cpp
 	scenepointsprite.cpp
@@ -10,3 +10,5 @@ set( chapter06_SOURCES
 
 add_executable( chapter06 ${chapter06_SOURCES} )
 target_link_libraries( chapter06 ${GLSLCOOKBOOK_LIBS} )
+
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/shader DESTINATION ${CMAKE_CURRENT_BINARY_DIR})

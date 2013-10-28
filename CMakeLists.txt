@@ -16,14 +16,12 @@ set( GLSLCOOKBOOK_LIBS ingredients )
 set( GLSLCOOKBOOK_INCLUDE ${GLSLCOOKBOOK_SOURCE_DIR}/ingredients )
 
 if( UNIX )
-	find_path( GLFW_INCLUDE GLFW/glfw3.h PATHS ${GLFW_INCLUDE_SEARCH_PATH} )
-	list( APPEND GLSLCOOKBOOK_INCLUDE ${GLFW_INCLUDE} )
-	
-	find_path( GLM_INCLUDE glm/glm.hpp PATHS ${GLM_INCLUDE_SEARCH_PATH} )
-	list( APPEND GLSLCOOKBOOK_INCLUDE ${GLM_INCLUDE} )
-	
-	find_library( GLFW_LIB glfw3 PATHS ${GLFW_LIB_SEARCH_PATH} )
-	list( APPEND GLSLCOOKBOOK_LIBS ${GLFW_LIB} )
+	find_package( GLM REQUIRED )
+	list( APPEND GLSLCOOKBOOK_INCLUDE ${GLM_INCLUDE_DIRS} )
+
+	find_package( glfw 3 REQUIRED )
+	list( APPEND GLSLCOOKBOOK_INCLUDE ${GLM_INCLUDE_DIR} )
+	list( APPEND GLSLCOOKBOOK_LIBS ${GLFW_LIBRARY} )
 
 	find_package( OpenGL REQUIRED )
 	list( APPEND GLSLCOOKBOOK_LIBS ${OPENGL_gl_LIBRARY} )
@@ -36,7 +34,6 @@ if( UNIX )
 	
 	find_library( RT_LIB rt )
 	list( APPEND GLSLCOOKBOOK_LIBS ${RT_LIB} )
-		
 endif()
 
 include_directories( ${GLSLCOOKBOOK_INCLUDE} )
@@ -53,3 +50,4 @@ add_subdirectory( chapter08 )
 add_subdirectory( chapter09 )
 add_subdirectory( chapter10 )
 
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/media DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
