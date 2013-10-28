@@ -216,9 +216,9 @@ void VBOMeshAdj::loadOBJ( const char * fileName, bool reCenterMesh ) {
 
   // 2nd pass, re-do the lists to make the indices consistent
   vector<vec2> texCoords;
-  for( int i = 0; i < p.size(); i++ ) texCoords.push_back(vec2(0.0f));
+  for( GLuint i = 0; i < p.size(); i++ ) texCoords.push_back(vec2(0.0f));
   std::map<int, int> pToTex;
-  for( int i = 0; i < faces.size(); i++ ) {
+  for( GLuint i = 0; i < faces.size(); i++ ) {
     int point = faces[i];
     int texCoord = faceTC[i];
     std::map<int, int>::iterator it = pToTex.find(point);

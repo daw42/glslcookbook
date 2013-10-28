@@ -201,13 +201,6 @@ static float cpdata[][3] =
     {0.84f, -1.5f, 0.075f}
 };
 
-static float tex[2][2][2] =
-{
-  { {0, 0},
-    {1, 0}},
-  { {0, 1},
-    {1, 1}}
-};
 }
 
 #endif // TEAPOTDATA_H

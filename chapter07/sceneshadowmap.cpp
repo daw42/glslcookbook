@@ -142,7 +142,6 @@ void SceneShadowMap::update( float t )
 
 void SceneShadowMap::render()
 {
-    static int i = 0;
     prog.use();
     // Pass 1 (shadow map generation)
     view = lightFrustum->getViewMatrix();

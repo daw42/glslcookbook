@@ -32,8 +32,6 @@ void SceneAlphaTest::initScene()
 
     prog.setUniform("Light.Intensity", vec3(1.0f,1.0f,1.0f) );
 
-    GLuint w, h;
-
     // Load cement texture file
     glActiveTexture(GL_TEXTURE0);
     TGAIO::loadTex("../media/texture/cement.tga");

@@ -337,7 +337,7 @@ void GLSLProgram::printActiveUniforms() {
 	
 	printf("Active uniforms:\n");
 	for( int i = 0; i < numUniforms; ++i ) {
-		GLint results[3];
+		GLint results[4];
 		glGetProgramResourceiv(handle, GL_UNIFORM, i, 4, properties, 4, NULL, results);
 		
 		if( results[3] != -1 ) continue;  // Skip uniforms in blocks 

@@ -186,9 +186,6 @@ void SceneHdrBloom::setupFBO() {
 
 void SceneHdrBloom::update( float t )
 {
-	float deltaT = t - tPrev;
-	if(tPrev == 0.0f) deltaT = 0.0f;
-	tPrev = t;
 }
 
 void SceneHdrBloom::render()

@@ -31,9 +31,8 @@ int BMPReader::readIntLE(ifstream & fstr) {
 
 GLubyte* BMPReader::load(const char *filename, GLuint & width, GLuint & height) {
 	char header[3];
-	int fileSize, offset, headerSize, numCols, numRows, compression;
-	int imageSize;
-	int planes, bpp;
+	int fileSize, offset, numCols, numRows;
+	int bpp;
 
 	std::ifstream inFile(filename, std::ios::binary);
 	if (!inFile) {
@@ -53,15 +52,15 @@ GLubyte* BMPReader::load(const char *filename, GLuint & width, GLuint & height) 
 	BMPReader::readShortLE(inFile);            // ignore, reserved
 	BMPReader::readShortLE(inFile);            // ignore, reserved
 	offset = BMPReader::readIntLE(inFile);     // offset to image
-	headerSize = BMPReader::readIntLE(inFile); // Header size
+	BMPReader::readIntLE(inFile);              // Header size
 	numCols = BMPReader::readIntLE(inFile);    // Number of columns in image (width)
 	numRows = BMPReader::readIntLE(inFile);    // Number of rows in image (height)
 
-	planes = BMPReader::readShortLE(inFile);   // Should always be 1
+	BMPReader::readShortLE(inFile);            // Should always be 1
 	bpp = BMPReader::readShortLE(inFile);      // Bits per pixel, we support 24 or 32
 
-	compression = BMPReader::readIntLE(inFile);// Compression method
-	imageSize = BMPReader::readIntLE(inFile);  // total size of bitmap data
+	BMPReader::readIntLE(inFile);              // Compression method
+	BMPReader::readIntLE(inFile);              // total size of bitmap data
 
 	if (bpp != 24 && bpp != 32) {
 		printf("Error: %s is not a 32 or 24 bits per pixel image.\n", filename);

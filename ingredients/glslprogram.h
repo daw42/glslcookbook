@@ -42,7 +42,7 @@ private:
 
 	// Make these private in order to make the object non-copyable
 	GLSLProgram( const GLSLProgram & other ) { }
-	GLSLProgram & operator=( const GLSLProgram &other ) { }
+	GLSLProgram & operator=( const GLSLProgram &other ) { return *this; }
 
 public:
     GLSLProgram();

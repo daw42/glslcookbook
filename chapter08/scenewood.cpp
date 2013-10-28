@@ -30,7 +30,6 @@ void SceneWood::initScene()
 
     glEnable(GL_DEPTH_TEST);
 
-    float c = 3.5f;
     projection = mat4(1.0f);
 
     // Array for quad

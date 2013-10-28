@@ -72,5 +72,5 @@ int NoiseTex::generate2DTex(float baseFreq, float persistence, int w, int h, boo
 }
 
 int NoiseTex::generatePeriodic2DTex(float baseFreq, float persist, int w, int h) {
-  NoiseTex::generate2DTex(baseFreq, persist, w, h, true);
+  return NoiseTex::generate2DTex(baseFreq, persist, w, h, true);
 }

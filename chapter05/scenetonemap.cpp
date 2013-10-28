@@ -22,7 +22,6 @@ void SceneToneMap::initScene()
 
     glEnable(GL_DEPTH_TEST);
 
-    float c = 1.5f;
     plane = new VBOPlane(20.0f, 10.0f, 1, 1);
     teapot = new VBOTeapot(14, mat4(1.0));
     sphere = new VBOSphere(2.0f, 50, 50);
@@ -118,12 +117,6 @@ void SceneToneMap::setupFBO()
 
 void SceneToneMap::update( float t )
 {
-	float deltaT = t - tPrev;
-	if(tPrev == 0.0f) deltaT = 0.0f;
-	tPrev = t;
-
-    //angle += rotSpeed * deltaT;
-   // if( angle > TWOPI_F) angle -= TWOPI_F;
 }
 
 void SceneToneMap::render()

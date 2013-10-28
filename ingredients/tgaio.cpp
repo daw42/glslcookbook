@@ -131,7 +131,7 @@ void write( GLubyte * pd, int width, int height, const char * fName) throw(IOExc
 		oFile.put(32);               // Bits per pixel (32)
 		oFile.put(8);                // Image descriptor (8 => 32bpp)
 		
-		for( unsigned int i = 0; i < (width * height); i++ ) {
+		for( int i = 0; i < (width * height); i++ ) {
 			oFile.put( pd[i*4 + 2] );  // Blue
 			oFile.put( pd[i*4 + 1] );  // Green
 			oFile.put( pd[i*4    ] );  // Red 
