@@ -2,41 +2,56 @@ cmake_minimum_required (VERSION 2.8)
 
 project (GLSLCOOKBOOK)
 
-if( GLFW_SEARCH_PATH )
-	set( GLFW_LIB_SEARCH_PATH ${GLFW_SEARCH_PATH}/lib )
-	set( GLFW_INCLUDE_SEARCH_PATH ${GLFW_SEARCH_PATH}/include )
-endif( GLFW_SEARCH_PATH )
-
-set( GLM_INCLUDE_SEARCH_PATH /usr/include /usr/local/include )
-if( GLM_SEARCH_PATH )
-	list( APPEND GLM_INCLUDE_SEARCH_PATH ${GLM_SEARCH_PATH} )
-endif( GLM_SEARCH_PATH )
-
 set( GLSLCOOKBOOK_LIBS ingredients )
 set( GLSLCOOKBOOK_INCLUDE ${GLSLCOOKBOOK_SOURCE_DIR}/ingredients )
 
-if( UNIX )
-	find_package( GLM REQUIRED )
-	list( APPEND GLSLCOOKBOOK_INCLUDE ${GLM_INCLUDE_DIRS} )
-
-	find_package( glfw 3 REQUIRED )
-	list( APPEND GLSLCOOKBOOK_INCLUDE ${GLM_INCLUDE_DIR} )
-	list( APPEND GLSLCOOKBOOK_LIBS ${GLFW_LIBRARY} )
-
-	find_package( OpenGL REQUIRED )
-	list( APPEND GLSLCOOKBOOK_LIBS ${OPENGL_gl_LIBRARY} )
-	
-	find_package( Threads REQUIRED )
-	list( APPEND GLSLCOOKBOOK_LIBS ${CMAKE_THREAD_LIBS_INIT} )
-	
-	find_package( X11 REQUIRED )
-	list( APPEND GLSLCOOKBOOK_LIBS ${X11_Xrandr_LIB} ${X11_Xxf86vm_LIB} ${X11_Xi_LIB} )
-	
-	find_library( RT_LIB rt )
-	list( APPEND GLSLCOOKBOOK_LIBS ${RT_LIB} )
+# GLM ---------------
+find_package(GLM 0.9)
+set(GLM_INCLUDE_DIR "${GLM_INCLUDE_DIR}" CACHE PATH "GLM include directory")
+if (NOT ${GLM_INCLUDE_DIR})
+	find_path(GLM_INCLUDE_DIR glm/glm.hpp)
 endif()
 
-include_directories( ${GLSLCOOKBOOK_INCLUDE} )
+list(APPEND GLSLCOOKBOOK_INCLUDE ${GLM_INCLUDE_DIR})
+
+
+# GLFW --------------
+find_package(glfw 3)
+set(GLFW_INCLUDE_DIR "${GLFW_INCLUDE_DIR}" CACHE PATH "GLFW include directory")
+if (NOT ${GLFW_INCLUDE_DIR})
+	find_path(GLFW_INCLUDE_DIR GLFW/glfw3.h)
+endif()
+
+set(GLFW_LIBRARY "${GLFW_LIBRARY}" CACHE FILEPATH "GLFW library")
+# search for libglfw3 first
+if (NOT ${GLFW_LIBRARY})
+	find_library(GLFW_LIBRARY glfw3)
+endif()
+# then search for libglfw3 first
+if (NOT ${GLFW_LIBRARY})
+	find_library(GLFW_LIBRARY glfw)
+endif()
+
+list(APPEND GLSLCOOKBOOK_INCLUDE ${GLFW_INCLUDE_DIR})
+list(APPEND GLSLCOOKBOOK_LIBS ${GLFW_LIBRARY})
+
+
+
+if(UNIX)
+	find_package(OpenGL REQUIRED)
+	list(APPEND GLSLCOOKBOOK_LIBS ${OPENGL_gl_LIBRARY})
+	
+	find_package(Threads REQUIRED)
+	list(APPEND GLSLCOOKBOOK_LIBS ${CMAKE_THREAD_LIBS_INIT})
+	
+	find_package(X11 REQUIRED)
+	list(APPEND GLSLCOOKBOOK_LIBS ${X11_Xrandr_LIB} ${X11_Xxf86vm_LIB} ${X11_Xi_LIB})
+	
+	find_library(RT_LIB rt)
+	list(APPEND GLSLCOOKBOOK_LIBS ${RT_LIB})
+endif()
+
+include_directories(${GLSLCOOKBOOK_INCLUDE})
 
 add_subdirectory( ingredients )
 add_subdirectory( chapter01 )
