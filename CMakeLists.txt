@@ -2,7 +2,7 @@ cmake_minimum_required (VERSION 2.8)
 
 project (GLSLCOOKBOOK)
 
-set( CMAKE_MODULE_PATH "cmake/modules" )
+set( CMAKE_MODULE_PATH ${GLSLCOOKBOOK_SOURCE_DIR}/cmake/modules )
 
 IF(NOT CMAKE_BUILD_TYPE)
   SET(CMAKE_BUILD_TYPE RelWithDebInfo CACHE STRING
