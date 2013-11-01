@@ -5,12 +5,17 @@
 #include "scenemandelbrot.h"
 #include "scenecloth.h"
 #include "sceneparticles.h"
+#include "sceneedge.h"
 
 #define WIN_WIDTH 800
 #define WIN_HEIGHT 600
 
+#include <sstream>
+using std::stringstream;
+
 Scene *scene;
 GLFWwindow *window;
+string title;
 
 string parseCLArgs(int argc, char ** argv);
 void printHelpInfo(const char *);
@@ -34,13 +39,34 @@ void initializeGL() {
 }
 
 void mainLoop() {
-	while( ! glfwWindowShouldClose(window) && !glfwGetKey(window, GLFW_KEY_ESCAPE) ) {
-		GLUtils::checkForOpenGLError(__FILE__,__LINE__);
-		scene->update(glfwGetTime());
-		scene->render();
-		glfwSwapBuffers(window);
-		glfwPollEvents();
-	}
+  const int samples = 50;
+  float time[samples];
+  int index = 0;
+
+  while( ! glfwWindowShouldClose(window) && !glfwGetKey(window, GLFW_KEY_ESCAPE) ) {
+    GLUtils::checkForOpenGLError(__FILE__,__LINE__);
+    scene->update(glfwGetTime());
+    scene->render();
+    glfwSwapBuffers(window);
+    glfwPollEvents();
+
+    // Update FPS
+    time[index] = glfwGetTime();
+    index = (index + 1) % samples;
+
+    if( index == 0 ) {
+      float sum = 0.0f;
+      for( int i = 0; i < samples-1 ; i++ ) 
+        sum += time[i + 1] - time[i];
+      float fps = samples / sum;
+
+      stringstream strm;
+      strm << title;
+      strm.precision(4);
+      strm << " (fps: " << fps << ")";
+      glfwSetWindowTitle(window, strm.str().c_str());
+    }
+  }
 }
 
 void resizeGL(int w, int h ) {
@@ -63,7 +89,7 @@ int main(int argc, char *argv[])
         glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
 
 	// Open the window
-	string title = "Chapter 10 -- " + recipe;
+	title = "Chapter 10 -- " + recipe;
 	window = glfwCreateWindow( WIN_WIDTH, WIN_HEIGHT, title.c_str(), NULL, NULL);
 	if( ! window ) {
 		glfwTerminate();
@@ -109,6 +135,8 @@ string parseCLArgs(int argc, char ** argv) {
           scene = new SceneCloth();
         } else if( recipe == "particles" ) {
           scene = new SceneParticles();
+        } else if( recipe == "edge" ) {
+          scene = new SceneEdge();
 	} else {
 		printf("Unknown recipe: %s\n", recipe.c_str());
 		printHelpInfo(argv[0]);
@@ -124,4 +152,5 @@ void printHelpInfo(const char * exeFile) {
         printf("  particles            : Simple particle simulation\n");
 	printf("  mandelbrot           : Mandelbrot set with compute shader\n");
         printf("  cloth                : Cloth simulation with compute shader\n");
+        printf("  edge                 : Edge detection filter using compute shader\n");
 }

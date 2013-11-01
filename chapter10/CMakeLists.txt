@@ -3,6 +3,7 @@ set( chapter10_SOURCES
 	scenemandelbrot.cpp
 	scenecloth.cpp
 	sceneparticles.cpp
+        sceneedge.cpp
 )
 
 add_executable( chapter10 ${chapter10_SOURCES} )
