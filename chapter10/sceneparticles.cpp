@@ -34,7 +34,7 @@ void SceneParticles::initScene()
   compileAndLinkShader();
   initBuffers();
 
-  glClearColor(0,0,0,1);
+  glClearColor(1,1,1,1);
 
   projection = glm::perspective( 50.0f, (float)width/height, 1.0f, 100.0f);
 
@@ -70,34 +70,27 @@ void SceneParticles::initBuffers()
     }
   }
 
-  // We need buffers for position (2), and velocity (2).
-  GLuint bufs[4];
-  glGenBuffers(4, bufs);
-  posBufs[0] = bufs[0];
-  posBufs[1] = bufs[1];
-  velBufs[0] = bufs[2];
-  velBufs[1] = bufs[3];
-  readBuf = 0;
+  // We need buffers for position , and velocity.
+  GLuint bufs[2];
+  glGenBuffers(2, bufs);
+  GLuint posBuf = bufs[0];
+  GLuint velBuf = bufs[1];
 
   GLuint bufSize = totalParticles * 4 * sizeof(GLfloat);
 
   // The buffers for positions
-  glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, posBufs[0]);
+  glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, posBuf);
   glBufferData(GL_SHADER_STORAGE_BUFFER, bufSize, &initPos[0], GL_DYNAMIC_DRAW);
-  glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, posBufs[1]);
-  glBufferData(GL_SHADER_STORAGE_BUFFER, bufSize, NULL, GL_DYNAMIC_DRAW);
 
   // Velocities 
-  glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, velBufs[0]);
+  glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, velBuf);
   glBufferData(GL_SHADER_STORAGE_BUFFER, bufSize, &initVel[0], GL_DYNAMIC_COPY);
-  glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, velBufs[1]);
-  glBufferData(GL_SHADER_STORAGE_BUFFER, bufSize, NULL, GL_DYNAMIC_COPY);
 
   // Set up the VAO
   glGenVertexArrays(1, &particlesVao);
   glBindVertexArray(particlesVao);
   
-  glBindBuffer(GL_ARRAY_BUFFER, posBufs[readBuf]);
+  glBindBuffer(GL_ARRAY_BUFFER, posBuf);
   glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
   glEnableVertexAttribArray(0);
 
@@ -156,7 +149,7 @@ void SceneParticles::render()
 
   // Draw the particles
   glPointSize(1.0f);
-  renderProg.setUniform("Color", glm::vec4(1,1,1,0.2f));
+  renderProg.setUniform("Color", glm::vec4(0,0,0,0.2f));
   glBindVertexArray(particlesVao);
   glDrawArrays(GL_POINTS,0, totalParticles);
   glBindVertexArray(0);
@@ -171,11 +164,6 @@ void SceneParticles::render()
   glDrawArrays(GL_POINTS, 0, 2);
   glBindVertexArray(0);
 
-  readBuf = 1 - readBuf;
-  glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, posBufs[readBuf]);
-  glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, posBufs[1 - readBuf]);
-  glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, velBufs[readBuf]);
-  glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, velBufs[1 - readBuf]);
 }
 
 void SceneParticles::setMatrices() {

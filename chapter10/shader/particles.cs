@@ -13,23 +13,17 @@ uniform float ParticleInvMass = 1.0 / 0.1;
 uniform float DeltaT = 0.0005;
 uniform float MaxDist = 45.0;
 
-layout(std430, binding=0) buffer PosIn {
-  vec4 PositionIn[];
+layout(std430, binding=0) buffer Pos {
+  vec4 Position[];
 };
-layout(std430, binding=1) buffer PosOut {
-  vec4 PositionOut[];
-};
-layout(std430, binding=2) buffer VelIn {
-  vec4 VelocityIn[];
-};
-layout(std430, binding=3) buffer VelOut {
-  vec4 VelocityOut[];
+layout(std430, binding=1) buffer Vel {
+  vec4 Velocity[];
 };
 
 void main() {
   uint idx = gl_GlobalInvocationID.x;
 
-  vec3 p = PositionIn[idx].xyz;
+  vec3 p = Position[idx].xyz;
 
   // Force from black hole #1
   vec3 d = BlackHolePos1 - p;
@@ -43,13 +37,13 @@ void main() {
 
   // Reset particles that get too far from the attractors
   if( dist > MaxDist ) {
-    PositionOut[idx] = vec4(0,0,0,1);
+    Position[idx] = vec4(0,0,0,1);
   } else {
     // Apply simple Euler integrator
     vec3 a = force * ParticleInvMass;
-    PositionOut[idx] = vec4(
-        p + VelocityIn[idx].xyz * DeltaT + 0.5 * a * DeltaT * DeltaT, 1.0);
-    VelocityOut[idx] = vec4( VelocityIn[idx].xyz + a * DeltaT, 0.0);
+    Position[idx] = vec4(
+        p + Velocity[idx].xyz * DeltaT + 0.5 * a * DeltaT * DeltaT, 1.0);
+    Velocity[idx] = vec4( Velocity[idx].xyz + a * DeltaT, 0.0);
   }
 }
 

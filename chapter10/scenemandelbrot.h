@@ -5,6 +5,7 @@
 #include "glslprogram.h"
 
 #include "cookbookogl.h"
+#include "vbocube.h"
 
 #include <glm/glm.hpp>
 using glm::mat4;
@@ -16,11 +17,13 @@ private:
 
     int width, height;
     GLuint dataBuf, fsQuad;
+    VBOCube *cube;
 
     glm::vec2 center;
     float cheight;
 
     float time, deltaT, speed;
+    float angle, rotSpeed;
 
     void compileAndLinkShader();
     void initBuffers();
