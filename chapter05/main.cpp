@@ -160,11 +160,11 @@ string parseCLArgs(int argc, char ** argv) {
 void printHelpInfo(const char * exeFile) {
   printf("Usage: %s recipe-name\n\n", exeFile);
   printf("Recipe names: \n");
-  printf("  blur     : description...\n");
-  printf("  deferred : description...\n");
-  printf("  edge     : description...\n");
-  printf("  gamma    : description...\n");
-  printf("  msaa     : description...\n");
+  printf("  blur     : Gaussian blur\n");
+  printf("  deferred : deferred rendering\n");
+  printf("  edge     : edge detection filter\n");
+  printf("  gamma    : gamma correction\n");
+  printf("  msaa     : multisample anti-aliasing\n");
   printf("  tone-map : tone mapping example.\n");
   printf("  hdr-bloom: bloom example with HDR tone mapping.\n");
   printf("  oit      : order independent transparency\n");

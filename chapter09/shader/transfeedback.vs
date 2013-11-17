@@ -1,4 +1,4 @@
-#version 400
+#version 440
 
 subroutine void RenderPassType();
 subroutine uniform RenderPassType RenderPass;
@@ -8,9 +8,9 @@ layout (location = 1) in vec3 VertexVelocity;
 layout (location = 2) in float VertexStartTime;
 layout (location = 3) in vec3 VertexInitialVelocity;
 
-out vec3 Position;   // To transform feedback
-out vec3 Velocity;   // To transform feedback
-out float StartTime; // To transform feedback
+layout( xfb_buffer = 0, xfb_offset=0 ) out vec3 Position;   // To transform feedback
+layout( xfb_buffer = 1, xfb_offset=0 ) out vec3 Velocity;   // To transform feedback
+layout( xfb_buffer = 2, xfb_offset=0 ) out float StartTime; // To transform feedback
 out float Transp;    // To fragment shader
 
 uniform float Time;  // Simulation time

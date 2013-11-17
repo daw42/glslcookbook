@@ -27,21 +27,18 @@ SceneFire::SceneFire()
 
 void SceneFire::initScene()
 {    
-
     compileAndLinkShader();
 
     GLuint programHandle = prog.getHandle();
     renderSub = glGetSubroutineIndex(programHandle, GL_VERTEX_SHADER, "render");
     updateSub = glGetSubroutineIndex(programHandle, GL_VERTEX_SHADER, "update");
 
-    glClearColor(0.1f,0.1f,0.1f,0.0f);
+    glClearColor(1.0f,1.0f,1.0f,1.0f);
 
-    //glEnable(GL_PROGRAM_POINT_SIZE);
     glPointSize(50.0f);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    plane = new VBOPlane(13.0f, 10.0f, 200, 2);
     projection = mat4(1.0f);
 
     angle = (float)(PI / 2.0f);
@@ -49,13 +46,11 @@ void SceneFire::initScene()
 
     initBuffers();
 
-    glGenQueries(1, &query);
-
     const char * texName = "../media/texture/fire.bmp";
     glActiveTexture(GL_TEXTURE0);
     BMPReader::loadTex(texName);
 
-	prog.setUniform("ParticleTex", 0);
+    prog.setUniform("ParticleTex", 0);
     prog.setUniform("ParticleLifetime", 4.0f);
     prog.setUniform("Accel", vec3(0.0f,0.1f,0.0f));
     setMatrices();
@@ -205,18 +200,11 @@ void SceneFire::render()
 
     glBindTransformFeedback(GL_TRANSFORM_FEEDBACK, feedback[drawBuf]);
 
-    glBeginQuery(GL_TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN, query);
-
     glBeginTransformFeedback(GL_POINTS);
       glBindVertexArray(particleArray[1-drawBuf]);
       glDrawArrays(GL_POINTS, 0, nParticles);
     glEndTransformFeedback();
 
-    glEndQuery(GL_TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN);
-
-    GLuint ptsWritten;
-    glGetQueryObjectuiv(query, GL_QUERY_RESULT, &ptsWritten);
-    //printf("Written: %d\n", ptsWritten);
     glDisable(GL_RASTERIZER_DISCARD);
 
     // Render pass
@@ -225,9 +213,8 @@ void SceneFire::render()
     view = glm::lookAt(vec3(3.0f * cos(angle),1.5f,3.0f * sin(angle)), vec3(0.0f,1.5f,0.0f), vec3(0.0f,1.0f,0.0f));
     setMatrices();
 
-    glBindTransformFeedback(GL_TRANSFORM_FEEDBACK, 0);
     glBindVertexArray(particleArray[drawBuf]);
-    glDrawArrays(GL_POINTS, 0, nParticles);
+    glDrawTransformFeedback(GL_POINTS, feedback[drawBuf]);
 
     // Swap buffers
     drawBuf = 1 - drawBuf;

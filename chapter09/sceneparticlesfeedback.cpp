@@ -36,20 +36,14 @@ void SceneParticlesFeedback::initScene()
 
     glClearColor(0.1f,0.1f,0.1f,0.0f);
 
-    //glEnable(GL_PROGRAM_POINT_SIZE);
     glPointSize(10.0f);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    plane = new VBOPlane(13.0f, 10.0f, 200, 2);
     projection = mat4(1.0f);
-
-    angle = (float)( PI / 2.0f );
     model = mat4(1.0f);
 
     initBuffers();
-
-    glGenQueries(1, &query);
 
     const char * texName = "../media/texture/bluewater.bmp";
     glActiveTexture(GL_TEXTURE0);
@@ -58,7 +52,6 @@ void SceneParticlesFeedback::initScene()
     prog.setUniform("ParticleTex", 0);
     prog.setUniform("ParticleLifetime", 3.5f);
     prog.setUniform("Accel", vec3(0.0f,-0.4f,0.0f));
-    setMatrices();
 }
 
 void SceneParticlesFeedback::initBuffers()
@@ -72,7 +65,7 @@ void SceneParticlesFeedback::initBuffers()
     glGenBuffers(1, &initVel);  // Initial velocity buffer (never changes, only need one)
 
     // Allocate space for all buffers
-    int size = nParticles * 3 * sizeof(float);
+    int size = nParticles * 3 * sizeof(GLfloat);
     glBindBuffer(GL_ARRAY_BUFFER, posBuf[0]);
     glBufferData(GL_ARRAY_BUFFER, size, NULL, GL_DYNAMIC_COPY);
     glBindBuffer(GL_ARRAY_BUFFER, posBuf[1]);
@@ -190,6 +183,10 @@ void SceneParticlesFeedback::initBuffers()
     glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 2, startTime[1]);
 
     glBindTransformFeedback(GL_TRANSFORM_FEEDBACK, 0);
+
+    GLint value;
+    glGetIntegerv(GL_MAX_TRANSFORM_FEEDBACK_BUFFERS, &value);
+    printf("MAX_TRANSFORM_FEEDBACK_BUFFERS = %d\n", value);
 }
 
 float SceneParticlesFeedback::randFloat() {
@@ -214,18 +211,11 @@ void SceneParticlesFeedback::render()
 
     glBindTransformFeedback(GL_TRANSFORM_FEEDBACK, feedback[drawBuf]);
 
-    glBeginQuery(GL_TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN, query);
-
     glBeginTransformFeedback(GL_POINTS);
       glBindVertexArray(particleArray[1-drawBuf]);
       glDrawArrays(GL_POINTS, 0, nParticles);
     glEndTransformFeedback();
 
-    glEndQuery(GL_TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN);
-
-    GLuint ptsWritten;
-    glGetQueryObjectuiv(query, GL_QUERY_RESULT, &ptsWritten);
-    //printf("Written: %d\n", ptsWritten);
     glDisable(GL_RASTERIZER_DISCARD);
 
     // Render pass
@@ -234,9 +224,8 @@ void SceneParticlesFeedback::render()
     view = glm::lookAt(vec3(3.0f * cos(angle),1.5f,3.0f * sin(angle)), vec3(0.0f,1.5f,0.0f), vec3(0.0f,1.0f,0.0f));
     setMatrices();
 
-    glBindTransformFeedback(GL_TRANSFORM_FEEDBACK, 0);
     glBindVertexArray(particleArray[drawBuf]);
-    glDrawArrays(GL_POINTS, 0, nParticles);
+    glDrawTransformFeedback(GL_POINTS, feedback[drawBuf]);
 
     // Swap buffers
     drawBuf = 1 - drawBuf;
@@ -262,8 +251,8 @@ void SceneParticlesFeedback::resize(int w, int h)
 void SceneParticlesFeedback::compileAndLinkShader()
 {
 	try {
-		prog.compileShader("shader/transfeedback.vs",GLSLShader::VERTEX);
-		prog.compileShader("shader/transfeedback.fs",GLSLShader::FRAGMENT);
+		prog.compileShader("shader/transfeedback.vs");
+		prog.compileShader("shader/transfeedback.fs");
 		
 	    //////////////////////////////////////////////////////
 		// Setup the transform feedback (must be done before linking the program)

@@ -23,12 +23,10 @@ private:
     GLuint posBuf[2], velBuf[2];
     GLuint particleArray[2];
     GLuint feedback[2], initVel, startTime[2];
-    GLuint drawBuf, query;
+    GLuint drawBuf;
     GLuint renderSub, updateSub;
 
     int nParticles;
-
-    VBOPlane *plane;
 
     mat4 model;
     mat4 view;

@@ -10,7 +10,7 @@ namespace GLUtils
     void dumpGLInfo(bool dumpExtensions = false);
     
     void debugCallback( GLenum source, GLenum type, GLuint id,
-		GLenum severity, GLsizei length, const GLchar * msg, void * param );
+		GLenum severity, GLsizei length, const GLchar * msg, const void * param );
 }
 
 #endif // GLUTILS_H

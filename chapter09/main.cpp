@@ -19,6 +19,11 @@ string parseCLArgs(int argc, char ** argv);
 void printHelpInfo(const char *);
 
 void initializeGL() {
+  glDebugMessageCallback(GLUtils::debugCallback, NULL);
+  glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, NULL, GL_TRUE);
+  glDebugMessageInsert(GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_MARKER, 0, 
+  GL_DEBUG_SEVERITY_NOTIFICATION, -1 , "Start debugging");
+  
     glClearColor(0.5f,0.5f,0.5f,1.0f);
     scene->initScene();
 }
@@ -46,10 +51,11 @@ int main(int argc, char *argv[])
 
 	// Select OpenGL 4.3 with a forward compatible core profile.
 	glfwWindowHint( GLFW_CONTEXT_VERSION_MAJOR, 4 );
-	glfwWindowHint( GLFW_CONTEXT_VERSION_MINOR, 3 );
+	glfwWindowHint( GLFW_CONTEXT_VERSION_MINOR, 4 );
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+        glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
 
 	// Open the window
 	string title = "Chapter 9 -- " + recipe;
@@ -114,10 +120,10 @@ string parseCLArgs(int argc, char ** argv) {
 void printHelpInfo(const char * exeFile) {
 	printf("Usage: %s recipe-name\n\n", exeFile);
 	printf("Recipe names: \n");
-	printf("  fire                 : description...\n");
-	printf("  particles            : description...\n");
-	printf("  particles-feedback   : description...\n");
-	printf("  particles-instanced  : description...\n");
-	printf("  smoke                : description...\n");
-	printf("  wave                 : description...\n");
+	printf("  fire                 : particles simulating fire\n");
+	printf("  particles            : a fountain of particles\n");
+	printf("  particles-feedback   : a fountain of particles implemented with transform feedback\n");
+	printf("  particles-instanced  : a fountain of instanced particles, mmmm.. donuts\n");
+	printf("  smoke                : particles simulating smoke\n");
+	printf("  wave                 : a plane wave displacement animation\n");
 }

@@ -1,4 +1,4 @@
-#version 400
+#version 430
 
 subroutine void RenderPassType();
 subroutine uniform RenderPassType RenderPass;

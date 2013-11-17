@@ -9,7 +9,7 @@ using std::string;
 namespace GLUtils {
 
 void debugCallback( GLenum source, GLenum type, GLuint id,
-	GLenum severity, GLsizei length, const GLchar * msg, void * param ) {
+	GLenum severity, GLsizei length, const GLchar * msg, const void * param ) {
 	
 	string sourceStr;
 	switch(source) {
