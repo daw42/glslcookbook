@@ -42,13 +42,12 @@ void SceneTexture::initScene()
     glGenTextures(1, &texID);
 
     glBindTexture(GL_TEXTURE_2D, texID);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+    glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA8, w, h);
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, w, h, GL_RGBA, GL_UNSIGNED_BYTE, data);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
 
     delete [] data;
-
 }
 
 void SceneTexture::update( float t )
@@ -91,13 +90,13 @@ void SceneTexture::resize(int w, int h)
 
 void SceneTexture::compileAndLinkShader()
 {
-	try {
-		prog.compileShader("shader/texture.vs",GLSLShader::VERTEX);
-		prog.compileShader("shader/texture.fs",GLSLShader::FRAGMENT);
-    	prog.link();
-    	prog.use();
-    } catch(GLSLProgramException & e) {
- 		cerr << e.what() << endl;
- 		exit( EXIT_FAILURE );
-    }
+  try {
+    prog.compileShader("shader/texture.vs");
+    prog.compileShader("shader/texture.fs");
+    prog.link();
+    prog.use();
+  } catch(GLSLProgramException & e) {
+    cerr << e.what() << endl;
+    exit( EXIT_FAILURE );
+  }
 }

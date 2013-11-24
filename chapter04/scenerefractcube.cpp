@@ -41,7 +41,7 @@ void SceneRefractCube::initScene()
 
 void SceneRefractCube::loadCubeMap( const char * baseFileName )
 {
-     glActiveTexture(GL_TEXTURE0);
+    glActiveTexture(GL_TEXTURE0);
 
     GLuint texID;
     glGenTextures(1, &texID);
@@ -55,10 +55,14 @@ void SceneRefractCube::loadCubeMap( const char * baseFileName )
     };
 
     GLint w, h;
+    // Allocate storage
+    glTexStorage2D(GL_TEXTURE_CUBE_MAP, 1, GL_RGBA8, 256, 256);
+
+    // Load each cube-map face
     for( int i = 0; i < 6; i++ ) {
 	string texName = string(baseFileName) + "_" + suffixes[i] + ".tga";
 	GLubyte * data = TGAIO::read(texName.c_str(), w, h);
-	glTexImage2D(targets[i], 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+	glTexSubImage2D(targets[i], 0, 0, 0, w, h, GL_RGBA, GL_UNSIGNED_BYTE, data);
 	delete [] data;
     }
 
@@ -67,18 +71,16 @@ void SceneRefractCube::loadCubeMap( const char * baseFileName )
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAX_LEVEL, 0);
-    
 }
 
 void SceneRefractCube::update( float t )
 {
-	float deltaT = t - tPrev;
-	if(tPrev == 0.0f) deltaT = 0.0f;
-	tPrev = t;
+  float deltaT = t - tPrev;
+  if(tPrev == 0.0f) deltaT = 0.0f;
+  tPrev = t;
 
-    angle += rotSpeed * deltaT;
-    if( angle > TWOPI_F) angle -= TWOPI_F;
+  angle += rotSpeed * deltaT;
+  if( angle > TWOPI_F) angle -= TWOPI_F;
 }
 
 void SceneRefractCube::render()
@@ -123,13 +125,13 @@ void SceneRefractCube::resize(int w, int h)
 
 void SceneRefractCube::compileAndLinkShader()
 {
-	try {
-		prog.compileShader("shader/cubemap_refract.vs",GLSLShader::VERTEX);
-		prog.compileShader("shader/cubemap_refract.fs",GLSLShader::FRAGMENT);
-    	prog.link();
-    	prog.use();
-    } catch(GLSLProgramException & e) {
- 		cerr << e.what() << endl;
- 		exit( EXIT_FAILURE );
-    }
+  try {
+    prog.compileShader("shader/cubemap_refract.vs",GLSLShader::VERTEX);
+    prog.compileShader("shader/cubemap_refract.fs",GLSLShader::FRAGMENT);
+    prog.link();
+    prog.use();
+  } catch(GLSLProgramException & e) {
+    cerr << e.what() << endl;
+    exit( EXIT_FAILURE );
+  }
 }

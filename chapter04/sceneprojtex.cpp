@@ -53,12 +53,12 @@ void SceneProjTex::initScene()
 
 void SceneProjTex::update( float t )
 {
-	float deltaT = t - tPrev;
-	if(tPrev == 0.0f) deltaT = 0.0f;
-	tPrev = t;
+  float deltaT = t - tPrev;
+  if(tPrev == 0.0f) deltaT = 0.0f;
+  tPrev = t;
 
-    angle += rotSpeed * deltaT;
-    if( angle > TWOPI_F) angle -= TWOPI_F;
+  angle += rotSpeed * deltaT;
+  if( angle > TWOPI_F) angle -= TWOPI_F;
 }
 
 void SceneProjTex::render()
@@ -111,13 +111,13 @@ void SceneProjTex::resize(int w, int h)
 
 void SceneProjTex::compileAndLinkShader()
 {
-	try {
-		prog.compileShader("shader/projtex.vs",GLSLShader::VERTEX);
-		prog.compileShader("shader/projtex.fs",GLSLShader::FRAGMENT);
-    	prog.link();
-    	prog.use();
-    } catch(GLSLProgramException & e) {
- 		cerr << e.what() << endl;
- 		exit( EXIT_FAILURE );
-    }
+  try {
+    prog.compileShader("shader/projtex.vs",GLSLShader::VERTEX);
+    prog.compileShader("shader/projtex.fs",GLSLShader::FRAGMENT);
+    prog.link();
+    prog.use();
+  } catch(GLSLProgramException & e) {
+    cerr << e.what() << endl;
+    exit( EXIT_FAILURE );
+  }
 }

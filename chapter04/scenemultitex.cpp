@@ -78,13 +78,13 @@ void SceneMultiTex::resize(int w, int h)
 
 void SceneMultiTex::compileAndLinkShader()
 {
-	try {
-		prog.compileShader("shader/multitex.vs",GLSLShader::VERTEX);
-		prog.compileShader("shader/multitex.fs",GLSLShader::FRAGMENT);
-    	prog.link();
-    	prog.use();
-    } catch(GLSLProgramException & e) {
- 		cerr << e.what() << endl;
- 		exit( EXIT_FAILURE );
-    }
+  try {
+    prog.compileShader("shader/multitex.vs",GLSLShader::VERTEX);
+    prog.compileShader("shader/multitex.fs",GLSLShader::FRAGMENT);
+    prog.link();
+    prog.use();
+  } catch(GLSLProgramException & e) {
+    cerr << e.what() << endl;
+    exit( EXIT_FAILURE );
+  }
 }

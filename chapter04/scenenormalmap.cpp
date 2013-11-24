@@ -90,13 +90,13 @@ void SceneNormalMap::resize(int w, int h)
 
 void SceneNormalMap::compileAndLinkShader()
 {
-    try {
-	prog.compileShader("shader/normalmap.vs");
-	prog.compileShader("shader/normalmap.fs");
-    	prog.link();
-    	prog.use();
-    } catch(GLSLProgramException & e) {
- 		cerr << e.what() << endl;
- 		exit( EXIT_FAILURE );
-    }
+  try {
+    prog.compileShader("shader/normalmap.vs");
+    prog.compileShader("shader/normalmap.fs");
+    prog.link();
+    prog.use();
+  } catch(GLSLProgramException & e) {
+    cerr << e.what() << endl;
+    exit( EXIT_FAILURE );
+  }
 }

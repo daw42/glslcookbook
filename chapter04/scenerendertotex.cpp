@@ -41,8 +41,8 @@ void SceneRenderToTex::initScene()
     glActiveTexture(GL_TEXTURE1);
     glGenTextures(1, &whiteTexHandle);
     glBindTexture(GL_TEXTURE_2D,whiteTexHandle);
-    glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,1,1,0,GL_RGBA,GL_UNSIGNED_BYTE,whiteTex);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
+    glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA8, 1, 1);
+    glTexSubImage2D(GL_TEXTURE_2D,0,0,0,1,1,GL_RGBA,GL_UNSIGNED_BYTE,whiteTex);
 }
 
 void SceneRenderToTex::setupFBO() {
@@ -55,10 +55,9 @@ void SceneRenderToTex::setupFBO() {
     glGenTextures(1, &renderTex);
     glActiveTexture(GL_TEXTURE0);  // Use texture unit 0
     glBindTexture(GL_TEXTURE_2D, renderTex);
-    glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,512,512,0,GL_RGBA,GL_UNSIGNED_BYTE,NULL);
+    glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA8, 512, 512);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
 
     // Bind the texture to the FBO
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, renderTex, 0);
@@ -90,12 +89,12 @@ void SceneRenderToTex::setupFBO() {
 
 void SceneRenderToTex::update( float t )
 {
-	float deltaT = t - tPrev;
-	if(tPrev == 0.0f) deltaT = 0.0f;
-	tPrev = t;
+  float deltaT = t - tPrev;
+  if(tPrev == 0.0f) deltaT = 0.0f;
+  tPrev = t;
 
-    angle += rotSpeed * deltaT;
-    if( angle > TWOPI_F) angle -= TWOPI_F;
+  angle += rotSpeed * deltaT;
+  if( angle > TWOPI_F) angle -= TWOPI_F;
 }
 
 void SceneRenderToTex::render()
@@ -170,13 +169,13 @@ void SceneRenderToTex::resize(int w, int h)
 
 void SceneRenderToTex::compileAndLinkShader()
 {
-	try {
-		prog.compileShader("shader/rendertotex.vs",GLSLShader::VERTEX);
-		prog.compileShader("shader/rendertotex.fs",GLSLShader::FRAGMENT);
-    	prog.link();
-    	prog.use();
-    } catch(GLSLProgramException & e) {
- 		cerr << e.what() << endl;
- 		exit( EXIT_FAILURE );
-    }
+  try {
+    prog.compileShader("shader/rendertotex.vs",GLSLShader::VERTEX);
+    prog.compileShader("shader/rendertotex.fs",GLSLShader::FRAGMENT);
+    prog.link();
+    prog.use();
+  } catch(GLSLProgramException & e) {
+    cerr << e.what() << endl;
+    exit( EXIT_FAILURE );
+  }
 }

@@ -93,13 +93,13 @@ void SceneAlphaTest::resize(int w, int h)
 
 void SceneAlphaTest::compileAndLinkShader()
 {
-	try {
-		prog.compileShader("shader/alphatest.vs",GLSLShader::VERTEX);
-		prog.compileShader("shader/alphatest.fs",GLSLShader::FRAGMENT);
-    	prog.link();
-    	prog.use();
-    } catch(GLSLProgramException & e) {
- 		cerr << e.what() << endl;
- 		exit( EXIT_FAILURE );
-    }
+  try {
+    prog.compileShader("shader/alphatest.vs",GLSLShader::VERTEX);
+    prog.compileShader("shader/alphatest.fs",GLSLShader::FRAGMENT);
+    prog.link();
+    prog.use();
+  } catch(GLSLProgramException & e) {
+    cerr << e.what() << endl;
+    exit( EXIT_FAILURE );
+  }
 }

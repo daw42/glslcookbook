@@ -54,10 +54,14 @@ void SceneReflectCube::loadCubeMap( const char * baseFileName )
     };
 
     GLint w,h;
+    // Allocate the cube map texture
+    glTexStorage2D(GL_TEXTURE_CUBE_MAP, 1, GL_RGBA8, 256, 256);
+
+    // Load each cube-map face
     for( int i = 0; i < 6; i++ ) {
 	string texName = string(baseFileName) + "_" + suffixes[i] + ".tga";
 	GLubyte * data = TGAIO::read(texName.c_str(), w, h);
-	glTexImage2D(targets[i], 0, GL_RGBA, w, h, 0,
+	glTexSubImage2D(targets[i], 0, 0, 0, w, h, 
 		    GL_RGBA, GL_UNSIGNED_BYTE, data);
 	delete [] data;
     }
@@ -67,8 +71,6 @@ void SceneReflectCube::loadCubeMap( const char * baseFileName )
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAX_LEVEL, 0);
-
 }
 
 void SceneReflectCube::update( float t )
