@@ -1,14 +1,12 @@
-#version 400
+#version 440
 
 in vec3 Position;
 in vec3 Normal;
 in vec2 TexCoord;
 
-uniform sampler2D RenderTex;
+layout( binding=0 ) uniform sampler2D RenderTex;
 
 uniform float EdgeThreshold;
-uniform int Width;
-uniform int Height;
 
 subroutine vec4 RenderPassType();
 subroutine uniform RenderPassType RenderPass;
@@ -28,6 +26,7 @@ struct MaterialInfo {
 uniform MaterialInfo Material;
 
 layout( location = 0 ) out vec4 FragColor;
+const vec3 lum = vec3(0.2126, 0.7152, 0.0722);
 
 vec3 phongModel( vec3 pos, vec3 norm )
 {
@@ -52,23 +51,22 @@ vec4 pass1()
 }
 
 float luminance( vec3 color ) {
-    return 0.2126 * color.r + 0.7152 * color.g + 0.0722 * color.b;
+    return dot(lum,color);
 }
 
 subroutine( RenderPassType )
 vec4 pass2()
 {
-    float dx = 1.0 / float(Width);
-    float dy = 1.0 / float(Height);
+    ivec2 pix = ivec2(gl_FragCoord.xy);
 
-    float s00 = luminance(texture( RenderTex, TexCoord + vec2(-dx,dy) ).rgb);
-    float s10 = luminance(texture( RenderTex, TexCoord + vec2(-dx,0.0) ).rgb);
-    float s20 = luminance(texture( RenderTex, TexCoord + vec2(-dx,-dy) ).rgb);
-    float s01 = luminance(texture( RenderTex, TexCoord + vec2(0.0,dy) ).rgb);
-    float s21 = luminance(texture( RenderTex, TexCoord + vec2(0.0,-dy) ).rgb);
-    float s02 = luminance(texture( RenderTex, TexCoord + vec2(dx, dy) ).rgb);
-    float s12 = luminance(texture( RenderTex, TexCoord + vec2(dx, 0.0) ).rgb);
-    float s22 = luminance(texture( RenderTex, TexCoord + vec2(dx, -dy) ).rgb);
+    float s00 = luminance(texelFetchOffset(RenderTex, pix, 0, ivec2(-1,1)).rgb);
+    float s10 = luminance(texelFetchOffset(RenderTex, pix, 0, ivec2(-1,0)).rgb);
+    float s20 = luminance(texelFetchOffset(RenderTex, pix, 0, ivec2(-1,-1)).rgb);
+    float s01 = luminance(texelFetchOffset(RenderTex, pix, 0, ivec2(0,1)).rgb);
+    float s21 = luminance(texelFetchOffset(RenderTex, pix, 0, ivec2(0,-1)).rgb);
+    float s02 = luminance(texelFetchOffset(RenderTex, pix, 0, ivec2(1,1)).rgb);
+    float s12 = luminance(texelFetchOffset(RenderTex, pix, 0, ivec2(1,0)).rgb);
+    float s22 = luminance(texelFetchOffset(RenderTex, pix, 0, ivec2(1,-1)).rgb);
 
     float sx = s00 + 2 * s10 + s20 - (s02 + 2 * s12 + s22);
     float sy = s00 + 2 * s01 + s02 - (s20 + 2 * s21 + s22);

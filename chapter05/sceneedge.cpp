@@ -63,11 +63,11 @@ void SceneEdge::initScene()
     glBindVertexArray(fsQuad);
 
     glBindBuffer(GL_ARRAY_BUFFER, handle[0]);
-    glVertexAttribPointer( (GLuint)0, 3, GL_FLOAT, GL_FALSE, 0, ((GLubyte *)NULL + (0)) );
+    glVertexAttribPointer( (GLuint)0, 3, GL_FLOAT, GL_FALSE, 0, 0 );
     glEnableVertexAttribArray(0);  // Vertex position
 
     glBindBuffer(GL_ARRAY_BUFFER, handle[1]);
-    glVertexAttribPointer( (GLuint)2, 2, GL_FLOAT, GL_FALSE, 0, ((GLubyte *)NULL + (0)) );
+    glVertexAttribPointer( (GLuint)2, 2, GL_FLOAT, GL_FALSE, 0, 0 );
     glEnableVertexAttribArray(2);  // Texture coordinates
 
     glBindVertexArray(0);
@@ -77,10 +77,7 @@ void SceneEdge::initScene()
     pass1Index = glGetSubroutineIndex( programHandle, GL_FRAGMENT_SHADER, "pass1");
     pass2Index = glGetSubroutineIndex( programHandle, GL_FRAGMENT_SHADER, "pass2");
 
-    prog.setUniform("Width", 800);
-    prog.setUniform("Height", 600);
     prog.setUniform("EdgeThreshold", 0.1f);
-    prog.setUniform("RenderTex", 0);
     prog.setUniform("Light.Intensity", vec3(1.0f,1.0f,1.0f) );
 }
 
@@ -94,10 +91,9 @@ void SceneEdge::setupFBO() {
     glGenTextures(1, &renderTex);
     glActiveTexture(GL_TEXTURE0);  // Use texture unit 0
     glBindTexture(GL_TEXTURE_2D, renderTex);
-    glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,width,height,0,GL_RGBA,GL_UNSIGNED_BYTE,NULL);
+    glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA8, width, height);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
 
     // Bind the texture to the FBO
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, renderTex, 0);
@@ -214,13 +210,13 @@ void SceneEdge::resize(int w, int h)
 
 void SceneEdge::compileAndLinkShader()
 {
-	try {
-    	prog.compileShader("shader/edge.vs",GLSLShader::VERTEX);
-    	prog.compileShader("shader/edge.fs",GLSLShader::FRAGMENT);
-    	prog.link();
-    	prog.use();
-    } catch(GLSLProgramException &e ) {
-    	cerr << e.what() << endl;
- 		exit( EXIT_FAILURE );
-    }
+  try {
+    prog.compileShader("shader/edge.vs",GLSLShader::VERTEX);
+    prog.compileShader("shader/edge.fs",GLSLShader::FRAGMENT);
+    prog.link();
+    prog.use();
+  } catch(GLSLProgramException &e ) {
+    cerr << e.what() << endl;
+    exit( EXIT_FAILURE );
+  }
 }
