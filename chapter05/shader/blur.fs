@@ -1,10 +1,9 @@
-#version 400
+#version 440
 
 in vec3 Position;
 in vec3 Normal;
-in vec2 TexCoord;
 
-uniform sampler2D Texture0;
+layout(binding=0) uniform sampler2D Texture0;
 
 uniform int Width;
 uniform int Height;
@@ -28,7 +27,7 @@ uniform MaterialInfo Material;
 
 layout( location = 0 ) out vec4 FragColor;
 
-uniform float PixOffset[5] = float[](0.0,1.0,2.0,3.0,4.0);
+uniform int PixOffset[5] = int[](0,1,2,3,4);
 uniform float Weight[5] = float[]( 0.2270270270, 0.1945945946, 0.1216216216,
                                    0.0540540541, 0.0162162162 );
 
@@ -57,13 +56,12 @@ vec4 pass1()
 subroutine( RenderPassType )
 vec4 pass2()
 {
-    float dy = 1.0 / float(Height);
-
-    vec4 sum = texture(Texture0, TexCoord) * Weight[0];
+    ivec2 pix = ivec2( gl_FragCoord.xy );
+    vec4 sum = texelFetch(Texture0, pix, 0) * Weight[0];
     for( int i = 1; i < 5; i++ )
     {
-         sum += texture( Texture0, TexCoord + vec2(0.0,PixOffset[i]) * dy ) * Weight[i];
-         sum += texture( Texture0, TexCoord - vec2(0.0,PixOffset[i]) * dy ) * Weight[i];
+         sum += texelFetchOffset( Texture0, pix, 0, ivec2(0,PixOffset[i]) ) * Weight[i];
+         sum += texelFetchOffset( Texture0, pix, 0, ivec2(0,-PixOffset[i]) ) * Weight[i];
     }
     return sum;
 }
@@ -71,13 +69,12 @@ vec4 pass2()
 subroutine( RenderPassType )
 vec4 pass3()
 {
-    float dx = 1.0 / float(Width);
-
-    vec4 sum = texture(Texture0, TexCoord) * Weight[0];
+    ivec2 pix = ivec2( gl_FragCoord.xy );
+    vec4 sum = texelFetch(Texture0, pix, 0) * Weight[0];
     for( int i = 1; i < 5; i++ )
     {
-       sum += texture( Texture0, TexCoord + vec2(PixOffset[i],0.0) * dx ) * Weight[i];
-       sum += texture( Texture0, TexCoord - vec2(PixOffset[i],0.0) * dx ) * Weight[i];
+       sum += texelFetchOffset( Texture0, pix, 0, ivec2(PixOffset[i],0) ) * Weight[i];
+       sum += texelFetchOffset( Texture0, pix, 0, ivec2(-PixOffset[i],0) ) * Weight[i];
     }
     return sum;
 }

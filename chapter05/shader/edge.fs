@@ -2,7 +2,6 @@
 
 in vec3 Position;
 in vec3 Normal;
-in vec2 TexCoord;
 
 layout( binding=0 ) uniform sampler2D RenderTex;
 
@@ -71,9 +70,9 @@ vec4 pass2()
     float sx = s00 + 2 * s10 + s20 - (s02 + 2 * s12 + s22);
     float sy = s00 + 2 * s01 + s02 - (s20 + 2 * s21 + s22);
 
-    float dist = sx * sx + sy * sy;
+    float g = sx * sx + sy * sy;
 
-    if( dist > EdgeThreshold )
+    if( g > EdgeThreshold )
         return vec4(1.0);
     else
         return vec4(0.0,0.0,0.0,1.0);
