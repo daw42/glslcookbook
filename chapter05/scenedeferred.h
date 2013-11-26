@@ -37,6 +37,7 @@ private:
     void setMatrices();
     void compileAndLinkShader();
     void setupFBO();
+    void createGBufTex(GLenum, GLenum, GLuint &);
     void pass1();
     void pass2();
 

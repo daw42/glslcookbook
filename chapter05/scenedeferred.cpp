@@ -76,6 +76,15 @@ void SceneDeferred::initScene()
     prog.setUniform("Light.Intensity", vec3(1.0f,1.0f,1.0f) );
 }
 
+void SceneDeferred::createGBufTex( GLenum texUnit, GLenum format, GLuint &texid ) {
+    glActiveTexture(texUnit);   // Use texture unit 0
+    glGenTextures(1, &texid);
+    glBindTexture(GL_TEXTURE_2D, texid);
+    glTexStorage2D(GL_TEXTURE_2D, 1, format, width, height);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+}
+
 void SceneDeferred::setupFBO()
 {
     GLuint depthBuf, posTex, normTex, colorTex;
@@ -89,32 +98,9 @@ void SceneDeferred::setupFBO()
     glBindRenderbuffer(GL_RENDERBUFFER, depthBuf);
     glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, width, height);
 
-    // The position buffer
-    glActiveTexture(GL_TEXTURE0);   // Use texture unit 0
-    glGenTextures(1, &posTex);
-    glBindTexture(GL_TEXTURE_2D, posTex);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
-
-    // The normal buffer
-    glActiveTexture(GL_TEXTURE1);
-    glGenTextures(1, &normTex);
-    glBindTexture(GL_TEXTURE_2D, normTex);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
-
-    // The color buffer
-    glActiveTexture(GL_TEXTURE2);
-    glGenTextures(1, &colorTex);
-    glBindTexture(GL_TEXTURE_2D, colorTex);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
+    createGBufTex(GL_TEXTURE0, GL_RGB32F, posTex);  // Position
+    createGBufTex(GL_TEXTURE1, GL_RGB32F, normTex); // Normal
+    createGBufTex(GL_TEXTURE2, GL_RGB8, colorTex);  // Color
 
     // Attach the images to the framebuffer
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthBuf);

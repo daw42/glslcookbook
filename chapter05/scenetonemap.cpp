@@ -92,24 +92,13 @@ void SceneToneMap::setupFBO()
     glActiveTexture(GL_TEXTURE0);
     glGenTextures(1, &hdrTex);
     glBindTexture(GL_TEXTURE_2D, hdrTex);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+    glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGB32F, width, height);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
-
-    // A 1x1 buffer for computing the global log-average luminance
-    glActiveTexture(GL_TEXTURE1);
-    glGenTextures(1, &avgTex);
-    glBindTexture(GL_TEXTURE_2D, avgTex);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, 1, 1, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
 
     // Attach the images to the framebuffer
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthBuf);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, hdrTex, 0);
-    //glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, avgTex, 0);
 
     GLenum drawBuffers[] = {GL_NONE, GL_COLOR_ATTACHMENT0};
     glDrawBuffers(2, drawBuffers);
