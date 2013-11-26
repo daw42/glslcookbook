@@ -70,14 +70,11 @@ void SceneDeferred::initScene()
     pass1Index = glGetSubroutineIndex( programHandle, GL_FRAGMENT_SHADER, "pass1");
     pass2Index = glGetSubroutineIndex( programHandle, GL_FRAGMENT_SHADER, "pass2");
 
-    prog.setUniform("PositionTex", 0);
-    prog.setUniform("NormalTex", 1);
-    prog.setUniform("ColorTex", 2);
     prog.setUniform("Light.Intensity", vec3(1.0f,1.0f,1.0f) );
 }
 
 void SceneDeferred::createGBufTex( GLenum texUnit, GLenum format, GLuint &texid ) {
-    glActiveTexture(texUnit);   // Use texture unit 0
+    glActiveTexture(texUnit); 
     glGenTextures(1, &texid);
     glBindTexture(GL_TEXTURE_2D, texid);
     glTexStorage2D(GL_TEXTURE_2D, 1, format, width, height);
@@ -98,11 +95,12 @@ void SceneDeferred::setupFBO()
     glBindRenderbuffer(GL_RENDERBUFFER, depthBuf);
     glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, width, height);
 
+    // Create the textures for position, normal and color
     createGBufTex(GL_TEXTURE0, GL_RGB32F, posTex);  // Position
     createGBufTex(GL_TEXTURE1, GL_RGB32F, normTex); // Normal
     createGBufTex(GL_TEXTURE2, GL_RGB8, colorTex);  // Color
 
-    // Attach the images to the framebuffer
+    // Attach the textures to the framebuffer
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthBuf);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, posTex, 0);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, normTex, 0);

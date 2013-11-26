@@ -1,4 +1,4 @@
-#version 400
+#version 440
 
 struct LightInfo {
   vec4 Position;  // Light position in eye coords.
@@ -14,7 +14,9 @@ uniform MaterialInfo Material;
 subroutine void RenderPassType();
 subroutine uniform RenderPassType RenderPass;
 
-uniform sampler2D PositionTex, NormalTex, ColorTex;
+layout(binding=0) uniform sampler2D PositionTex;
+layout(binding=1) uniform sampler2D NormalTex;
+layout(binding=2) uniform sampler2D ColorTex;
 
 in vec3 Position;
 in vec3 Normal;

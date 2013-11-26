@@ -12,6 +12,9 @@ using std::cerr;
 
 using glm::vec3;
 
+#include <vector>
+using std::vector;
+
 #include <glm/gtc/matrix_transform.hpp>
 
 SceneOit::SceneOit() : width(800), height(600), angle(0.0f), tPrev(0.0f), 
@@ -231,15 +234,9 @@ void SceneOit::initShaderStorage()
 
   prog.setUniform("MaxNodes", maxNodes);
 
-  GLuint headPtrTexSize = width * height * sizeof(GLuint);
-  GLuint * headPtrClearBuf = new GLuint[headPtrTexSize];
-  for( int i = 0; i < width*height; i++ )
-    headPtrClearBuf[i] = 0xffffffff;
-
+  vector<GLuint> headPtrClearBuf(width*height, 0xffffffff);
   glGenBuffers(1, &clearBuf);
   glBindBuffer(GL_PIXEL_UNPACK_BUFFER, clearBuf);
-  glBufferData(GL_PIXEL_UNPACK_BUFFER, headPtrTexSize, headPtrClearBuf,
-      GL_STATIC_COPY);
-
-  delete [] headPtrClearBuf;
+  glBufferData(GL_PIXEL_UNPACK_BUFFER, headPtrClearBuf.size() * sizeof(GLuint), 
+      &headPtrClearBuf[0], GL_STATIC_COPY);
 }
