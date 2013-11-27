@@ -33,8 +33,8 @@ void SceneBasic_UniformBlock::initUniformBlockBuffer()
     blockBuffer = (GLubyte *) malloc(blockSize);
 
     // Query for the offsets of each block variable
-    const GLchar *names[] = { "InnerColor", "OuterColor",
-                              "RadiusInner", "RadiusOuter" };
+    const GLchar *names[] = { "BlobSettings.InnerColor", "BlobSettings.OuterColor",
+                              "BlobSettings.RadiusInner", "BlobSettings.RadiusOuter" };
 
     GLuint indices[4];
     glGetUniformIndices(programHandle, 4, names, indices);

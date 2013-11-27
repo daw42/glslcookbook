@@ -17,42 +17,46 @@ using glm::mat3;
 #include <stdexcept>
 
 class GLSLProgramException : public std::runtime_error {
-public:
-	GLSLProgramException( const string & msg ) :
-		std::runtime_error(msg) { }
+  public:
+    GLSLProgramException( const string & msg ) :
+      std::runtime_error(msg) { }
 };
 
 namespace GLSLShader {
-    enum GLSLShaderType {
-        VERTEX, FRAGMENT, GEOMETRY,
-        TESS_CONTROL, TESS_EVALUATION, COMPUTE
-    };
+  enum GLSLShaderType {
+    VERTEX = GL_VERTEX_SHADER, 
+    FRAGMENT = GL_FRAGMENT_SHADER, 
+    GEOMETRY = GL_GEOMETRY_SHADER,
+    TESS_CONTROL = GL_TESS_CONTROL_SHADER, 
+    TESS_EVALUATION = GL_TESS_EVALUATION_SHADER, 
+    COMPUTE = GL_COMPUTE_SHADER
+  };
 };
 
 class GLSLProgram
 {
-private:
+  private:
     int  handle;
     bool linked;
     std::map<string, int> uniformLocations;
 
-    int  getUniformLocation(const char * name );
+    GLint  getUniformLocation(const char * name );
     bool fileExists( const string & fileName );
     string getExtension( const char * fileName );
 
-	// Make these private in order to make the object non-copyable
-	GLSLProgram( const GLSLProgram & other ) { }
-	GLSLProgram & operator=( const GLSLProgram &other ) { return *this; }
+    // Make these private in order to make the object non-copyable
+    GLSLProgram( const GLSLProgram & other ) { }
+    GLSLProgram & operator=( const GLSLProgram &other ) { return *this; }
 
-public:
+  public:
     GLSLProgram();
     ~GLSLProgram();
 
-	void   compileShader( const char *fileName ) throw (GLSLProgramException);
+    void   compileShader( const char *fileName ) throw (GLSLProgramException);
     void   compileShader( const char * fileName, GLSLShader::GLSLShaderType type ) throw (GLSLProgramException);
     void   compileShader( const string & source, GLSLShader::GLSLShaderType type, 
-                          const char *fileName = NULL ) throw (GLSLProgramException);
-                          
+        const char *fileName = NULL ) throw (GLSLProgramException);
+
     void   link() throw (GLSLProgramException);
     void   validate() throw(GLSLProgramException);
     void   use() throw (GLSLProgramException);
@@ -77,7 +81,7 @@ public:
     void   printActiveUniforms();
     void   printActiveUniformBlocks();
     void   printActiveAttribs();
-    
+
     const char * getTypeString( GLenum type );
 };
 

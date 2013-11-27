@@ -10,7 +10,8 @@ int NoiseTex::storeTex( GLubyte * data, int w, int h ) {
   glGenTextures(1, &texID);
 
   glBindTexture(GL_TEXTURE_2D, texID);
-  glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,w,h,0,GL_RGBA,GL_UNSIGNED_BYTE,data);
+  glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA8, w, h);
+  glTexSubImage2D(GL_TEXTURE_2D,0,0,0,w,h,GL_RGBA,GL_UNSIGNED_BYTE,data);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);

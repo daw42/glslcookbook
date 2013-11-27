@@ -154,7 +154,8 @@ void SceneJitter::buildJitterTex()
     glGenTextures(1, &texID);
 
     glBindTexture(GL_TEXTURE_3D, texID);
-    glTexImage3D(GL_TEXTURE_3D, 0, GL_RGBA32F, size, size, samples/2, 0, GL_RGBA, GL_FLOAT, data);
+    glTexStorage3D(GL_TEXTURE_3D, 1, GL_RGBA32F, size, size, samples/2);
+    glTexSubImage3D(GL_TEXTURE_3D, 0, 0, 0, 0, size, size, samples/2, GL_RGBA, GL_FLOAT, data);
     glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 

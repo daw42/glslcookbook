@@ -83,13 +83,11 @@ void SceneNightVision::initScene()
     prog.setUniform("Width", 800);
     prog.setUniform("Height", 600);
     prog.setUniform("Radius", 285.0f);
-    prog.setUniform("RenderTex", 0);
     prog.setUniform("Light.Intensity", vec3(1.0f,1.0f,1.0f) );
 
     noiseTex = NoiseTex::generatePeriodic2DTex(200.0f, 0.5f, 512, 512);
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, noiseTex);
-    prog.setUniform("NoiseTex", 1);
 }
 
 void SceneNightVision::setupFBO() {
@@ -100,7 +98,7 @@ void SceneNightVision::setupFBO() {
     // Create the texture object
     glGenTextures(1, &renderTex);
     glBindTexture(GL_TEXTURE_2D, renderTex);
-    glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,width,height,0,GL_RGBA,GL_UNSIGNED_BYTE,NULL);
+    glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA8, width, height);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
