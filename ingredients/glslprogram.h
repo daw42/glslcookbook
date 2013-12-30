@@ -1,6 +1,10 @@
 #ifndef GLSLPROGRAM_H
 #define GLSLPROGRAM_H
 
+#ifdef WIN32
+#pragma warning( disable : 4290 )
+#endif
+
 #include "cookbookogl.h"
 
 #include <string>

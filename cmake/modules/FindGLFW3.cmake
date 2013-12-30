@@ -14,10 +14,12 @@
 # default search dirs
 set( _glfw3_HEADER_SEARCH_DIRS 
   "/usr/include"
-  "/usr/local/include" )
+  "/usr/local/include"
+  "C:/Program Files (x86)/glfw/include" )
 set( _glfw3_LIB_SEARCH_DIRS
   "/usr/lib"
-  "/usr/local/lib" )
+  "/usr/local/lib"
+  "C:/Program Files (x86)/glfw/lib-msvc110" )
 
 # Check environment for root search directory
 set( _glfw3_ENV_ROOT $ENV{GLFW3_ROOT} )
