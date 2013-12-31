@@ -8,7 +8,7 @@ using std::string;
 
 namespace GLUtils {
 
-void debugCallback( GLenum source, GLenum type, GLuint id,
+void APIENTRY debugCallback( GLenum source, GLenum type, GLuint id,
 	GLenum severity, GLsizei length, const GLchar * msg, const void * param ) {
 	
 	string sourceStr;

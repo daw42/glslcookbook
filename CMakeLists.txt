@@ -36,6 +36,11 @@ if( UNIX )
   list( APPEND GLSLCOOKBOOK_LIBS ${RT_LIB} )
 endif()
 
+if( WIN32 )
+  find_package( OpenGL REQUIRED )
+  list( APPEND GLSLCOOKBOOK_LIBS ${OPENGL_gl_LIBRARY} )
+endif()
+
 include_directories( ${GLSLCOOKBOOK_INCLUDE} )
 
 add_subdirectory( ingredients )
