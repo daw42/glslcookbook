@@ -12,9 +12,9 @@ using std::cerr;
 using glm::vec3;
 
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform2.hpp>
+#include <glm/gtx/transform.hpp>
 
-SceneToneMap::SceneToneMap() : width(800), height(600), angle(0.0f), tPrev(0.0f), rotSpeed(PI/4.0) { }
+SceneToneMap::SceneToneMap() : width(800), height(600), angle(0.0f), tPrev(0.0f), rotSpeed(PI/8.0) { }
 
 void SceneToneMap::initScene()
 {
@@ -129,7 +129,7 @@ void SceneToneMap::pass1()
     glUniformSubroutinesuiv( GL_FRAGMENT_SHADER, 1, &pass1Index);
 
     view = glm::lookAt(vec3(2.0f, 0.0f, 14.0f), vec3(0.0f,0.0f,0.0f), vec3(0.0f,1.0f,0.0f));
-    projection = glm::perspective(60.0f, (float)width/height, 0.3f, 100.0f);
+    projection = glm::perspective(glm::radians(60.0f), (float)width/height, 0.3f, 100.0f);
 
     drawScene();
 
@@ -148,7 +148,7 @@ void SceneToneMap::computeLogAveLuminance()
          vec3(0.2126f, 0.7152f, 0.0722f) );
      sum += logf( lum + 0.00001f );
    }
-   
+
    prog.setUniform( "AveLum", expf( sum / (width*height) ) );
    //printf("(%f)\n", exp( sum / (width*height) ) );
    delete [] texData;
@@ -224,18 +224,18 @@ void SceneToneMap::drawScene()
     prog.setUniform("Material.Shine", 100.0f);
 
     // The backdrop plane
-    model = glm::rotate(mat4(1.0f), 90.0f, vec3(1.0f,0.0f,0.0f) );
+    model = glm::rotate(mat4(1.0f), glm::radians(90.0f), vec3(1.0f,0.0f,0.0f) );
     setMatrices();
     plane->render();
-   
-    // The bottom plane 
+
+    // The bottom plane
     model = glm::translate(mat4(1.0f), vec3(0.0f,-5.0f,0.0f));
     setMatrices();
     plane->render();
 
     // Top plane
     model = glm::translate(mat4(1.0f), vec3(0.0f,5.0f,0.0f));
-    model = glm::rotate( model, 180.0f, vec3(1.0f, 0.0f, 0.0f));
+    model = glm::rotate( model, glm::radians(180.0f), vec3(1.0f, 0.0f, 0.0f));
     setMatrices();
     plane->render();
 
@@ -246,7 +246,7 @@ void SceneToneMap::drawScene()
 
     prog.setUniform("Material.Kd", vec3(0.4f, 0.4f, 0.9f));
     model = glm::translate(mat4(1.0f), vec3(3.0f,-5.0f,1.5f));
-    model = glm::rotate(model, -90.0f, vec3(1.0f,0.0f,0.0f));
+    model = glm::rotate(model, glm::radians(-90.0f), vec3(1.0f,0.0f,0.0f));
     //model = glm::scale(model, vec3(0.f));
     setMatrices();
     teapot->render();

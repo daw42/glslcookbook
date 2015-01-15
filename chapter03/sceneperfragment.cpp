@@ -13,9 +13,9 @@ using std::endl;
 using std::cerr;
 
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform2.hpp>
+#include <glm/gtx/transform.hpp>
 
-ScenePerFragment::ScenePerFragment()
+ScenePerFragment::ScenePerFragment() : tPrev(0)
 {
 }
 
@@ -39,8 +39,12 @@ void ScenePerFragment::initScene()
 
 void ScenePerFragment::update( float t )
 {
-    angle += 0.01f;
-    if( angle > TWOPI_F) angle -= TWOPI_F;
+  float deltaT = t - tPrev;
+  if(tPrev == 0.0f) deltaT = 0.0f;
+  tPrev = t;
+
+  angle += 0.25f * deltaT;
+  if( angle > TWOPI_F) angle -= TWOPI_F;
 }
 
 void ScenePerFragment::render()
@@ -55,7 +59,7 @@ void ScenePerFragment::render()
 
     model = mat4(1.0f);
     model *= glm::translate(vec3(0.0f,0.0f,0.0f));
-    model *= glm::rotate(-90.0f, vec3(1.0f,0.0f,0.0f));
+    model *= glm::rotate(glm::radians(-90.0f), vec3(1.0f,0.0f,0.0f));
     setMatrices();
     teapot->render();
 
@@ -84,7 +88,7 @@ void ScenePerFragment::resize(int w, int h)
     glViewport(0,0,w,h);
     width = w;
     height = h;
-    projection = glm::perspective(60.0f, (float)w/h, 0.3f, 100.0f);
+    projection = glm::perspective(glm::radians(60.0f), (float)w/h, 0.3f, 100.0f);
 }
 
 void ScenePerFragment::compileAndLinkShader()

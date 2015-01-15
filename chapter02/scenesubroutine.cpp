@@ -11,7 +11,7 @@ using std::endl;
 using glm::vec3;
 
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform2.hpp>
+#include <glm/gtx/transform.hpp>
 
 SceneSubroutine::SceneSubroutine() : angle(0.0f)
 {
@@ -60,14 +60,14 @@ void SceneSubroutine::render()
     glUniformSubroutinesuiv( GL_VERTEX_SHADER, 1, &adsIndex);
     model = mat4(1.0f);
     model *= glm::translate(vec3(-3.0,-1.5,0.0));
-    model *= glm::rotate(-90.0f, vec3(1.0f,0.0f,0.0f));
+    model *= glm::rotate(glm::radians(-90.0f), vec3(1.0f,0.0f,0.0f));
     setMatrices();
     teapot->render();
 
     glUniformSubroutinesuiv( GL_VERTEX_SHADER, 1, &diffuseIndex);
     model = mat4(1.0f);
     model *= glm::translate(vec3(3.0f, -1.5f, 0.0f));
-    model *= glm::rotate(-90.0f, vec3(1.0f,0.0f,0.0f));
+    model *= glm::rotate(glm::radians(-90.0f), vec3(1.0f,0.0f,0.0f));
     setMatrices();
     teapot->render();
 }
@@ -86,11 +86,11 @@ void SceneSubroutine::resize(int w, int h)
     glViewport(0,0,w,h);
     width = w;
     height = h;
-    projection = glm::perspective(50.0f, (float)w/h, 0.3f, 100.0f);
+    projection = glm::perspective(glm::radians(50.0f), (float)w/h, 0.3f, 100.0f);
 }
 
 void SceneSubroutine::compileAndLinkShader()
-{   
+{
     try {
     	prog.compileShader("shader/subroutine.vert");
     	prog.compileShader("shader/subroutine.frag");

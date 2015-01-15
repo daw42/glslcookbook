@@ -1,4 +1,4 @@
-#version 440
+#version 430
 
 layout( local_size_x = 1000 ) in;
 
@@ -29,7 +29,7 @@ void main() {
   vec3 d = BlackHolePos1 - p;
   float dist = length(d);
   vec3 force = (Gravity1 / dist) * normalize(d);
-  
+
   // Force from black hole #2
   d = BlackHolePos2 - p;
   dist = length(d);
@@ -46,4 +46,3 @@ void main() {
     Velocity[idx] = vec4( Velocity[idx].xyz + a * DeltaT, 0.0);
   }
 }
-

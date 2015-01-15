@@ -15,7 +15,7 @@ using std::cerr;
 using glm::vec3;
 
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform2.hpp>
+#include <glm/gtx/transform.hpp>
 
 SceneMultiTex::SceneMultiTex() { }
 
@@ -73,7 +73,7 @@ void SceneMultiTex::resize(int w, int h)
     glViewport(0,0,w,h);
     width = w;
     height = h;
-    projection = glm::perspective(60.0f, (float)w/h, 0.3f, 100.0f);
+    projection = glm::perspective(glm::radians(60.0f), (float)w/h, 0.3f, 100.0f);
 }
 
 void SceneMultiTex::compileAndLinkShader()

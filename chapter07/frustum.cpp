@@ -3,7 +3,7 @@
 #include <limits>
 #include <cstdio>
 
-#include <glm/gtx/transform2.hpp>
+#include <glm/gtx/transform.hpp>
 
 Frustum::Frustum(Projection::ProjType t) : type(t)
 {
@@ -153,7 +153,7 @@ mat4 Frustum::getViewMatrix() const
 mat4 Frustum::getProjectionMatrix() const
 {
     if( type == Projection::PERSPECTIVE )
-        return glm::perspective( fovy, ar, mNear, mFar );
+        return glm::perspective( glm::radians(fovy), ar, mNear, mFar );
     else
         return glm::ortho(xmin, xmax, ymin, ymax, mNear, mFar);
 }

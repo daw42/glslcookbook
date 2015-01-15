@@ -20,7 +20,7 @@ using glm::vec3;
 
 #define PRIM_RESTART 0xffffff
 
-SceneCloth::SceneCloth(): 
+SceneCloth::SceneCloth():
   width(800), height(600), clothVao(0), numElements(0),
   nParticles(40,40), clothSize(4.0f, 3.0f),
   time(0.0f), deltaT(0.0f), speed(200.0f),
@@ -29,14 +29,14 @@ SceneCloth::SceneCloth():
 }
 
 void SceneCloth::initScene()
-{    
+{
   glEnable(GL_PRIMITIVE_RESTART);
   glPrimitiveRestartIndex(PRIM_RESTART);
 
   compileAndLinkShader();
   initBuffers();
 
-  projection = glm::perspective( 50.0f, (float)width/height, 1.0f, 100.0f);
+  projection = glm::perspective( glm::radians(50.0f), (float)width/height, 1.0f, 100.0f);
 
   renderProg.use();
   renderProg.setUniform("LightPosition", glm::vec4(0.0f,0.0f,0.0f,1.0f));
@@ -51,7 +51,7 @@ void SceneCloth::initScene()
   float dy = clothSize.y / (nParticles.y-1) ;
   computeProg.setUniform("RestLengthHoriz", dx );
   computeProg.setUniform("RestLengthVert", dy );
-  computeProg.setUniform("RestLengthDiag", sqrtf(dx * dx + dy * dy)); 
+  computeProg.setUniform("RestLengthDiag", sqrtf(dx * dx + dy * dy));
 
   glActiveTexture(GL_TEXTURE0);
   TGAIO::loadTex("../media/texture/me_textile.tga");
@@ -61,7 +61,7 @@ void SceneCloth::initBuffers()
 {
   // Initial transform
   glm::mat4 transf = glm::translate(glm::mat4(1.0), glm::vec3(0,clothSize.y,0));
-  transf = glm::rotate(transf, -80.0f, glm::vec3(1,0,0));
+  transf = glm::rotate(transf, glm::radians(-80.0f), glm::vec3(1,0,0));
   transf = glm::translate(transf, glm::vec3(0,-clothSize.y,0));
 
   // Initial positions of the particles
@@ -119,7 +119,7 @@ void SceneCloth::initBuffers()
   glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, posBufs[1]);
   glBufferData(GL_SHADER_STORAGE_BUFFER, parts * 4 * sizeof(GLfloat), NULL, GL_DYNAMIC_DRAW);
 
-  // Velocities 
+  // Velocities
   glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, velBufs[0]);
   glBufferData(GL_SHADER_STORAGE_BUFFER, parts * 4 * sizeof(GLfloat), &initVel[0], GL_DYNAMIC_COPY);
   glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, velBufs[1]);
@@ -129,7 +129,7 @@ void SceneCloth::initBuffers()
   glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 4, normBuf);
   glBufferData(GL_SHADER_STORAGE_BUFFER, parts * 4 * sizeof(GLfloat), NULL, GL_DYNAMIC_COPY);
 
-  // Element indicies 
+  // Element indicies
   glBindBuffer(GL_ARRAY_BUFFER, elBuf);
   glBufferData(GL_ARRAY_BUFFER, el.size() * sizeof(GLuint), &el[0], GL_DYNAMIC_COPY);
 
@@ -142,7 +142,7 @@ void SceneCloth::initBuffers()
   // Set up the VAO
   glGenVertexArrays(1, &clothVao);
   glBindVertexArray(clothVao);
-  
+
   glBindBuffer(GL_ARRAY_BUFFER, posBufs[0]);
   glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
   glEnableVertexAttribArray(0);

@@ -10,6 +10,8 @@
 #include "scenebasic_uniform.h"
 #include "scenebasic_uniformblock.h"
 
+#include <cstdlib>
+#include <cstdio>
 #include <string>
 using std::string;
 

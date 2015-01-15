@@ -12,9 +12,9 @@ using std::endl;
 using glm::vec3;
 
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform2.hpp>
+#include <glm/gtx/transform.hpp>
 
-SceneSilhouette::SceneSilhouette() : angle(0.0f), tPrev(0.0f), rotSpeed(PI/4.0) { }
+SceneSilhouette::SceneSilhouette() : angle(0.0f), tPrev(0.0f), rotSpeed(PI/8.0) { }
 
 void SceneSilhouette::initScene()
 {
@@ -26,7 +26,7 @@ void SceneSilhouette::initScene()
 
     ogre = new VBOMeshAdj("../media/bs_ears.obj");
 
-    angle = (float)(PI / 2.0);    
+    angle = (float)(PI / 2.0);
 
     ///////////// Uniforms ////////////////////
     prog.setUniform("EdgeWidth", 0.015f);

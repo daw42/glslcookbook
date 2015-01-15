@@ -10,16 +10,13 @@ using std::endl;
 
 using glm::vec3;
 
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform2.hpp>
+#include <cstdlib>
 
-ScenePcf::ScenePcf()
-{
-    width = 800;
-    height = 600;
-    shadowMapWidth = 512;
-    shadowMapHeight = 512;
-}
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/transform.hpp>
+
+ScenePcf::ScenePcf() : tPrev(0), width(800), height(600), shadowMapWidth(512),
+  shadowMapHeight(512) {}
 
 void ScenePcf::initScene()
 {
@@ -103,8 +100,12 @@ void ScenePcf::setupFBO()
 
 void ScenePcf::update( float t )
 {
-    angle += 0.003f;
-    if( angle > TWOPI_F) angle -= TWOPI_F;
+  float deltaT = t - tPrev;
+  if(tPrev == 0.0f) deltaT = 0.0f;
+  tPrev = t;
+
+  angle += 0.2f * deltaT;
+  if( angle > TWOPI_F) angle -= TWOPI_F;
 }
 
 void ScenePcf::render()
@@ -129,7 +130,7 @@ void ScenePcf::render()
     view = glm::lookAt(cameraPos,vec3(0.0f,-0.175f,0.0f),vec3(0.0f,1.0f,0.0f));
 
     prog.setUniform("Light.Position", view * vec4(lightFrustum->getOrigin(),1.0));
-    projection = glm::perspective(50.0f, (float)width/height, 0.1f, 100.0f);
+    projection = glm::perspective(glm::radians(50.0f), (float)width/height, 0.1f, 100.0f);
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -171,7 +172,7 @@ void ScenePcf::drawScene()
     prog.setUniform("Material.Shininess", 150.0f);
     model = mat4(1.0f);
     model *= glm::translate(vec3(0.0f,0.0f,0.0f));
-    model *= glm::rotate(-90.0f, vec3(1.0f,0.0f,0.0f));
+    model *= glm::rotate(glm::radians(-90.0f), vec3(1.0f,0.0f,0.0f));
     setMatrices();
     teapot->render();
 
@@ -181,7 +182,7 @@ void ScenePcf::drawScene()
     prog.setUniform("Material.Shininess", 150.0f);
     model = mat4(1.0f);
     model *= glm::translate(vec3(0.0f,2.0f,5.0f));
-    model *= glm::rotate(-45.0f, vec3(1.0f,0.0f,0.0f));
+    model *= glm::rotate(glm::radians(-45.0f), vec3(1.0f,0.0f,0.0f));
     setMatrices();
     torus->render();
 
@@ -195,12 +196,12 @@ void ScenePcf::drawScene()
     plane->render();
     model = mat4(1.0f);
     model *= glm::translate(vec3(-5.0f,5.0f,0.0f));
-    model *= glm::rotate(-90.0f,vec3(0.0f,0.0f,1.0f));
+    model *= glm::rotate(glm::radians(-90.0f),vec3(0.0f,0.0f,1.0f));
     setMatrices();
     plane->render();
     model = mat4(1.0f);
     model *= glm::translate(vec3(0.0f,5.0f,-5.0f));
-    model *= glm::rotate(90.0f,vec3(1.0f,0.0f,0.0f));
+    model *= glm::rotate(glm::radians(90.0f),vec3(1.0f,0.0f,0.0f));
     setMatrices();
     plane->render();
     model = mat4(1.0f);

@@ -16,9 +16,9 @@ using std::endl;
 using glm::vec3;
 
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform2.hpp>
+#include <glm/gtx/transform.hpp>
 
-SceneProjTex::SceneProjTex() : angle(0.0f), tPrev(0.0f), rotSpeed(PI/2.0) { }
+SceneProjTex::SceneProjTex() : angle(0.0f), tPrev(0.0f), rotSpeed(PI/8.0) { }
 
 void SceneProjTex::initScene()
 {
@@ -31,13 +31,13 @@ void SceneProjTex::initScene()
 
     projection = mat4(1.0f);
 
-    angle = (float)( TO_RADIANS(90.0) );
+    angle = glm::radians(90.0);
 
     vec3 projPos = vec3(2.0f,5.0f,5.0f);
     vec3 projAt = vec3(-2.0f,-4.0f,0.0f);
     vec3 projUp = vec3(0.0f,1.0f,0.0f);
     mat4 projView = glm::lookAt(projPos, projAt, projUp);
-    mat4 projProj = glm::perspective(30.0f, 1.0f, 0.2f, 1000.0f);
+    mat4 projProj = glm::perspective(glm::radians(30.0f), 1.0f, 0.2f, 1000.0f);
     mat4 projScaleTrans = glm::translate(vec3(0.5f)) * glm::scale(vec3(0.5f));
     prog.setUniform("ProjectorMatrix", projScaleTrans * projProj * projView);
 
@@ -46,7 +46,7 @@ void SceneProjTex::initScene()
     TGAIO::loadTex("../media/texture/flower.tga");
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-    
+
     prog.setUniform("Light.Position", vec4(0.0f,0.0f,0.0f,1.0f) );
     prog.setUniform("Light.Intensity", vec3(1.0f,1.0f,1.0f));
 }
@@ -75,7 +75,7 @@ void SceneProjTex::render()
 
     model = mat4(1.0f);
     model *= glm::translate(vec3(0.0f,-1.0f,0.0f));
-    model *= glm::rotate(-90.0f, vec3(1.0f,0.0f,0.0f));
+    model *= glm::rotate(glm::radians(-90.0f), vec3(1.0f,0.0f,0.0f));
     setMatrices();
     teapot->render();
 
@@ -104,9 +104,7 @@ void SceneProjTex::resize(int w, int h)
     glViewport(0,0,w,h);
     width = w;
     height = h;
-    projection = glm::perspective(50.0f, (float)w/h, 0.3f, 1000.0f);
-    //float c = 2.0f;
-    //projection = glm::ortho( -0.4f * c, 0.4f * c, -0.3f * c, 0.3f * c, 0.1f, 100.0f);
+    projection = glm::perspective(glm::radians(50.0f), (float)w/h, 0.3f, 1000.0f);
 }
 
 void SceneProjTex::compileAndLinkShader()

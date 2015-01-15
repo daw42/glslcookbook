@@ -11,6 +11,9 @@
 #include "scenehdrbloom.h"
 #include "sceneoit.h"
 
+#include <cstdio>
+#include <cstdlib>
+
 #include <sstream>
 using std::stringstream;
 
@@ -36,7 +39,7 @@ void initializeGL() {
 
   glDebugMessageCallback(GLUtils::debugCallback, NULL);
   glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, NULL, GL_TRUE);
-  glDebugMessageInsert(GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_MARKER, 0, 
+  glDebugMessageInsert(GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_MARKER, 0,
       GL_DEBUG_SEVERITY_NOTIFICATION, -1 , "Start debugging");
 
   scene->initScene();
@@ -60,7 +63,7 @@ void mainLoop() {
 
     if( index == 0 ) {
       float sum = 0.0f;
-      for( int i = 0; i < samples-1 ; i++ ) 
+      for( int i = 0; i < samples-1 ; i++ )
         sum += time[i + 1] - time[i];
       float fps = samples / sum;
 
@@ -169,4 +172,3 @@ void printHelpInfo(const char * exeFile) {
   printf("  hdr-bloom: bloom example with HDR tone mapping.\n");
   printf("  oit      : order independent transparency\n");
 }
-

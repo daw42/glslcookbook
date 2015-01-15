@@ -12,7 +12,7 @@ using std::endl;
 using glm::vec3;
 
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform2.hpp>
+#include <glm/gtx/transform.hpp>
 
 SceneTessTeapotDepth::SceneTessTeapotDepth() { }
 
@@ -56,28 +56,28 @@ void SceneTessTeapotDepth::render()
     model = mat4(1.0f);
     model = glm::translate(model, vec3(-2.0f, 0.0f, 0.0f));
     model = glm::translate(model, vec3(0.0f,-1.5f,0.0f));
-    model = glm::rotate(model,-90.0f, vec3(1.0f,0.0f,0.0f));
+    model = glm::rotate(model,glm::radians(-90.0f), vec3(1.0f,0.0f,0.0f));
     setMatrices();
     teapot->render();
 
     model = mat4(1.0f);
     model = glm::translate(model, vec3(2.0f, 0.0f, -5.0f));
     model = glm::translate(model, vec3(0.0f,-1.5f,0.0f));
-    model = glm::rotate(model,-90.0f, vec3(1.0f,0.0f,0.0f));
+    model = glm::rotate(model,glm::radians(-90.0f), vec3(1.0f,0.0f,0.0f));
     setMatrices();
     teapot->render();
 
     model = mat4(1.0f);
     model = glm::translate(model, vec3(7.0f, 0.0f, -10.0f));
     model = glm::translate(model, vec3(0.0f,-1.5f,0.0f));
-    model = glm::rotate(model,-90.0f, vec3(1.0f,0.0f,0.0f));
+    model = glm::rotate(model,glm::radians(-90.0f), vec3(1.0f,0.0f,0.0f));
     setMatrices();
     teapot->render();
 
     model = mat4(1.0f);
     model = glm::translate(model, vec3(17.0f, 0.0f, -20.0f));
     model = glm::translate(model, vec3(0.0f,-1.5f,0.0f));
-    model = glm::rotate(model,-90.0f, vec3(1.0f,0.0f,0.0f));
+    model = glm::rotate(model,glm::radians(-90.0f), vec3(1.0f,0.0f,0.0f));
     setMatrices();
     teapot->render();
 
@@ -104,7 +104,7 @@ void SceneTessTeapotDepth::resize(int w, int h)
                      vec4(0.0f,h2,0.0f,0.0f),
                      vec4(0.0f,0.0f,1.0f,0.0f),
                      vec4(w2+0, h2+0, 0.0f, 1.0f));
-    projection = glm::perspective(60.0f, (float)w/h, 0.3f, 30.0f);
+    projection = glm::perspective(glm::radians(60.0f), (float)w/h, 0.3f, 30.0f);
 }
 
 void SceneTessTeapotDepth::compileAndLinkShader()

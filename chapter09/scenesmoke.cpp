@@ -14,20 +14,13 @@ using std::cerr;
 using glm::vec3;
 
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform2.hpp>
+#include <glm/gtx/transform.hpp>
 
-SceneSmoke::SceneSmoke()
-{
-    width = 800;
-    height = 600;
-    drawBuf = 1;
-    time = 0.0f;
-    deltaT = 0.0f;
-}
+SceneSmoke::SceneSmoke() :
+width(800), height(600), drawBuf(1), time(0), deltaT(0) {}
 
 void SceneSmoke::initScene()
-{    
-
+{
     compileAndLinkShader();
 
     GLuint programHandle = prog.getHandle();
@@ -36,7 +29,9 @@ void SceneSmoke::initScene()
 
     glClearColor(1.0f,1.0f,1.0f,1.0f);
 
-    glEnable(GL_PROGRAM_POINT_SIZE);
+    // Intel cards crash when using GL_PROGRAM_POINT_SIZE
+    //  glEnable(GL_PROGRAM_POINT_SIZE);
+    glPointSize(10.0);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -52,7 +47,6 @@ void SceneSmoke::initScene()
     prog.setUniform("ParticleTex", 0);
     prog.setUniform("ParticleLifetime", 10.0f);
     prog.setUniform("Accel", vec3(0.0f,0.1f,0.0f));
-    setMatrices();
 }
 
 void SceneSmoke::initBuffers()
@@ -84,11 +78,7 @@ void SceneSmoke::initBuffers()
 
     // Fill the first position buffer with zeroes
     GLfloat *data = new GLfloat[nParticles * 3];
-    for( int i = 0; i < nParticles * 3; i += 3 ) {
-        data[i] = 0.0f;
-        data[i+1] = 0.0f;
-        data[i+2] = 0.0f;
-    }
+    for( int i = 0; i < nParticles * 3; i++ ) data[i] = 0.0f;
     glBindBuffer(GL_ARRAY_BUFFER, posBuf[0]);
     glBufferSubData(GL_ARRAY_BUFFER, 0, size, data);
 
@@ -234,9 +224,6 @@ void SceneSmoke::render()
 void SceneSmoke::setMatrices()
 {
     mat4 mv = view * model;
-    //prog.setUniform("ModelViewMatrix", mv);
-   // prog.setUniform("NormalMatrix",
-   //                 mat3( vec3(mv[0]), vec3(mv[1]), vec3(mv[2]) ));
     prog.setUniform("ProjectionMatrix", projection);
     prog.setUniform("MVP", projection * mv);
 }
@@ -246,7 +233,7 @@ void SceneSmoke::resize(int w, int h)
     glViewport(0,0,w,h);
     width = w;
     height = h;
-    projection = glm::perspective(60.0f, (float)w/h, 0.3f, 100.0f);
+    projection = glm::perspective(glm::radians(60.0f), (float)w/h, 0.3f, 100.0f);
 }
 
 void SceneSmoke::compileAndLinkShader()

@@ -15,7 +15,7 @@ using std::cerr;
 using glm::vec3;
 
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform2.hpp>
+#include <glm/gtx/transform.hpp>
 
 SceneAlphaTest::SceneAlphaTest() : angle(0.0f), tPrev(0.0f), rotSpeed(PI/2.0f) { }
 
@@ -47,7 +47,7 @@ void SceneAlphaTest::update( float t )
     float deltaT = t - tPrev;
     if(tPrev == 0.0f) deltaT = 0.0f;
     tPrev = t;
-	
+
     if( this->m_animate ) {
 	angle += rotSpeed * deltaT;
 	if( angle > TWOPI_F) angle -= TWOPI_F;
@@ -69,7 +69,7 @@ void SceneAlphaTest::render()
 
     model = mat4(1.0f);
     model = glm::translate(model, vec3(0.0f,-1.5f,0.0f));
-    model = glm::rotate(model, -90.0f, vec3(1.0f,0.0f,0.0f));
+    model = glm::rotate(model, glm::radians(-90.0f), vec3(1.0f,0.0f,0.0f));
     setMatrices();
     teapot->render();
 }
@@ -88,7 +88,7 @@ void SceneAlphaTest::resize(int w, int h)
     glViewport(0,0,w,h);
     width = w;
     height = h;
-    projection = glm::perspective(60.0f, (float)w/h, 0.3f, 100.0f);
+    projection = glm::perspective(glm::radians(60.0f), (float)w/h, 0.3f, 100.0f);
 }
 
 void SceneAlphaTest::compileAndLinkShader()

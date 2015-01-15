@@ -10,6 +10,9 @@
 #include "scenetessteapot.h"
 #include "scenetessteapotdepth.h"
 
+#include <cstdio>
+#include <cstdlib>
+
 #define WIN_WIDTH 800
 #define WIN_HEIGHT 600
 
@@ -117,12 +120,11 @@ string parseCLArgs(int argc, char ** argv) {
 void printHelpInfo(const char * exeFile) {
 	printf("Usage: %s recipe-name\n\n", exeFile);
 	printf("Recipe names: \n");
-	printf("  bez-curve         : description...\n");
-	printf("  point-sprite      : description...\n");
-	printf("  quad-tess         : description...\n");
-	printf("  shade-wire        : description...\n");
-	printf("  silhouette        : description...\n");
-	printf("  tess-teapot       : description...\n");
-	printf("  tess-teapot-depth : description...\n");
+	printf("  bez-curve         : 2D Bezier curve with tessellation shader\n");
+	printf("  point-sprite      : Point sprites with the geometry shader\n");
+	printf("  quad-tess         : Demonstrates how quad tessellation works\n");
+	printf("  shade-wire        : Uses the geometry shader to draw a mesh over a shaded object\n");
+	printf("  silhouette        : Uses the geometry shader to draw silhouette edges\n");
+	printf("  tess-teapot       : Uses tessellation to draw a teapot\n");
+	printf("  tess-teapot-depth : Varies the amount of tessellation with depth\n");
 }
-

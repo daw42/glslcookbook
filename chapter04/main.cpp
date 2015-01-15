@@ -13,6 +13,9 @@
 #include "scenerendertotex.h"
 #include "scenesamplerobj.h"
 
+#include <cstdio>
+#include <cstdlib>
+
 #define WIN_WIDTH 800
 #define WIN_HEIGHT 600
 
@@ -31,12 +34,12 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 
 void initializeGL() {
     glClearColor(0.5f,0.5f,0.5f,1.0f);
-    
+
     glDebugMessageCallback(GLUtils::debugCallback, NULL);
     glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, NULL, GL_TRUE);
-    glDebugMessageInsert(GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_MARKER, 0, 
+    glDebugMessageInsert(GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_MARKER, 0,
 		GL_DEBUG_SEVERITY_NOTIFICATION, -1 , "Start debugging");
-	
+
     scene->initScene();
 }
 

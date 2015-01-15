@@ -1,6 +1,8 @@
 #include "scenesky.h"
 
 #include <cstdio>
+#include <cstdlib>
+
 #include <iostream>
 using std::cerr;
 using std::endl;
@@ -11,15 +13,11 @@ using std::endl;
 using glm::vec3;
 
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform2.hpp>
+#include <glm/gtx/transform.hpp>
 
 #include<iostream>
 
-SceneSky::SceneSky()
-{
-    width = 800;
-    height = 600;
-}
+SceneSky::SceneSky(): width(800), height(600) { }
 
 void SceneSky::initScene()
 {

@@ -8,6 +8,9 @@
 #include "sceneshadowmap.h"
 #include "sceneshadowvolume.h"
 
+#include <cstdio>
+#include <cstdlib>
+
 #define WIN_WIDTH 800
 #define WIN_HEIGHT 600
 
@@ -56,10 +59,10 @@ int main(int argc, char *argv[])
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
-	
+
 	// Open the window
 	string title = "Chapter 7 -- " + recipe;
-	window = glfwCreateWindow( WIN_WIDTH, WIN_HEIGHT, title.c_str(), NULL, NULL );	
+	window = glfwCreateWindow( WIN_WIDTH, WIN_HEIGHT, title.c_str(), NULL, NULL );
 	if( ! window ) {
 		glfwTerminate();
 		exit( EXIT_FAILURE );
@@ -120,9 +123,9 @@ string parseCLArgs(int argc, char ** argv) {
 void printHelpInfo(const char * exeFile) {
 	printf("Usage: %s recipe-name\n\n", exeFile);
 	printf("Recipe names: \n");
-	printf("  ao          : description...\n");
-	printf("  jitter      : description...\n");
-	printf("  pcf         : description...\n");
-	printf("  shadow-map  : description...\n");
+	printf("  ao          : Ambient occlusion from a texture\n");
+	printf("  jitter      : Blur shadow map edges using a random jitter\n");
+	printf("  pcf         : Blur shadow map edges using percentage-closer-filtering\n");
+	printf("  shadow-map  : Simple shadow map\n");
         printf("  shadow-volume: Shadow Volumes using geometry shader.\n");
 }

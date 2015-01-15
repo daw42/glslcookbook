@@ -9,10 +9,12 @@ using std::endl;
 #include "glutils.h"
 #include "defines.h"
 
+#include <cstdlib>
+
 using glm::vec3;
 
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform2.hpp>
+#include <glm/gtx/transform.hpp>
 
 SceneAo::SceneAo() {}
 

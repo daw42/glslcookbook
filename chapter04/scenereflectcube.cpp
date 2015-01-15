@@ -15,9 +15,9 @@ using std::endl;
 using glm::vec3;
 
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform2.hpp>
+#include <glm/gtx/transform.hpp>
 
-SceneReflectCube::SceneReflectCube() : angle(0.0f), tPrev(0.0f), rotSpeed(PI/4.0) { }
+SceneReflectCube::SceneReflectCube() : angle(0.0f), tPrev(0.0f), rotSpeed(PI/8.0) { }
 
 void SceneReflectCube::initScene()
 {
@@ -33,8 +33,8 @@ void SceneReflectCube::initScene()
 
     projection = mat4(1.0f);
 
-    angle = (float)( TO_RADIANS(90.0) );
-	
+    angle = glm::radians(90.0);
+
     loadCubeMap("../media/texture/cubemap_night/night");
 }
 
@@ -61,7 +61,7 @@ void SceneReflectCube::loadCubeMap( const char * baseFileName )
     for( int i = 0; i < 6; i++ ) {
 	string texName = string(baseFileName) + "_" + suffixes[i] + ".tga";
 	GLubyte * data = TGAIO::read(texName.c_str(), w, h);
-	glTexSubImage2D(targets[i], 0, 0, 0, w, h, 
+	glTexSubImage2D(targets[i], 0, 0, 0, w, h,
 		    GL_RGBA, GL_UNSIGNED_BYTE, data);
 	delete [] data;
     }
@@ -102,7 +102,7 @@ void SceneReflectCube::render()
 
     model = mat4(1.0f);
     model *= glm::translate(vec3(0.0f,-1.0f,0.0f));
-    model *= glm::rotate(-90.0f, vec3(1.0f,0.0f,0.0f));
+    model *= glm::rotate(glm::radians(-90.0f), vec3(1.0f,0.0f,0.0f));
     setMatrices();
     teapot->render();
 }
@@ -119,7 +119,7 @@ void SceneReflectCube::resize(int w, int h)
     glViewport(0,0,w,h);
     width = w;
     height = h;
-    projection = glm::perspective(50.0f, (float)w/h, 0.3f, 100.0f);
+    projection = glm::perspective(glm::radians(50.0f), (float)w/h, 0.3f, 100.0f);
 }
 
 void SceneReflectCube::compileAndLinkShader()

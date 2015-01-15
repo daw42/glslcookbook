@@ -3,6 +3,7 @@
 
 #define uint unsigned int
 
+#include <cstdlib>
 #include <iostream>
 using std::cout;
 using std::cerr;
@@ -382,4 +383,3 @@ void VBOMesh::trimString( string & str ) {
     location = str.find_last_not_of(whiteSpace);
     str.erase(location + 1);
 }
-

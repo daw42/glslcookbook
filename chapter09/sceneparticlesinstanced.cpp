@@ -12,18 +12,12 @@ using std::cerr;
 using glm::vec3;
 
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform2.hpp>
+#include <glm/gtx/transform.hpp>
 
-SceneParticlesInstanced::SceneParticlesInstanced()
-{
-    width = 800;
-    height = 600;
-    time = 0.0f;
-    deltaT = 0.0f;
-}
+SceneParticlesInstanced::SceneParticlesInstanced() : width(800), height(600), time(0), deltaT(0) {}
 
 void SceneParticlesInstanced::initScene()
-{    
+{
     compileAndLinkShader();
 
     glClearColor(0.5f,0.5f,0.5f,1.0f);
@@ -150,7 +144,6 @@ void SceneParticlesInstanced::setMatrices()
     prog.setUniform("NormalMatrix",
                     mat3( vec3(mv[0]), vec3(mv[1]), vec3(mv[2]) ));
     prog.setUniform("ProjectionMatrix", projection);
-    //prog.setUniform("MVP", projection * mv);
 }
 
 void SceneParticlesInstanced::resize(int w, int h)
@@ -158,7 +151,7 @@ void SceneParticlesInstanced::resize(int w, int h)
     glViewport(0,0,w,h);
     width = w;
     height = h;
-    projection = glm::perspective(60.0f, (float)w/h, 0.3f, 100.0f);
+    projection = glm::perspective(glm::radians(60.0f), (float)w/h, 0.3f, 100.0f);
 }
 
 void SceneParticlesInstanced::compileAndLinkShader()
@@ -166,7 +159,7 @@ void SceneParticlesInstanced::compileAndLinkShader()
 	try {
 		prog.compileShader("shader/particleinstanced.vs",GLSLShader::VERTEX);
 		prog.compileShader("shader/particleinstanced.fs",GLSLShader::FRAGMENT);
-				
+
     	prog.link();
     	prog.use();
     } catch(GLSLProgramException &e ) {

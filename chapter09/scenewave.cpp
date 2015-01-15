@@ -12,14 +12,9 @@ using std::cerr;
 using glm::vec3;
 
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform2.hpp>
+#include <glm/gtx/transform.hpp>
 
-SceneWave::SceneWave()
-{
-    width = 800;
-    height = 600;
-    time = 0.0f;
-}
+SceneWave::SceneWave() : width(800), height(600), time(0) {}
 
 void SceneWave::initScene()
 {
@@ -48,15 +43,15 @@ void SceneWave::render()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     view = glm::lookAt(vec3(10.0f * cos(angle),4.0f,10.0f * sin(angle)), vec3(0.0f,0.0f,0.0f), vec3(0.0f,1.0f,0.0f));
-    projection = glm::perspective(60.0f, (float)width/height, 0.3f, 100.0f);
+    projection = glm::perspective(glm::radians(60.0f), (float)width/height, 0.3f, 100.0f);
 
     prog.setUniform("Material.Kd", 0.9f, 0.5f, 0.3f);
     prog.setUniform("Material.Ks", 0.8f, 0.8f, 0.8f);
     prog.setUniform("Material.Ka", 0.2f, 0.2f, 0.2f);
     prog.setUniform("Material.Shininess", 100.0f);
     model = mat4(1.0f);
-    model *= glm::rotate(-10.0f, vec3(0.0f,0.0f,1.0f));
-    model *= glm::rotate(50.0f, vec3(1.0f,0.0f,0.0f));
+    model *= glm::rotate(glm::radians(-10.0f), vec3(0.0f,0.0f,1.0f));
+    model *= glm::rotate(glm::radians(50.0f), vec3(1.0f,0.0f,0.0f));
     setMatrices();
     plane->render();
 }
@@ -75,7 +70,7 @@ void SceneWave::resize(int w, int h)
     glViewport(0,0,w,h);
     width = w;
     height = h;
-    projection = glm::perspective(60.0f, (float)w/h, 0.3f, 100.0f);
+    projection = glm::perspective(glm::radians(60.0f), (float)w/h, 0.3f, 100.0f);
 }
 
 void SceneWave::compileAndLinkShader()
@@ -83,7 +78,7 @@ void SceneWave::compileAndLinkShader()
 	try {
 		prog.compileShader("shader/wave.vs",GLSLShader::VERTEX);
 		prog.compileShader("shader/wave.fs",GLSLShader::FRAGMENT);
-				
+
     	prog.link();
     	prog.use();
     } catch(GLSLProgramException &e ) {

@@ -15,9 +15,9 @@ using std::cerr;
 using glm::vec3;
 
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform2.hpp>
+#include <glm/gtx/transform.hpp>
 
-SceneNormalMap::SceneNormalMap() : angle(0.0f), tPrev(0.0f), rotSpeed(PI/2.0) { }
+SceneNormalMap::SceneNormalMap() : angle(0.0f), tPrev(0.0f), rotSpeed(PI/8.0) { }
 
 void SceneNormalMap::initScene()
 {
@@ -30,7 +30,7 @@ void SceneNormalMap::initScene()
     view = glm::lookAt(vec3(-1.0f,0.25f,2.0f), vec3(0.0f,0.0f,0.0f), vec3(0.0f,1.0f,0.0f));
     projection = mat4(1.0f);
 
-    angle = (float)( TO_RADIANS(100.0) );
+    angle = glm::radians(100.0f);
 
     prog.setUniform("Light.Intensity", vec3(0.9f,0.9f,0.9f) );
 
@@ -41,7 +41,7 @@ void SceneNormalMap::initScene()
     // Load normal map
     glActiveTexture(GL_TEXTURE1);
     TGAIO::loadTex("../media/texture/ogre_normalmap.tga");
-    
+
 }
 
 void SceneNormalMap::update( float t )
@@ -49,7 +49,7 @@ void SceneNormalMap::update( float t )
     float deltaT = t - tPrev;
     if(tPrev == 0.0f) deltaT = 0.0f;
     tPrev = t;
-    
+
     if( this->m_animate) {
 	angle += rotSpeed * deltaT;
 	if( angle > TWOPI_F) angle -= TWOPI_F;

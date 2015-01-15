@@ -2,7 +2,7 @@
 
 layout (early_fragment_tests) in;
 
-#define MAX_FRAGMENTS 75 
+#define MAX_FRAGMENTS 75
 
 in vec3 Position;
 in vec3 Normal;
@@ -54,7 +54,7 @@ void pass1()
     // replace the value at gl_FragCoord.xy with our new node's
     // index.  We use imageAtomicExchange to make sure that this
     // is an atomic operation.  The return value is the old head
-    // of the list (the previous value), which will become the 
+    // of the list (the previous value), which will become the
     // next element in the list once our node is inserted.
     uint prevHead = imageAtomicExchange(headPointers, ivec2(gl_FragCoord.xy), nodeIdx);
 
@@ -64,14 +64,14 @@ void pass1()
     nodes[nodeIdx].color = vec4(diffuse(), Kd.a);
     nodes[nodeIdx].depth = gl_FragCoord.z;
     nodes[nodeIdx].next = prevHead;
-  } 
+  }
  // FragColor = nodes[nodeIdx].color;
 }
 
   subroutine(RenderPassType)
-void pass2() 
+void pass2()
 {
-  struct NodeType frags[MAX_FRAGMENTS];
+  NodeType frags[MAX_FRAGMENTS];
   int count = 0;
 
   // Get the index of the head of the list
@@ -88,7 +88,7 @@ void pass2()
   // to smallest).
   for( uint i = 1; i < count; i++ )
   {
-    struct NodeType toInsert = frags[i];
+    NodeType toInsert = frags[i];
     uint j = i;
     while( j > 0 && toInsert.depth > frags[j-1].depth ) {
       frags[j] = frags[j-1];
@@ -101,14 +101,14 @@ void pass2()
   // channel.
   vec4 color = vec4(0.5, 0.5, 0.5, 1.0);
   for( int i = 0; i < count; i++ )
-  { 
+  {
     color = mix( color, frags[i].color, frags[i].color.a);
   }
-  
+
   // Output the final color
   FragColor = color;
 }
 
 void main() {
-  RenderPass(); 
+  RenderPass();
 }

@@ -13,7 +13,7 @@ using std::cerr;
 using glm::vec3;
 
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform2.hpp>
+#include <glm/gtx/transform.hpp>
 
 SceneSamplerObj::SceneSamplerObj() { }
 
@@ -35,11 +35,11 @@ void SceneSamplerObj::initScene()
     // A simple 128x128 checkerboard texture
     GLint w = 128, h = 128, checkSize = 4;
     GLubyte *data = new GLubyte[w * h * 4];
-    for( int r = 0; r < h; ++r ) 
+    for( int r = 0; r < h; ++r )
     	for(int c = 0; c < w; ++c )
     	{
     		GLubyte color = 0;
-    		if( ((c/checkSize) + (r/checkSize)) % 2 == 0 ) 
+    		if( ((c/checkSize) + (r/checkSize)) % 2 == 0 )
     			color = 0;
     		else
     			color = 255;
@@ -48,7 +48,7 @@ void SceneSamplerObj::initScene()
     		data[(r * w + c)*4 + 2] = color;
     		data[(r * w + c)*4 + 3] = 255;
     	}
-    
+
 	// Create the texture object
     GLuint texID;
     glGenTextures(1, &texID);
@@ -56,34 +56,30 @@ void SceneSamplerObj::initScene()
     glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA8, w, h);
     glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, w, h, GL_RGBA, GL_UNSIGNED_BYTE, data);
     delete [] data;
-    
+
     // Create some sampler objects
     GLuint samplers[2];
     glGenSamplers(2, samplers);
     linearSampler = samplers[0];
     nearestSampler = samplers[1];
-    
+
     // Set up the nearest sampler
     glSamplerParameteri(nearestSampler, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glSamplerParameteri(nearestSampler, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    
+
     // Set up the linear sampler
     glSamplerParameteri(linearSampler, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glSamplerParameteri(linearSampler, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    
+
     // Bind texture object and sampler object to texture unit
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, texID);
-    
+
     // Bind the sampler object to the same texture unit and set the sampler uniform
     prog.setUniform("Tex1", 0);
 }
 
-void SceneSamplerObj::update( float t )
-{
-    angle += 0.01f;
-    if( angle > TWOPI_F) angle -= TWOPI_F;
-}
+void SceneSamplerObj::update( float t ) {}
 
 void SceneSamplerObj::render()
 {
@@ -95,8 +91,8 @@ void SceneSamplerObj::render()
     prog.setUniform("Material.Ka", 0.1f, 0.1f, 0.1f);
     prog.setUniform("Material.Shininess", 100.0f);
 
-    glm::mat4 rot = glm::rotate(glm::mat4(), 10.0f, glm::vec3(1,0,0));
-    
+    glm::mat4 rot = glm::rotate(glm::mat4(), glm::radians(10.0f), glm::vec3(1,0,0));
+
     model = glm::translate(rot, glm::vec3(-5.01f,0.f,0.f));
     setMatrices();
     glBindSampler(0, nearestSampler);
@@ -122,7 +118,7 @@ void SceneSamplerObj::resize(int w, int h)
     glViewport(0,0,w,h);
     width = w;
     height = h;
-    projection = glm::perspective(60.0f, (float)w/h, 0.3f, 100.0f);
+    projection = glm::perspective(glm::radians(60.0f), (float)w/h, 0.3f, 100.0f);
 }
 
 void SceneSamplerObj::compileAndLinkShader()

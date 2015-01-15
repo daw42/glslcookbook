@@ -54,7 +54,10 @@ void render() {
     if( Time >= VertexStartTime ) {
         float agePct = age/ParticleLifetime;
         Transp = 1.0 - agePct;
-        gl_PointSize = mix(MinParticleSize,MaxParticleSize,agePct);
+
+        // Intel cards crash when using gl_PointSize
+//        gl_PointSize = mix(MinParticleSize,MaxParticleSize,agePct);
+
     }
     gl_Position = MVP * vec4(VertexPosition, 1.0);
 }

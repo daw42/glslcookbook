@@ -17,7 +17,7 @@ using std::vector;
 
 #include <glm/gtc/matrix_transform.hpp>
 
-SceneOit::SceneOit() : width(800), height(600), angle(0.0f), tPrev(0.0f), 
+SceneOit::SceneOit() : width(800), height(600), angle(0.0f), tPrev(0.0f),
   rotSpeed(PI/8.0)
 { }
 
@@ -46,7 +46,7 @@ void SceneOit::initScene()
   // Set up a  VAO for the full-screen quad
   GLfloat verts[] = { -1.0f, -1.0f, 0.0f, 1.0f, -1.0f, 0.0f,
     1.0f, 1.0f, 0.0f, -1.0f, 1.0f, 0.0f };
-  GLuint bufHandle; 
+  GLuint bufHandle;
   glGenBuffers(1, &bufHandle);
   glBindBuffer(GL_ARRAY_BUFFER, bufHandle);
   glBufferData(GL_ARRAY_BUFFER, 4 * 3 * sizeof(GLfloat), verts, GL_STATIC_DRAW);
@@ -88,11 +88,11 @@ void SceneOit::pass1() {
 
   view = glm::lookAt(vec3(11.0f * cos(angle),2.0f,11.0f * sin(angle)), vec3(0.0f,0.0f,0.0f), vec3(0.0f,1.0f,0.0f));
 
-  projection = glm::perspective( 50.0f, (float)width/height, 1.0f, 1000.0f);
+  projection = glm::perspective( glm::radians(50.0f), (float)width/height, 1.0f, 1000.0f);
 
   glDepthMask( GL_FALSE );
 
-  // draw scene 
+  // draw scene
   drawScene();
 
   glFinish();
@@ -114,7 +114,7 @@ void SceneOit::pass2() {
   // Draw a screen filler
   glBindVertexArray(fsQuad);
   glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
-  glBindVertexArray(0); 
+  glBindVertexArray(0);
 }
 
 void SceneOit::clearBuffers() {
@@ -132,7 +132,7 @@ void SceneOit::setMatrices()
 {
   mat4 mv = view * model;
 
-  prog.setUniform("NormalMatrix", 
+  prog.setUniform("NormalMatrix",
       mat3( vec3(mv[0]), vec3(mv[1]), vec3(mv[2]) ) );
   prog.setUniform("ModelViewMatrix", mv);
   prog.setUniform("MVP", projection * mv);
@@ -165,7 +165,7 @@ void SceneOit::drawScene() {
   prog.setUniform("Kd", vec4(0.2f, 0.2f, 0.9f, 0.55f) );
   float size = 0.45f;
   for( int i = 0; i <= 6; i++ )
-    for( int j = 0; j <= 6; j++ ) 
+    for( int j = 0; j <= 6; j++ )
       for( int k = 0; k <= 6; k++ ) {
         if( (i + j + k) % 2 == 0 ) {
           model = glm::translate(mat4(1.0f), vec3(i-3, j-3, k-3));
@@ -225,7 +225,7 @@ void SceneOit::initShaderStorage()
   // The buffer for the head pointers, as an image texture
   glGenTextures(1, &headPtrTex);
   glBindTexture(GL_TEXTURE_2D, headPtrTex);
-  glTexStorage2D(GL_TEXTURE_2D, 1, GL_R32UI, width, height); 
+  glTexStorage2D(GL_TEXTURE_2D, 1, GL_R32UI, width, height);
   glBindImageTexture(0, headPtrTex, 0, GL_FALSE, 0, GL_READ_WRITE, GL_R32UI);
 
   // The buffer of linked lists
@@ -237,6 +237,6 @@ void SceneOit::initShaderStorage()
   vector<GLuint> headPtrClearBuf(width*height, 0xffffffff);
   glGenBuffers(1, &clearBuf);
   glBindBuffer(GL_PIXEL_UNPACK_BUFFER, clearBuf);
-  glBufferData(GL_PIXEL_UNPACK_BUFFER, headPtrClearBuf.size() * sizeof(GLuint), 
+  glBufferData(GL_PIXEL_UNPACK_BUFFER, headPtrClearBuf.size() * sizeof(GLuint),
       &headPtrClearBuf[0], GL_STATIC_COPY);
 }

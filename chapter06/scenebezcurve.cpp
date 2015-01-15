@@ -12,7 +12,7 @@ using std::cerr;
 using glm::vec3;
 
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform2.hpp>
+#include <glm/gtx/transform.hpp>
 
 SceneBezCurve::SceneBezCurve() {}
 
@@ -46,13 +46,13 @@ void SceneBezCurve::initScene()
 
     // Set the number of vertices per patch.  IMPORTANT!!
     glPatchParameteri( GL_PATCH_VERTICES, 4);
-    
+
     // Segments and strips may be inverted on NVIDIA
     prog.use();
     prog.setUniform("NumSegments", 50);
     prog.setUniform("NumStrips", 1);
     prog.setUniform("LineColor", vec4(1.0f,1.0f,0.5f,1.0f));
-    
+
     solidProg.use();
     solidProg.setUniform("Color", vec4(0.5f,1.0f,1.0f,1.0f));
 }
@@ -72,7 +72,7 @@ void SceneBezCurve::render()
 
     glBindVertexArray(vaoHandle);
 	setMatrices();
-	
+
 	// Draw the curve
     prog.use();
     glDrawArrays(GL_PATCHES, 0, 4);
@@ -114,7 +114,7 @@ void SceneBezCurve::compileAndLinkShader()
 		prog.compileShader("shader/bezcurve.tcs",GLSLShader::TESS_CONTROL);
     	prog.link();
     	prog.use();
-    	
+
     	solidProg.compileShader("shader/solid.vs",GLSLShader::VERTEX);
     	solidProg.compileShader("shader/solid.fs",GLSLShader::FRAGMENT);
     	solidProg.link();

@@ -1,4 +1,4 @@
-#version 440
+#version 430
 
 in vec3 Position;
 in vec3 Normal;
@@ -27,7 +27,6 @@ uniform MaterialInfo Material;
 
 layout( location = 0 ) out vec4 FragColor;
 
-uniform int PixOffset[5] = int[](0,1,2,3,4);
 uniform float Weight[5] = float[]( 0.2270270270, 0.1945945946, 0.1216216216,
                                    0.0540540541, 0.0162162162 );
 
@@ -58,11 +57,14 @@ vec4 pass2()
 {
     ivec2 pix = ivec2( gl_FragCoord.xy );
     vec4 sum = texelFetch(Texture0, pix, 0) * Weight[0];
-    for( int i = 1; i < 5; i++ )
-    {
-         sum += texelFetchOffset( Texture0, pix, 0, ivec2(0,PixOffset[i]) ) * Weight[i];
-         sum += texelFetchOffset( Texture0, pix, 0, ivec2(0,-PixOffset[i]) ) * Weight[i];
-    }
+    sum += texelFetchOffset( Texture0, pix, 0, ivec2(0,1) ) * Weight[1];
+    sum += texelFetchOffset( Texture0, pix, 0, ivec2(0,-1) ) * Weight[1];
+    sum += texelFetchOffset( Texture0, pix, 0, ivec2(0,2) ) * Weight[2];
+    sum += texelFetchOffset( Texture0, pix, 0, ivec2(0,-2) ) * Weight[2];
+    sum += texelFetchOffset( Texture0, pix, 0, ivec2(0,3) ) * Weight[3];
+    sum += texelFetchOffset( Texture0, pix, 0, ivec2(0,-3) ) * Weight[3];
+    sum += texelFetchOffset( Texture0, pix, 0, ivec2(0,4) ) * Weight[4];
+    sum += texelFetchOffset( Texture0, pix, 0, ivec2(0,-4) ) * Weight[4];
     return sum;
 }
 
@@ -71,11 +73,14 @@ vec4 pass3()
 {
     ivec2 pix = ivec2( gl_FragCoord.xy );
     vec4 sum = texelFetch(Texture0, pix, 0) * Weight[0];
-    for( int i = 1; i < 5; i++ )
-    {
-       sum += texelFetchOffset( Texture0, pix, 0, ivec2(PixOffset[i],0) ) * Weight[i];
-       sum += texelFetchOffset( Texture0, pix, 0, ivec2(-PixOffset[i],0) ) * Weight[i];
-    }
+    sum += texelFetchOffset( Texture0, pix, 0, ivec2(1,0) ) * Weight[1];
+    sum += texelFetchOffset( Texture0, pix, 0, ivec2(-1,0) ) * Weight[1];
+    sum += texelFetchOffset( Texture0, pix, 0, ivec2(2,0) ) * Weight[2];
+    sum += texelFetchOffset( Texture0, pix, 0, ivec2(-2,0) ) * Weight[2];
+    sum += texelFetchOffset( Texture0, pix, 0, ivec2(3,0) ) * Weight[3];
+    sum += texelFetchOffset( Texture0, pix, 0, ivec2(-3,0) ) * Weight[3];
+    sum += texelFetchOffset( Texture0, pix, 0, ivec2(4,0) ) * Weight[4];
+    sum += texelFetchOffset( Texture0, pix, 0, ivec2(-4,0) ) * Weight[4];
     return sum;
 }
 

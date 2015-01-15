@@ -12,9 +12,9 @@ using std::endl;
 using glm::vec3;
 
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform2.hpp>
+#include <glm/gtx/transform.hpp>
 
-SceneTessTeapot::SceneTessTeapot() :angle(0.0f), tPrev(0.0f), rotSpeed(PI/4.0) {}
+SceneTessTeapot::SceneTessTeapot() :angle(0.0f), tPrev(0.0f), rotSpeed(PI/8.0) {}
 
 void SceneTessTeapot::initScene()
 {
@@ -61,7 +61,7 @@ void SceneTessTeapot::render()
 
     model = mat4(1.0f);
     model = glm::translate(model, vec3(0.0f,-1.5f,0.0f));
-    model = glm::rotate(model,-90.0f, vec3(1.0f,0.0f,0.0f));
+    model = glm::rotate(model,glm::radians(-90.0f), vec3(1.0f,0.0f,0.0f));
     setMatrices();
     teapot->render();
     glFinish();
@@ -86,7 +86,7 @@ void SceneTessTeapot::resize(int w, int h)
                      vec4(0.0f,h2,0.0f,0.0f),
                      vec4(0.0f,0.0f,1.0f,0.0f),
                      vec4(w2+0, h2+0, 0.0f, 1.0f));
-    projection = glm::perspective(60.0f, (float)w/h, 0.3f, 100.0f);
+    projection = glm::perspective(glm::radians(60.0f), (float)w/h, 0.3f, 100.0f);
 }
 
 void SceneTessTeapot::compileAndLinkShader()

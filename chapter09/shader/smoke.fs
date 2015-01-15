@@ -10,5 +10,4 @@ void main()
 {
     FragColor = texture(ParticleTex, gl_PointCoord);
     FragColor.a *= Transp;
-    //FragColor = vec4(1,0,0,1);
 }

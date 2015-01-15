@@ -11,16 +11,13 @@ using glm::vec3;
 using std::cerr;
 using std::endl;
 
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform2.hpp>
+#include <cstdlib>
 
-SceneShadowMap::SceneShadowMap()
-{
-    width = 800;
-    height = 600;
-    shadowMapWidth = 512;
-    shadowMapHeight = 512;
-}
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/transform.hpp>
+
+SceneShadowMap::SceneShadowMap() : tPrev(0), width(800), height(600), shadowMapWidth(512),
+shadowMapHeight(512) {}
 
 void SceneShadowMap::initScene()
 {
@@ -86,9 +83,6 @@ void SceneShadowMap::spitOutDepthBuffer() {
             imgBuffer[imgIdx+3] = 0xff;
         }
 
-//    QImage img(imgBuffer, shadowMapWidth, shadowMapHeight, QImage::Format_RGB32);
-//    img.save("depth.png", "PNG");
-
     delete [] buffer;
     delete [] imgBuffer;
     exit(1);
@@ -108,7 +102,7 @@ void SceneShadowMap::setupFBO()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
     glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, border);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LESS);    
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LESS);
 
     // Assign the depth buffer texture to texture channel 0
     glActiveTexture(GL_TEXTURE0);
@@ -135,8 +129,12 @@ void SceneShadowMap::setupFBO()
 
 void SceneShadowMap::update( float t )
 {
-    angle += 0.003f;
-    if( angle > TWOPI_F) angle -= TWOPI_F;
+  float deltaT = t - tPrev;
+  if(tPrev == 0.0f) deltaT = 0.0f;
+  tPrev = t;
+
+  angle += 0.2f * deltaT;
+  if( angle > TWOPI_F) angle -= TWOPI_F;
 }
 
 void SceneShadowMap::render()
@@ -161,7 +159,7 @@ void SceneShadowMap::render()
     vec3 cameraPos(c * 11.5f * cos(angle),c * 7.0f,c * 11.5f * sin(angle));
     view = glm::lookAt(cameraPos,vec3(0.0f),vec3(0.0f,1.0f,0.0f));
     prog.setUniform("Light.Position", view * vec4(lightFrustum->getOrigin(),1.0f));
-    projection = glm::perspective(50.0f, (float)width/height, 0.1f, 100.0f);
+    projection = glm::perspective(glm::radians(50.0f), (float)width/height, 0.1f, 100.0f);
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -189,7 +187,7 @@ void SceneShadowMap::drawScene()
     prog.setUniform("Material.Shininess", 150.0f);
     model = mat4(1.0f);
     model *= glm::translate(vec3(0.0f,0.0f,0.0f));
-    model *= glm::rotate(-90.0f, vec3(1.0f,0.0f,0.0f));
+    model *= glm::rotate(glm::radians(-90.0f), vec3(1.0f,0.0f,0.0f));
     setMatrices();
     teapot->render();
 
@@ -199,7 +197,7 @@ void SceneShadowMap::drawScene()
     prog.setUniform("Material.Shininess", 150.0f);
     model = mat4(1.0f);
     model *= glm::translate(vec3(0.0f,2.0f,5.0f));
-    model *= glm::rotate(-45.0f, vec3(1.0f,0.0f,0.0f));
+    model *= glm::rotate(glm::radians(-45.0f), vec3(1.0f,0.0f,0.0f));
     setMatrices();
     torus->render();
 
@@ -213,12 +211,12 @@ void SceneShadowMap::drawScene()
     plane->render();
     model = mat4(1.0f);
     model *= glm::translate(vec3(-5.0f,5.0f,0.0f));
-    model *= glm::rotate(-90.0f,vec3(0.0f,0.0f,1.0f));
+    model *= glm::rotate(glm::radians(-90.0f),vec3(0.0f,0.0f,1.0f));
     setMatrices();
     plane->render();
     model = mat4(1.0f);
     model *= glm::translate(vec3(0.0f,5.0f,-5.0f));
-    model *= glm::rotate(90.0f,vec3(1.0f,0.0f,0.0f));
+    model *= glm::rotate(glm::radians(90.0f),vec3(1.0f,0.0f,0.0f));
     setMatrices();
     plane->render();
     model = mat4(1.0f);
@@ -248,7 +246,7 @@ void SceneShadowMap::compileAndLinkShader()
 		prog.compileShader("shader/shadowmap.fs",GLSLShader::FRAGMENT);
     	prog.link();
     	prog.use();
-    	
+
     	solidProg.compileShader("shader/solid.vs", GLSLShader::VERTEX);
     	solidProg.compileShader("shader/solid.fs", GLSLShader::FRAGMENT);
     	solidProg.link();

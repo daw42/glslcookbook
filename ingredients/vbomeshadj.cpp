@@ -3,6 +3,7 @@
 
 #define uint unsigned int
 
+#include <cstdlib>
 #include <iostream>
 using std::cout;
 using std::cerr;
@@ -206,7 +207,7 @@ void VBOMeshAdj::loadOBJ( const char * fileName, bool reCenterMesh ) {
         }
         if( faceVerts != 3 ) {
           printf("Found non-triangular face.\n");
-        } 
+        }
       }
     }
     getline( objStream, line );
@@ -229,7 +230,7 @@ void VBOMeshAdj::loadOBJ( const char * fileName, bool reCenterMesh ) {
       if( texCoord != it->second ) {
         p.push_back( p[point] );  // Dup the point
         texCoords.push_back( tc[texCoord] );
-        faces[i] = p.size() - 1; 
+        faces[i] = p.size() - 1;
       }
     }
   }
@@ -484,4 +485,3 @@ void VBOMeshAdj::trimString( string & str ) {
     location = str.find_last_not_of(whiteSpace);
     str.erase(location + 1);
 }
-

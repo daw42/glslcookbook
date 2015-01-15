@@ -1,6 +1,7 @@
 #include "scenedecay.h"
 
 #include <cstdio>
+#include <cstdlib>
 #include <iostream>
 using std::cerr;
 using std::endl;
@@ -11,15 +12,11 @@ using std::endl;
 using glm::vec3;
 
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform2.hpp>
+#include <glm/gtx/transform.hpp>
 
 #include<iostream>
 
-SceneDecay::SceneDecay()
-{
-    width = 800;
-    height = 600;
-}
+SceneDecay::SceneDecay() : width(800), height(600) { }
 
 void SceneDecay::initScene()
 {
@@ -56,10 +53,10 @@ void SceneDecay::render()
 }
 
 void SceneDecay::drawScene()
-{    
+{
     model = mat4(1.0f);
-    model = glm::rotate(model, -15.0f, vec3(0.0f,1.0f,0.0f));
-    model = glm::rotate(model, -90.0f, vec3(1.0f,0.0f,0.0f));
+    model = glm::rotate(model, glm::radians(-15.0f), vec3(0.0f,1.0f,0.0f));
+    model = glm::rotate(model, glm::radians(-90.0f), vec3(1.0f,0.0f,0.0f));
     setMatrices();
 
     prog.setUniform("Material.Kd", 0.7f, 0.5f, 0.3f);
@@ -83,7 +80,7 @@ void SceneDecay::resize(int w, int h)
     glViewport(0,0,w,h);
     width = w;
     height = h;
-    projection = glm::perspective(55.0f, (float)width/height, 0.3f, 100.0f);
+    projection = glm::perspective(glm::radians(55.0f), (float)width/height, 0.3f, 100.0f);
 }
 
 void SceneDecay::compileAndLinkShader()

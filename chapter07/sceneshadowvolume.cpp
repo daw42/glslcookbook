@@ -11,17 +11,13 @@ using glm::vec3;
 #include <iostream>
 using std::cerr;
 using std::endl;
+#include <cstdlib>
 
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform2.hpp>
+#include <glm/gtx/transform.hpp>
 
-SceneShadowVolume::SceneShadowVolume()
-{
-    width = 800;
-    height = 600;
-    rotSpeed = 0.5f;
-    tPrev = 0.0f;
-}
+SceneShadowVolume::SceneShadowVolume() : width(800), height(600), rotSpeed(0.1f), tPrev(0)
+{ }
 
 void SceneShadowVolume::initScene()
 {
@@ -46,7 +42,7 @@ void SceneShadowVolume::initScene()
   // Set up a  VAO for the full-screen quad
   GLfloat verts[] = { -1.0f, -1.0f, 0.0f, 1.0f, -1.0f, 0.0f,
     1.0f, 1.0f, 0.0f, -1.0f, 1.0f, 0.0f };
-  GLuint bufHandle; 
+  GLuint bufHandle;
   glGenBuffers(1, &bufHandle);
   glBindBuffer(GL_ARRAY_BUFFER, bufHandle);
   glBufferData(GL_ARRAY_BUFFER, 4 * 3 * sizeof(GLfloat), verts, GL_STATIC_DRAW);
@@ -65,7 +61,7 @@ void SceneShadowVolume::initScene()
   glActiveTexture(GL_TEXTURE2);
   spotTex = TGAIO::loadTex("../media/spot/spot_texture.tga");
   brickTex = TGAIO::loadTex("../media/texture/brick1.tga");
- 
+
   updateLight();
   this->animate(true);
 }
@@ -83,7 +79,7 @@ void SceneShadowVolume::setupFBO()
     glGenRenderbuffers(1, &depthBuf);
     glBindRenderbuffer(GL_RENDERBUFFER, depthBuf );
     glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, width, height);
-    
+
     // The ambient buffer
     GLuint ambBuf;
     glGenRenderbuffers(1, &ambBuf);
@@ -104,7 +100,7 @@ void SceneShadowVolume::setupFBO()
     glBindFramebuffer(GL_FRAMEBUFFER, colorDepthFBO);
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthBuf);
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, ambBuf);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, diffSpecTex, 0); 
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, diffSpecTex, 0);
 
     GLenum drawBuffers[] = {GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1};
     glDrawBuffers(2, drawBuffers);
@@ -145,7 +141,7 @@ void SceneShadowVolume::pass1() {
   glDepthMask(GL_TRUE);
   glDisable(GL_STENCIL_TEST);
   glEnable(GL_DEPTH_TEST);
-  projection = glm::infinitePerspective(50.0f, (float)width/height, 0.5f );
+  projection = glm::infinitePerspective(glm::radians(50.0f), (float)width/height, 0.5f );
   view = glm::lookAt(vec3(5.0f, 5.0f, 5.0f), vec3(0,2,0), vec3(0,1,0) );
 
   renderProg.use();
@@ -156,7 +152,7 @@ void SceneShadowVolume::pass1() {
   drawScene(renderProg, false);
 }
 
-// This is the pass that generates the shadow volumes using the 
+// This is the pass that generates the shadow volumes using the
 // geometry shader
 void SceneShadowVolume::pass2() {
   volumeProg.use();
@@ -164,12 +160,12 @@ void SceneShadowVolume::pass2() {
 
   // Copy the depth and color buffers from the FBO into the default FBO
   // The color buffer should contain the ambient component.
-  glBindFramebuffer(GL_READ_FRAMEBUFFER, colorDepthFBO); 
+  glBindFramebuffer(GL_READ_FRAMEBUFFER, colorDepthFBO);
   glBindFramebuffer(GL_DRAW_FRAMEBUFFER,0);
   glBlitFramebuffer(0,0,width-1,height-1,0,0,width-1,height-1,GL_DEPTH_BUFFER_BIT|GL_COLOR_BUFFER_BIT,GL_NEAREST);
 
   // Disable writing to the color buffer and depth buffer
-  glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE); 
+  glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
   glDepthMask(GL_FALSE);
 
   // Re-bind to the default framebuffer
@@ -194,12 +190,12 @@ void SceneShadowVolume::pass2() {
 // and combine it with the ambient component if the stencil test succeeds.
 void SceneShadowVolume::pass3() {
   // We don't need the depth test
-  glDisable(GL_DEPTH_TEST); 
+  glDisable(GL_DEPTH_TEST);
 
   // We want to just sum the ambient component and the diffuse + specular
   // when the stencil test succeeds, so we'll use this simple blend function.
-  glEnable(GL_BLEND);          
-  glBlendFunc(GL_ONE,GL_ONE); 
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_ONE,GL_ONE);
 
   // We want to only render those pixels that have a stencil value
   // equal to zero.
@@ -216,7 +212,7 @@ void SceneShadowVolume::pass3() {
 
   glBindVertexArray(fsQuad);
   glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
-  glBindVertexArray(0);   
+  glBindVertexArray(0);
 
   // Restore some state
   glDisable(GL_BLEND);
@@ -239,21 +235,21 @@ void SceneShadowVolume::drawScene(GLSLProgram &prog, bool onlyShadowCasters)
 
   model = mat4(1.0f);
   model *= glm::translate(vec3(-2.3f,1.0f,0.2f));
-  model *= glm::rotate(180.0f, vec3(0.0f,1.0f,0.0f));
+  model *= glm::rotate(glm::radians(180.0f), vec3(0.0f,1.0f,0.0f));
   model = glm::scale(model, vec3(1.5f));
   setMatrices(prog);
   spot->render();
-  
+
   model = mat4(1.0f);
   model *= glm::translate(vec3(2.5f,1.0f,-1.2f));
-  model *= glm::rotate(180.0f, vec3(0.0f,1.0f,0.0f));
+  model *= glm::rotate(glm::radians(180.0f), vec3(0.0f,1.0f,0.0f));
   model = glm::scale(model, vec3(1.5f));
   setMatrices(prog);
   spot->render();
 
   model = mat4(1.0f);
   model *= glm::translate(vec3(0.5f,1.0f,2.7f));
-  model *= glm::rotate(180.0f, vec3(0.0f,1.0f,0.0f));
+  model *= glm::rotate(glm::radians(180.0f), vec3(0.0f,1.0f,0.0f));
   model = glm::scale(model, vec3(1.5f));
   setMatrices(prog);
   spot->render();
@@ -271,13 +267,13 @@ void SceneShadowVolume::drawScene(GLSLProgram &prog, bool onlyShadowCasters)
     plane->render();
     model = mat4(1.0f);
     model *= glm::translate(vec3(-5.0f,5.0f,0.0f));
-    model *= glm::rotate(90.0f, vec3(1,0,0));
-    model *= glm::rotate(-90.0f,vec3(0.0f,0.0f,1.0f));
+    model *= glm::rotate(glm::radians(90.0f), vec3(1,0,0));
+    model *= glm::rotate(glm::radians(-90.0f),vec3(0.0f,0.0f,1.0f));
     setMatrices(prog);
     plane->render();
     model = mat4(1.0f);
     model *= glm::translate(vec3(0.0f,5.0f,-5.0f));
-    model *= glm::rotate(90.0f,vec3(1.0f,0.0f,0.0f));
+    model *= glm::rotate(glm::radians(90.0f),vec3(1.0f,0.0f,0.0f));
     setMatrices(prog);
     plane->render();
     model = mat4(1.0f);
@@ -318,7 +314,7 @@ void SceneShadowVolume::compileAndLinkShader()
       compProg.compileShader("shader/shadowvolume-comp.vs");
       compProg.compileShader("shader/shadowvolume-comp.fs");
       compProg.link();
-    	
+
     } catch(GLSLProgramException &e ) {
     	cerr << e.what() << endl;
  		exit( EXIT_FAILURE );

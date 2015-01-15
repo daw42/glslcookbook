@@ -18,6 +18,7 @@ private:
     GLSLProgram prog;
 
     int width, height;
+    float tPrev;
     VBOPlane *plane;
     VBOTeapot *teapot;
     VBOTorus *torus;

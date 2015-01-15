@@ -1,4 +1,4 @@
-#version 440
+#version 430
 
 struct LightInfo {
   vec4 Position;  // Light position in eye coords.

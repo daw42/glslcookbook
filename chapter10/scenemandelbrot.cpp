@@ -13,9 +13,7 @@ using glm::vec3;
 
 #include <glm/gtc/matrix_transform.hpp>
 
-
-
-SceneMandelbrot::SceneMandelbrot(): 
+SceneMandelbrot::SceneMandelbrot():
   width(800), height(600), dataBuf(0), fsQuad(0),
   center(0.001643721971153f, 0.822467633298876f), cheight(2.0f),
   time(0.0f), deltaT(0.0f), speed(200.0f), angle(0.0f), rotSpeed(60.0f)
@@ -23,7 +21,7 @@ SceneMandelbrot::SceneMandelbrot():
 }
 
 void SceneMandelbrot::initScene()
-{    
+{
   compileAndLinkShader();
   initBuffers();
   setWindow();
@@ -45,7 +43,7 @@ void SceneMandelbrot::setWindow() {
   computeProg.use();
   float ar = 1.0;
   float cwidth = cheight * ar;
-  
+
   glm::vec4 bbox( center.x - cwidth/2.0f, center.y - cheight/2.0f,
       center.x + cwidth/2.0f, center.y + cheight/2.0f);
   computeProg.setUniform("CompWindow",bbox );
@@ -58,7 +56,7 @@ void SceneMandelbrot::initBuffers()
   glGenTextures(1, &imgTex);
   glActiveTexture(GL_TEXTURE0);
   glBindTexture(GL_TEXTURE_2D, imgTex);
-  glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA8, 256, 256); 
+  glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA8, 256, 256);
   glBindImageTexture(0, imgTex, 0, GL_FALSE, 0, GL_READ_WRITE, GL_RGBA8);
 }
 
@@ -91,10 +89,10 @@ void SceneMandelbrot::render()
 
   renderProg.use();
   glm::mat4 view = glm::lookAt( glm::vec3(0,0,2), glm::vec3(0,0,0), glm::vec3(0,1,0) );
-  glm::mat4 model = glm::rotate( glm::mat4(1.0f), angle, glm::vec3(1,1.5f,0.5f));
+  glm::mat4 model = glm::rotate( glm::mat4(1.0f), glm::radians(angle), glm::vec3(1,1.5f,0.5f));
   glm::mat4 mv = view * model;
   glm::mat3 norm =  mat3( vec3(mv[0]), vec3(mv[1]), vec3(mv[2]) );
-  glm::mat4 proj = glm::perspective(60.0f, (float)width/height, 1.0f, 100.0f);
+  glm::mat4 proj = glm::perspective(glm::radians(60.0f), (float)width/height, 1.0f, 100.0f);
 
   renderProg.setUniform("ModelViewMatrix", mv);
   renderProg.setUniform("NormalMatrix", norm);

@@ -1,4 +1,4 @@
-#version 440
+#version 430
 
 uniform sampler2D ParticleTex;
 

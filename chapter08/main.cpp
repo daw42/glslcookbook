@@ -9,6 +9,9 @@
 #include "scenewood.h"
 #include "scenenoise.h"
 
+#include <cstdio>
+#include <cstdlib>
+
 #define WIN_WIDTH 800
 #define WIN_HEIGHT 600
 
@@ -93,7 +96,7 @@ string parseCLArgs(int argc, char ** argv) {
 	if( recipe == "decay" ) {
 		scene = new SceneDecay();
 	} else if( recipe == "noise" ) {
-          scene = new SceneNoise(); 
+          scene = new SceneNoise();
         } else if( recipe == "night-vision") {
 		scene = new SceneNightVision();
 	} else if( recipe == "paint") {

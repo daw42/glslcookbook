@@ -1,5 +1,7 @@
 #include "cookbookogl.h"
 #include <GLFW/glfw3.h>
+#include <cstdio>
+#include <cstdlib>
 
 #include "glutils.h"
 #include "scenemandelbrot.h"
@@ -31,9 +33,9 @@ void initializeGL() {
 
   glDebugMessageCallback(GLUtils::debugCallback, NULL);
   glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, NULL, GL_TRUE);
-  glDebugMessageInsert(GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_MARKER, 0, 
+  glDebugMessageInsert(GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_MARKER, 0,
   GL_DEBUG_SEVERITY_NOTIFICATION, -1 , "Start debugging");
-  
+
     glClearColor(0.5f,0.5f,0.5f,1.0f);
     scene->initScene();
 }
@@ -56,7 +58,7 @@ void mainLoop() {
 
     if( index == 0 ) {
       float sum = 0.0f;
-      for( int i = 0; i < samples-1 ; i++ ) 
+      for( int i = 0; i < samples-1 ; i++ )
         sum += time[i + 1] - time[i];
       float fps = samples / sum;
 
@@ -82,7 +84,7 @@ int main(int argc, char *argv[])
 
 	// Select OpenGL 4.4 with a forward compatible core profile.
 	glfwWindowHint( GLFW_CONTEXT_VERSION_MAJOR, 4 );
-	glfwWindowHint( GLFW_CONTEXT_VERSION_MINOR, 4 );
+	glfwWindowHint( GLFW_CONTEXT_VERSION_MINOR, 3 );
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
@@ -97,8 +99,8 @@ int main(int argc, char *argv[])
 	}
 	glfwMakeContextCurrent(window);
 
-        glfwSetKeyCallback(window, key_callback); 
-	
+        glfwSetKeyCallback(window, key_callback);
+
 	// Load the OpenGL functions.
 	if( ogl_LoadFunctions() == ogl_LOAD_FAILED ) {
 		glfwTerminate();

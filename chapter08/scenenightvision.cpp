@@ -12,13 +12,9 @@ using std::endl;
 using glm::vec3;
 
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform2.hpp>
+#include <glm/gtx/transform.hpp>
 
-SceneNightVision::SceneNightVision()
-{
-    width = 800;
-    height = 600;
-}
+SceneNightVision::SceneNightVision() : width(800), height(600) {}
 
 void SceneNightVision::initScene()
 {
@@ -143,7 +139,7 @@ void SceneNightVision::pass1()
     glUniformSubroutinesuiv( GL_FRAGMENT_SHADER, 1, &pass1Index);
 
     view = glm::lookAt(vec3(7.0f * cos(angle),4.0f,7.0f * sin(angle)), vec3(0.0f,0.0f,0.0f), vec3(0.0f,1.0f,0.0f));
-    projection = glm::perspective(60.0f, (float)width/height, 0.3f, 100.0f);
+    projection = glm::perspective(glm::radians(60.0f), (float)width/height, 0.3f, 100.0f);
 
     prog.setUniform("Light.Position", vec4(0.0f,0.0f,0.0f,1.0f) );
     prog.setUniform("Material.Kd", 0.9f, 0.9f, 0.9f);
@@ -153,7 +149,7 @@ void SceneNightVision::pass1()
 
     model = mat4(1.0f);
     model *= glm::translate(vec3(0.0f,0.0f,0.0f));
-    model *= glm::rotate(-90.0f, vec3(1.0f,0.0f,0.0f));
+    model *= glm::rotate(glm::radians(-90.0f), vec3(1.0f,0.0f,0.0f));
     setMatrices();
     teapot->render();
 
@@ -173,7 +169,7 @@ void SceneNightVision::pass1()
     prog.setUniform("Material.Shininess", 100.0f);
     model = mat4(1.0f);
     model *= glm::translate(vec3(1.0f,1.0f,3.0f));
-    model *= glm::rotate(90.0f, vec3(1.0f,0.0f,0.0f));
+    model *= glm::rotate(glm::radians(90.0f), vec3(1.0f,0.0f,0.0f));
     setMatrices();
     torus->render();
 }
@@ -213,7 +209,7 @@ void SceneNightVision::resize(int w, int h)
     glViewport(0,0,w,h);
     width = w;
     height = h;
-    projection = glm::perspective(60.0f, (float)w/h, 0.3f, 100.0f);
+    projection = glm::perspective(glm::radians(60.0f), (float)w/h, 0.3f, 100.0f);
 }
 
 void SceneNightVision::compileAndLinkShader()

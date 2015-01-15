@@ -11,7 +11,7 @@ using std::endl;
 using glm::vec3;
 
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform2.hpp>
+#include <glm/gtx/transform.hpp>
 
 SceneDiffuse::SceneDiffuse()
 {
@@ -26,8 +26,8 @@ void SceneDiffuse::initScene()
     torus = new VBOTorus(0.7f, 0.3f, 30, 30);
 
     model = mat4(1.0f);
-    model *= glm::rotate(-35.0f, vec3(1.0f,0.0f,0.0f));
-    model *= glm::rotate(35.0f, vec3(0.0f,1.0f,0.0f));
+    model *= glm::rotate(glm::radians(-35.0f), vec3(1.0f,0.0f,0.0f));
+    model *= glm::rotate(glm::radians(35.0f), vec3(0.0f,1.0f,0.0f));
     view = glm::lookAt(vec3(0.0f,0.0f,2.0f), vec3(0.0f,0.0f,0.0f), vec3(0.0f,1.0f,0.0f));
     projection = mat4(1.0f);
 
@@ -64,7 +64,7 @@ void SceneDiffuse::resize(int w, int h)
     glViewport(0,0,w,h);
     width = w;
     height = h;
-    projection = glm::perspective(70.0f, (float)w/h, 0.3f, 100.0f);
+    projection = glm::perspective(glm::radians(70.0f), (float)w/h, 0.3f, 100.0f);
 }
 
 void SceneDiffuse::compileAndLinkShader()

@@ -1,6 +1,7 @@
 #include "scenewood.h"
 
 #include <cstdio>
+#include <cstdlib>
 #include <iostream>
 using std::cerr;
 using std::endl;
@@ -16,11 +17,7 @@ using glm::vec3;
 
 #include<iostream>
 
-SceneWood::SceneWood()
-{
-    width = 800;
-    height = 600;
-}
+SceneWood::SceneWood(): width(800), height(600) { }
 
 void SceneWood::initScene()
 {
@@ -70,8 +67,8 @@ void SceneWood::initScene()
     prog.setUniform("NoiseTex", 0);
 
     mat4 slice;
-    slice *= glm::rotate(10.0f, vec3(1.0, 0.0, 0.0));
-    slice *= glm::rotate(-20.0f, vec3(0.0,0.0,1.0));
+    slice *= glm::rotate(glm::radians(10.0f), vec3(1.0, 0.0, 0.0));
+    slice *= glm::rotate(glm::radians(-20.0f), vec3(0.0,0.0,1.0));
     slice *= glm::scale(vec3(40.0, 40.0, 1.0));
     slice *= glm::translate( vec3(-0.35, -0.5, 2.0));
 

@@ -32,6 +32,7 @@ private:
 
     int width, height;
     int shadowMapWidth, shadowMapHeight;
+    float tPrev;
 
     mat4 model, view, projection;
     mat4 lightView, lightProjection, lightPV;

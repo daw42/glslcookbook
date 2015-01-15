@@ -13,7 +13,7 @@ using std::cerr;
 using glm::vec3;
 
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform2.hpp>
+#include <glm/gtx/transform.hpp>
 
 SceneDirectional::SceneDirectional()
 {
@@ -31,7 +31,6 @@ void SceneDirectional::initScene()
     view = glm::lookAt(vec3(1.0f,1.0f,1.0f), vec3(0.0f,0.0f,0.0f), vec3(0.0f,1.0f,0.0f));
     projection = mat4(1.0f);
 
- //  prog.setUniform("LightPosition", view * vec4(3.0f, 0.0f, 0.0f, 1.0f) );
     prog.setUniform("LightPosition", view * vec4(1.0f, 0.0f, 0.0f, 0.0f) );
     prog.setUniform("LightIntensity", vec3(0.8f,0.8f,0.8f) );
 }
@@ -51,7 +50,7 @@ void SceneDirectional::render()
     prog.setUniform("Shininess", 180.0f);
 
     model = mat4(1.0f);
-    model *= glm::rotate(90.0f, vec3(0.0f,1.0f,0.0f));
+    model *= glm::rotate(glm::radians(90.0f), vec3(0.0f,1.0f,0.0f));
     setMatrices();
     torus->render();
 
@@ -80,7 +79,7 @@ void SceneDirectional::resize(int w, int h)
     glViewport(0,0,w,h);
     width = w;
     height = h;
-    projection = glm::perspective(70.0f, (float)w/h, 0.3f, 100.0f);
+    projection = glm::perspective(glm::radians(70.0f), (float)w/h, 0.3f, 100.0f);
 }
 
 void SceneDirectional::compileAndLinkShader()

@@ -12,7 +12,7 @@ using std::cerr;
 using glm::vec3;
 
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform2.hpp>
+#include <glm/gtx/transform.hpp>
 
 SceneHdrBloom::SceneHdrBloom() : width(800), height(600), angle(0.0f), tPrev(0.0f),
   bloomBufWidth(width/8), bloomBufHeight(height/8)
@@ -110,7 +110,7 @@ void SceneHdrBloom::initScene()
     glGenSamplers(2, samplers);
     linearSampler = samplers[0];
     nearestSampler = samplers[1];
-   
+
     GLfloat border[] = {0.0f,0.0f,0.0f,0.0f};
     // Set up the nearest sampler
     glSamplerParameteri(nearestSampler, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -118,7 +118,7 @@ void SceneHdrBloom::initScene()
     glSamplerParameteri(nearestSampler, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
     glSamplerParameteri(nearestSampler, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
     glSamplerParameterfv(nearestSampler, GL_TEXTURE_BORDER_COLOR, border);
-    
+
     // Set up the linear sampler
     glSamplerParameteri(linearSampler, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glSamplerParameteri(linearSampler, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -211,7 +211,7 @@ void SceneHdrBloom::computeLogAveLuminance()
          vec3(0.2126f, 0.7152f, 0.0722f) );
      sum += logf( lum + 0.00001f );
    }
-   
+
    prog.setUniform( "AveLum", expf( sum / (width*height) ) );
    //printf("(%f)\n", exp( sum / (width*height) ) );
    delete [] texData;
@@ -229,7 +229,7 @@ void SceneHdrBloom::pass1()
     glUniformSubroutinesuiv( GL_FRAGMENT_SHADER, 1, &pass1Index);
 
     view = glm::lookAt(vec3(2.0f, 0.0f, 14.0f), vec3(0.0f,0.0f,0.0f), vec3(0.0f,1.0f,0.0f));
-    projection = glm::perspective(60.0f, (float)width/height, 0.3f, 100.0f);
+    projection = glm::perspective(glm::radians(60.0f), (float)width/height, 0.3f, 100.0f);
 
     drawScene();
 
@@ -289,7 +289,7 @@ void SceneHdrBloom::pass5()
 {
     glUniformSubroutinesuiv(GL_FRAGMENT_SHADER, 1, &pass5Index);
 
-    // Bind to the default framebuffer, this time we're going to 
+    // Bind to the default framebuffer, this time we're going to
     // actually draw to the screen!
     glBindFramebuffer(GL_FRAMEBUFFER,0);
     glClear(GL_COLOR_BUFFER_BIT);
@@ -321,7 +321,7 @@ void SceneHdrBloom::resize(int w, int h)
     glViewport(0,0,w,h);
     width = w;
     height = h;
-    projection = glm::perspective(60.0f, (float)w/h, 0.3f, 100.0f);
+    projection = glm::perspective(glm::radians(60.0f), (float)w/h, 0.3f, 100.0f);
 }
 
 void SceneHdrBloom::compileAndLinkShader()
@@ -365,18 +365,18 @@ void SceneHdrBloom::drawScene()
     prog.setUniform("Material.Shine", 25.0f);
 
     // The backdrop plane
-    model = glm::rotate(mat4(1.0f), 90.0f, vec3(1.0f,0.0f,0.0f) );
+    model = glm::rotate(mat4(1.0f), glm::radians(90.0f), vec3(1.0f,0.0f,0.0f) );
     setMatrices();
     plane->render();
-   
-    // The bottom plane 
+
+    // The bottom plane
     model = glm::translate(mat4(1.0f), vec3(0.0f,-5.0f,0.0f));
     setMatrices();
     plane->render();
 
     // Top plane
     model = glm::translate(mat4(1.0f), vec3(0.0f,5.0f,0.0f));
-    model = glm::rotate( model, 180.0f, vec3(1.0f, 0.0f, 0.0f));
+    model = glm::rotate( model, glm::radians(180.0f), vec3(1.0f, 0.0f, 0.0f));
     setMatrices();
     plane->render();
 
@@ -389,7 +389,7 @@ void SceneHdrBloom::drawScene()
     // Teapot
     prog.setUniform("Material.Kd", vec3(0.4f, 0.4f, 0.9f));
     model = glm::translate(mat4(1.0f), vec3(4.0f,-5.0f,1.5f));
-    model = glm::rotate(model, -90.0f, vec3(1.0f,0.0f,0.0f));
+    model = glm::rotate(model, glm::radians(-90.0f), vec3(1.0f,0.0f,0.0f));
     setMatrices();
     teapot->render();
 }

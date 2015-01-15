@@ -20,8 +20,8 @@ using glm::vec3;
 
 #define PRIM_RESTART 0xffffff
 
-SceneParticles::SceneParticles(): 
-  width(800), height(600), 
+SceneParticles::SceneParticles():
+  width(800), height(600),
   nParticles(100,100,100),
   time(0.0f), deltaT(0.0f), speed(35.0f), angle(0.0f),
   bh1(5,0,0,1), bh2(-5,0,0,1)
@@ -30,13 +30,13 @@ SceneParticles::SceneParticles():
 }
 
 void SceneParticles::initScene()
-{    
+{
   compileAndLinkShader();
   initBuffers();
 
   glClearColor(1,1,1,1);
 
-  projection = glm::perspective( 50.0f, (float)width/height, 1.0f, 100.0f);
+  projection = glm::perspective( glm::radians(50.0f), (float)width/height, 1.0f, 100.0f);
 
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -82,14 +82,14 @@ void SceneParticles::initBuffers()
   glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, posBuf);
   glBufferData(GL_SHADER_STORAGE_BUFFER, bufSize, &initPos[0], GL_DYNAMIC_DRAW);
 
-  // Velocities 
+  // Velocities
   glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, velBuf);
   glBufferData(GL_SHADER_STORAGE_BUFFER, bufSize, &initVel[0], GL_DYNAMIC_COPY);
 
   // Set up the VAO
   glGenVertexArrays(1, &particlesVao);
   glBindVertexArray(particlesVao);
-  
+
   glBindBuffer(GL_ARRAY_BUFFER, posBuf);
   glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
   glEnableVertexAttribArray(0);
@@ -120,7 +120,7 @@ void SceneParticles::update( float t )
     deltaT = t - time;
   }
   time = t;
-  if( animating() ) {  
+  if( animating() ) {
     angle += speed * deltaT;
     if( angle > 360.0f ) angle -= 360.0f;
   }
@@ -129,7 +129,7 @@ void SceneParticles::update( float t )
 void SceneParticles::render()
 {
   // Rotate the attractors ("black holes")
-  glm::mat4 rot = glm::rotate(glm::mat4(1.0f), angle, glm::vec3(0,0,1));
+  glm::mat4 rot = glm::rotate(glm::mat4(1.0f), glm::radians(angle), glm::vec3(0,0,1));
   glm::vec3 att1 = glm::vec3(rot*bh1);
   glm::vec3 att2 = glm::vec3(rot*bh2);
 

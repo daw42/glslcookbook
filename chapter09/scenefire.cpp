@@ -14,19 +14,13 @@ using std::cerr;
 using glm::vec3;
 
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform2.hpp>
+#include <glm/gtx/transform.hpp>
 
-SceneFire::SceneFire()
-{
-    width = 800;
-    height = 600;
-    drawBuf = 1;
-    time = 0.0f;
-    deltaT = 0.0f;
-}
+SceneFire::SceneFire() :
+  width(800), height(600), drawBuf(1), time(0), deltaT(0) {}
 
 void SceneFire::initScene()
-{    
+{
     compileAndLinkShader();
 
     GLuint programHandle = prog.getHandle();
@@ -223,9 +217,6 @@ void SceneFire::render()
 void SceneFire::setMatrices()
 {
     mat4 mv = view * model;
-    //prog.setUniform("ModelViewMatrix", mv);
-   // prog.setUniform("NormalMatrix",
-   //                 mat3( vec3(mv[0]), vec3(mv[1]), vec3(mv[2]) ));
     prog.setUniform("MVP", projection * mv);
 }
 
@@ -234,7 +225,7 @@ void SceneFire::resize(int w, int h)
     glViewport(0,0,w,h);
     width = w;
     height = h;
-    projection = glm::perspective(60.0f, (float)w/h, 0.3f, 100.0f);
+    projection = glm::perspective(glm::radians(60.0f), (float)w/h, 0.3f, 100.0f);
 }
 
 void SceneFire::compileAndLinkShader()
@@ -242,18 +233,18 @@ void SceneFire::compileAndLinkShader()
 	try {
 		prog.compileShader("shader/fire.vs",GLSLShader::VERTEX);
 		prog.compileShader("shader/fire.fs",GLSLShader::FRAGMENT);
-		
+
 	    //////////////////////////////////////////////////////
 		// Setup the transform feedback (must be done before linking the program)
 		GLuint progHandle = prog.getHandle();
 		const char * outputNames[] = { "Position", "Velocity", "StartTime" };
 		glTransformFeedbackVaryings(progHandle, 3, outputNames, GL_SEPARATE_ATTRIBS);
 		///////////////////////////////////////////////////////
-		
+
     	prog.link();
     	prog.use();
     } catch(GLSLProgramException &e ) {
-    	cerr << e.what() << endl;
+      cerr << e.what() << endl;
  		exit( EXIT_FAILURE );
     }
 }

@@ -10,6 +10,8 @@ void main()
     // Pass along the vertex position unmodified
     gl_out[gl_InvocationID].gl_Position = gl_in[gl_InvocationID].gl_Position;
 
-    gl_TessLevelOuter[0] = float(NumStrips);
-    gl_TessLevelOuter[1] = float(NumSegments);
+    // This differs from the book because of differences between drivers at
+    // the time of writing.
+    gl_TessLevelOuter[0] = float(NumSegments);
+    gl_TessLevelOuter[1] = float(NumStrips);
 }

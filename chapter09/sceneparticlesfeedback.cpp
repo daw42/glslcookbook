@@ -14,19 +14,13 @@ using std::cerr;
 using glm::vec3;
 
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform2.hpp>
+#include <glm/gtx/transform.hpp>
 
-SceneParticlesFeedback::SceneParticlesFeedback()
-{
-    width = 800;
-    height = 600;
-    drawBuf = 1;
-    time = 0.0f;
-    deltaT = 0.0f;
-}
+SceneParticlesFeedback::SceneParticlesFeedback() :
+width(800), height(600), drawBuf(1), time(0), deltaT(0) {}
 
 void SceneParticlesFeedback::initScene()
-{    
+{
 
     compileAndLinkShader();
 
@@ -234,9 +228,6 @@ void SceneParticlesFeedback::render()
 void SceneParticlesFeedback::setMatrices()
 {
     mat4 mv = view * model;
-    //prog.setUniform("ModelViewMatrix", mv);
-   // prog.setUniform("NormalMatrix",
-   //                 mat3( vec3(mv[0]), vec3(mv[1]), vec3(mv[2]) ));
     prog.setUniform("MVP", projection * mv);
 }
 
@@ -245,7 +236,7 @@ void SceneParticlesFeedback::resize(int w, int h)
     glViewport(0,0,w,h);
     width = w;
     height = h;
-    projection = glm::perspective(60.0f, (float)w/h, 0.3f, 100.0f);
+    projection = glm::perspective(glm::radians(60.0f), (float)w/h, 0.3f, 100.0f);
 }
 
 void SceneParticlesFeedback::compileAndLinkShader()
@@ -253,14 +244,14 @@ void SceneParticlesFeedback::compileAndLinkShader()
 	try {
 		prog.compileShader("shader/transfeedback.vs");
 		prog.compileShader("shader/transfeedback.fs");
-		
+
 	    //////////////////////////////////////////////////////
 		// Setup the transform feedback (must be done before linking the program)
 		GLuint progHandle = prog.getHandle();
 		const char * outputNames[] = { "Position", "Velocity", "StartTime" };
 		glTransformFeedbackVaryings(progHandle, 3, outputNames, GL_SEPARATE_ATTRIBS);
 		///////////////////////////////////////////////////////
-		
+
     	prog.link();
     	prog.use();
     } catch(GLSLProgramException &e ) {

@@ -1,6 +1,7 @@
 #include "scenenoise.h"
 
 #include <cstdio>
+#include <cstdlib>
 #include <iostream>
 using std::cerr;
 using std::endl;
@@ -15,11 +16,7 @@ using glm::vec3;
 
 #include<iostream>
 
-SceneNoise::SceneNoise()
-{
-    width = 800;
-    height = 600;
-}
+SceneNoise::SceneNoise() : width(800), height(600) { }
 
 void SceneNoise::initScene()
 {
@@ -40,7 +37,7 @@ void SceneNoise::initScene()
     float max = 2.0f;
     GLfloat tc[] = {
         0.0f, 0.0f, max, 0.0f, max, max,
-        0.0f, 0.0f, max, max, 0.0f, max 
+        0.0f, 0.0f, max, max, 0.0f, max
     };
 
     // Set up the buffers

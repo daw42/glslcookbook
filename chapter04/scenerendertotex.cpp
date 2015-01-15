@@ -13,9 +13,9 @@ using std::cerr;
 using glm::vec3;
 
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform2.hpp>
+#include <glm/gtx/transform.hpp>
 
-SceneRenderToTex::SceneRenderToTex() : angle(0.0f), tPrev(0.0f), rotSpeed(PI/2.0) { }
+SceneRenderToTex::SceneRenderToTex() : angle(0.0f), tPrev(0.0f), rotSpeed(PI/8.0) { }
 
 void SceneRenderToTex::initScene()
 {
@@ -30,7 +30,7 @@ void SceneRenderToTex::initScene()
 
     teapot = new VBOTeapot(14, mat4(1.0f));
 
-    angle = (float)( TO_RADIANS(140.0f) );
+    angle = glm::radians(140.0f);
 
     prog.setUniform("Light.Intensity", vec3(1.0f,1.0f,1.0f) );
     setupFBO();
@@ -114,7 +114,7 @@ void SceneRenderToTex::renderToTexture() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     view = glm::lookAt(vec3(0.0f,0.0f,7.0f), vec3(0.0f,0.0f,0.0f), vec3(0.0f,1.0f,0.0f));
-    projection = glm::perspective(60.0f, 1.0f, 0.3f, 100.0f);
+    projection = glm::perspective(glm::radians(60.0f), 1.0f, 0.3f, 100.0f);
 
     prog.setUniform("Light.Position", vec4(0.0f,0.0f,0.0f,1.0f) );
     prog.setUniform("Material.Kd", 0.9f, 0.9f, 0.9f);
@@ -124,7 +124,7 @@ void SceneRenderToTex::renderToTexture() {
 
     model = mat4(1.0f);
     model = glm::translate(model, vec3(0.0f,-1.5f,0.0f));
-    model = glm::rotate(model, -90.0f, vec3(1.0f,0.0f,0.0f));
+    model = glm::rotate(model, glm::radians(-90.0f), vec3(1.0f,0.0f,0.0f));
     setMatrices();
     teapot->render();
 }
@@ -137,7 +137,7 @@ void SceneRenderToTex::renderScene() {
     vec3 cameraPos = vec3(2.0f * cos(angle), 1.5f, 2.0f * sin(angle));
     view = glm::lookAt(cameraPos, vec3(0.0f,0.0f,0.0f), vec3(0.0f,1.0f,0.0f));
 
-    projection = glm::perspective(45.0f, (float)width/height, 0.3f, 100.0f);
+    projection = glm::perspective(glm::radians(45.0f), (float)width/height, 0.3f, 100.0f);
 
     prog.setUniform("Light.Position", vec4(0.0f,0.0f,0.0f,1.0f) );
     prog.setUniform("Material.Kd", 0.9f, 0.9f, 0.9f);
@@ -164,7 +164,7 @@ void SceneRenderToTex::resize(int w, int h)
     glViewport(0,0,w,h);
     width = w;
     height = h;
-    projection = glm::perspective(60.0f, (float)w/h, 0.3f, 100.0f);
+    projection = glm::perspective(glm::radians(60.0f), (float)w/h, 0.3f, 100.0f);
 }
 
 void SceneRenderToTex::compileAndLinkShader()

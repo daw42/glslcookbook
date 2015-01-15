@@ -13,7 +13,7 @@ using std::cerr;
 using glm::vec3;
 
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform2.hpp>
+#include <glm/gtx/transform.hpp>
 
 SceneMsaa::SceneMsaa() : width(800), height(600), angle(0.0f), tPrev(0.0f), rotSpeed(PI/8.0)
 { }
@@ -32,13 +32,13 @@ void SceneMsaa::initScene()
     plane = new VBOPlane(50.0f, 50.0f, 1, 1);
 
     angle = PI / 2.0;
-    
+
     GLint bufs, samples;
     glGetIntegerv(GL_SAMPLE_BUFFERS, &bufs);
     glGetIntegerv(GL_SAMPLES, &samples);
     printf("MSAA: buffers = %d samples = %d\n", bufs, samples);
     glEnable(GL_MULTISAMPLE);
-    
+
     // Array for quad
     GLfloat verts[] = {
         -1.0f, -1.0f, 0.0f, 1.0f, -1.0f, 0.0f, 1.0f, 1.0f, 0.0f,
@@ -92,7 +92,7 @@ void SceneMsaa::render()
 
     view = glm::lookAt(vec3(3.0f * cos(angle),0.0f,3.0f * sin(angle)), vec3(0.0f,0.0f,0.0f), vec3(0.0f,1.0f,0.0f));
 
-    model = glm::rotate(30.0f, vec3(0.0f,0.0f,1.0f));
+    model = glm::rotate(glm::radians(30.0f), vec3(0.0f,0.0f,1.0f));
     setMatrices();
 
     // Render the quad

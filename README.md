@@ -1,20 +1,20 @@
 Example code from the [OpenGL Shading Language Cookbook][cookbook]
 =========================================================
 
-The example code from the [OpenGL Shading Language Cookbook][cookbook], 
-by David Wolff.   
+The example code from the [OpenGL Shading Language Cookbook][cookbook],
+by David Wolff.
 
 Requirements
 -------------
 To use these examples, you'll need the following:
 
-* The [GLM Mathematics Library][GLM].
+* The [GLM Mathematics Library][GLM] version 0.9.6 or later.
 * The [GLFW][] library version 3.0 or later.
-  
+
 Compiling the examples
 ----------------------
-All recipes have been tested on Linux.  I hope to have
-them working on Windows soon.  Your help is welcome!  Fork 
+All recipes have been tested on Linux and Windows (MinGW).
+Your help with other platforms is welcome!  Fork 
 [this project][ghcookbook] on github.
 
 1.  Install [GLFW][] by following the instructions on their [web site][GLFW].
@@ -54,20 +54,20 @@ Compiling for Windows with Visual Studio 2012
 
 If you are having trouble with CMake generating the files, double check where you have
 the libraries installed.  If you used a different location to extract GLFW and GLM,
-then you will have to edit 'cmake\modules\FindGLFW3.cmake' and/or 
-'cmake\modules\FindGLM.cmake' making sure that you change all back slashes to 
+then you will have to edit 'cmake\modules\FindGLFW3.cmake' and/or
+'cmake\modules\FindGLM.cmake' making sure that you change all back slashes to
 forward slashes in each path
 
 OpenGL Function Loading
 -----------------------
 
 The OpenGL header file and a function loader for a 4.4 core profile are
-included with this project.  They were generated using 
+included with this project.  They were generated using
 [the OpenGL Loader Generator][GLLoadGen].
 
-The code has been fully tested with OpenGL 4.4 and 
-compiles under Linux with the latest NVIDIA drivers, and will soon (hopefully) 
-be tested with MinGW on Windows. 
+The code has been fully tested with OpenGL 4.4 and
+compiles under Linux with the latest NVIDIA drivers, and will soon (hopefully)
+be tested with MinGW on Windows.
 
 [GLM]: http://glm.g-truc.net
 [GLFW]:  http://glfw.org
