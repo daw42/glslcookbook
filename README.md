@@ -8,13 +8,16 @@ Requirements
 -------------
 To use these examples, you'll need the following:
 
-* The [GLM Mathematics Library][GLM] version 0.9.6 or later.
+* The [GLM Mathematics Library][GLM] version 0.9.6 or later.  Note that versions
+  prior to 0.9.6 will not work properly because of a switch from degrees to
+  radians.  GLM 0.9.5 will work, but you'll need to add `#define GLM_FORCE_RADIANS`
+  prior to including the glm header files.
 * The [GLFW][] library version 3.0 or later.
 
 Compiling the examples
 ----------------------
 All recipes have been tested on Linux and Windows (MinGW).
-Your help with other platforms is welcome!  Fork 
+Your help with other platforms is welcome!  Fork
 [this project][ghcookbook] on github.
 
 1.  Install [GLFW][] by following the instructions on their [web site][GLFW].
