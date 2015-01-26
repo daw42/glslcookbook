@@ -3,4 +3,6 @@
 
 #include "gl_core_4_4.h"
 
+#define GLM_FORCE_RADIANS
+
 #endif
