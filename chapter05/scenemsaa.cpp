@@ -4,7 +4,6 @@
 #include <cstdlib>
 
 #include "glutils.h"
-#include "defines.h"
 
 #include <iostream>
 using std::endl;
@@ -14,8 +13,9 @@ using glm::vec3;
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/transform.hpp>
+#include <glm/gtc/constants.hpp>
 
-SceneMsaa::SceneMsaa() : width(800), height(600), angle(0.0f), tPrev(0.0f), rotSpeed(PI/8.0)
+SceneMsaa::SceneMsaa() : width(800), height(600), angle(0.0f), tPrev(0.0f), rotSpeed(glm::pi<float>() / 8.0f)
 { }
 
 void SceneMsaa::initScene()
@@ -31,7 +31,7 @@ void SceneMsaa::initScene()
 
     plane = new VBOPlane(50.0f, 50.0f, 1, 1);
 
-    angle = PI / 2.0;
+	angle = glm::pi<float>() / 2.0f;
 
     GLint bufs, samples;
     glGetIntegerv(GL_SAMPLE_BUFFERS, &bufs);
@@ -83,7 +83,7 @@ void SceneMsaa::update( float t )
 	tPrev = t;
 
     angle += rotSpeed * deltaT;
-    if( angle > TWOPI_F) angle -= TWOPI_F;
+	if (angle > glm::two_pi<float>()) angle -= glm::two_pi<float>();
 }
 
 void SceneMsaa::render()

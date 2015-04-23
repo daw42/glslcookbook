@@ -36,7 +36,7 @@ void initializeGL() {
 void mainLoop() {
 	while( ! glfwWindowShouldClose(window) && !glfwGetKey(window, GLFW_KEY_ESCAPE) ) {
 		GLUtils::checkForOpenGLError(__FILE__,__LINE__);
-		scene->update(glfwGetTime());
+		scene->update(float(glfwGetTime()));
 		scene->render();
 		glfwSwapBuffers(window);
 		glfwPollEvents();

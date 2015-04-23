@@ -36,8 +36,8 @@ namespace TGAIO {
 	
     }
     
-    GLubyte * read( const char * fName, /*out*/ int & width, /*out*/ int & height ) throw(IOException);
-    void write( GLubyte * pixelData, int width, int height, const char * fName ) throw(IOException);
+    GLubyte * read( const char * fName, /*out*/ int & width, /*out*/ int & height ) ;
+    void write( GLubyte * pixelData, int width, int height, const char * fName );
     
     GLuint loadTex( const char * fileName, GLint &width /*out*/, GLint &height /*out*/ );
     

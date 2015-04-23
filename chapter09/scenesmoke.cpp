@@ -9,7 +9,6 @@ using std::cerr;
 #include "bmpreader.h"
 
 #include "glutils.h"
-#include "defines.h"
 
 using glm::vec3;
 
@@ -86,8 +85,8 @@ void SceneSmoke::initBuffers()
     float theta, phi, velocity;
     vec3 v(0.0f);
     for( int i = 0; i < nParticles; i++ ) {
-        theta = glm::mix(0.0f, (float)PI / 1.5f, randFloat());
-        phi = glm::mix(0.0f, (float)TWOPI, randFloat());
+		theta = glm::mix(0.0f, glm::pi<float>() / 1.5f, randFloat());
+		phi = glm::mix(0.0f, glm::two_pi<float>(), randFloat());
 
         v.x = sinf(theta) * cosf(phi);
         v.y = cosf(theta);

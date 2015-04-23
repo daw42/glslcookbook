@@ -16,8 +16,6 @@ using std::istringstream;
 #include <map>
 using std::map;
 
-#include "cookbookogl.h"
-
 VBOMeshAdj::VBOMeshAdj(const char * fileName, bool center)
 {
     loadOBJ(fileName, center);
@@ -28,10 +26,10 @@ void VBOMeshAdj::render() const {
     glDrawElements(GL_TRIANGLES_ADJACENCY, 6 * faces, GL_UNSIGNED_INT, ((GLubyte *)NULL + (0)));
 }
 
-void VBOMeshAdj::determineAdjacency(vector<int> &el)
+void VBOMeshAdj::determineAdjacency(vector<GLuint> &el)
 {
     // Elements with adjacency info
-    vector<int> elAdj;
+    vector<GLuint> elAdj;
 
     // Copy and make room for adjacency info
     for( uint i = 0; i < el.size(); i+=3)
@@ -133,7 +131,7 @@ void VBOMeshAdj::loadOBJ( const char * fileName, bool reCenterMesh ) {
   vector <vec3> p;
   vector <vec3> n;
   vector <vec2> tc;         // Holds tex coords from OBJ file
-  vector <int> faces, faceTC;
+  vector <GLuint> faces, faceTC;
 
   int nFaces = 0;
 
@@ -230,7 +228,7 @@ void VBOMeshAdj::loadOBJ( const char * fileName, bool reCenterMesh ) {
       if( texCoord != it->second ) {
         p.push_back( p[point] );  // Dup the point
         texCoords.push_back( tc[texCoord] );
-        faces[i] = p.size() - 1;
+        faces[i] = GLuint(p.size() - 1);
       }
     }
   }
@@ -296,7 +294,7 @@ void VBOMeshAdj::center( vector<vec3> & points ) {
 void VBOMeshAdj::generateAveragedNormals(
         const vector<vec3> & points,
         vector<vec3> & normals,
-        const vector<int> & faces )
+        const vector<GLuint> & faces )
 {
     for( uint i = 0; i < points.size(); i++ ) {
         normals.push_back(vec3(0.0f));
@@ -324,7 +322,7 @@ void VBOMeshAdj::generateAveragedNormals(
 void VBOMeshAdj::generateTangents(
         const vector<vec3> & points,
         const vector<vec3> & normals,
-        const vector<int> & faces,
+        const vector<GLuint> & faces,
         const vector<vec2> & texCoords,
         vector<vec4> & tangents)
 {
@@ -386,10 +384,10 @@ void VBOMeshAdj::storeVBO( const vector<vec3> & points,
                         const vector<vec3> & normals,
                         const vector<vec2> &texCoords,
                         const vector<vec4> &tangents,
-                        const vector<int> &elements )
+                        const vector<GLuint> &elements )
 {
-    int nVerts  = points.size();
-    faces = elements.size() / 6;
+    GLuint nVerts  = GLuint(points.size());
+    faces = GLuint(elements.size() / 6);
 
     float * v = new float[3 * nVerts];
     float * n = new float[3 * nVerts];
@@ -403,7 +401,7 @@ void VBOMeshAdj::storeVBO( const vector<vec3> & points,
 
     unsigned int *el = new unsigned int[elements.size()];
     int idx = 0, tcIdx = 0, tangIdx = 0;
-    for( int i = 0; i < nVerts; ++i )
+    for( GLuint i = 0; i < nVerts; ++i )
     {
         v[idx] = points[i].x;
         v[idx+1] = points[i].y;

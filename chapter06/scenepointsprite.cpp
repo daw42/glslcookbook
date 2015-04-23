@@ -14,7 +14,6 @@ using std::endl;
 #include "bmpreader.h"
 
 #include "glutils.h"
-#include "defines.h"
 
 using glm::vec3;
 

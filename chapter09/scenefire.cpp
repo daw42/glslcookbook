@@ -9,7 +9,6 @@ using std::cerr;
 #include "bmpreader.h"
 
 #include "glutils.h"
-#include "defines.h"
 
 using glm::vec3;
 
@@ -35,7 +34,7 @@ void SceneFire::initScene()
 
     projection = mat4(1.0f);
 
-    angle = (float)(PI / 2.0f);
+	angle = glm::half_pi<float>();
     model = mat4(1.0f);
 
     initBuffers();

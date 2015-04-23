@@ -4,7 +4,6 @@
 #include <cstdlib>
 
 #include "glutils.h"
-#include "defines.h"
 
 #include <iostream>
 using std::endl;
@@ -42,7 +41,7 @@ void SceneToon::update( float t )
   tPrev = t;
 
   angle += 0.25f * deltaT;
-  if( angle > TWOPI_F) angle -= TWOPI_F;
+  if (angle > glm::two_pi<float>()) angle -= glm::two_pi<float>();
 }
 
 void SceneToon::render()

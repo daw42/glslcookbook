@@ -105,7 +105,7 @@ GLubyte* BMPReader::load(const char *filename, GLuint & width, GLuint & height) 
 				inFile.read(pixBytes,4);
 			else {
 				inFile.read(pixBytes,3);
-				pixBytes[3] = 255;     // set alpha to 255
+				pixBytes[3] = char(0xff);     // set alpha to 255
 			}
 
 			int rowOut = row;

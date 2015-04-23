@@ -13,8 +13,6 @@ using std::ifstream;
 #include <sstream>
 using std::istringstream;
 
-#include "cookbookogl.h"
-
 VBOMesh::VBOMesh(const char * fileName, bool center, bool loadTc, bool genTangents) :
         reCenterMesh(center), loadTex(loadTc), genTang(genTangents)
 {
@@ -31,7 +29,7 @@ void VBOMesh::loadOBJ( const char * fileName ) {
     vector <vec3> points;
     vector <vec3> normals;
     vector <vec2> texCoords;
-    vector <int> faces;
+    vector <GLuint> faces;
 
     int nFaces = 0;
 
@@ -192,7 +190,7 @@ void VBOMesh::center( vector<vec3> & points ) {
 void VBOMesh::generateAveragedNormals(
         const vector<vec3> & points,
         vector<vec3> & normals,
-        const vector<int> & faces )
+        const vector<GLuint> & faces )
 {
     for( uint i = 0; i < points.size(); i++ ) {
         normals.push_back(vec3(0.0f));
@@ -220,7 +218,7 @@ void VBOMesh::generateAveragedNormals(
 void VBOMesh::generateTangents(
         const vector<vec3> & points,
         const vector<vec3> & normals,
-        const vector<int> & faces,
+        const vector<GLuint> & faces,
         const vector<vec2> & texCoords,
         vector<vec4> & tangents)
 {
@@ -282,10 +280,10 @@ void VBOMesh::storeVBO( const vector<vec3> & points,
                         const vector<vec3> & normals,
                         const vector<vec2> &texCoords,
                         const vector<vec4> &tangents,
-                        const vector<int> &elements )
+                        const vector<GLuint> &elements )
 {
-    int nVerts  = points.size();
-    faces = elements.size() / 3;
+    GLuint nVerts  = GLuint(points.size());
+    faces = GLuint(elements.size() / 3);
 
     float * v = new float[3 * nVerts];
     float * n = new float[3 * nVerts];
@@ -301,7 +299,7 @@ void VBOMesh::storeVBO( const vector<vec3> & points,
     unsigned int *el = new unsigned int[elements.size()];
 
     int idx = 0, tcIdx = 0, tangIdx = 0;
-    for( int i = 0; i < nVerts; ++i )
+    for( GLuint i = 0; i < nVerts; ++i )
     {
         v[idx] = points[i].x;
         v[idx+1] = points[i].y;

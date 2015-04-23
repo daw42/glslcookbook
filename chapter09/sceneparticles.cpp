@@ -9,7 +9,6 @@ using std::cerr;
 #include "bmpreader.h"
 
 #include "glutils.h"
-#include "defines.h"
 
 using glm::vec3;
 
@@ -34,7 +33,7 @@ void SceneParticles::initScene()
     plane = new VBOPlane(13.0f, 10.0f, 200, 2);
     projection = mat4(1.0f);
 
-    angle = (float)(PI / 2.0f);
+	angle = glm::half_pi<float>();
 
 	// Generate our vertex buffers
 	initBuffers();
@@ -71,8 +70,8 @@ void SceneParticles::initBuffers()
     GLfloat *data = new GLfloat[nParticles * 3];
     for (unsigned int i = 0; i < nParticles; i++ ) {
 
-        theta = glm::mix(0.0f, (float)PI / 6.0f, randFloat());
-        phi = glm::mix(0.0f, (float)TWOPI, randFloat());
+		theta = glm::mix(0.0f, glm::pi<float>() / 6.0f, randFloat());
+		phi = glm::mix(0.0f, glm::two_pi<float>(), randFloat());
 
         v.x = sinf(theta) * cosf(phi);
         v.y = cosf(theta);

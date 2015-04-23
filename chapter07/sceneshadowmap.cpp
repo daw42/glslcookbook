@@ -3,7 +3,6 @@
 #include <cstdio>
 
 #include "glutils.h"
-#include "defines.h"
 
 using glm::vec3;
 
@@ -27,7 +26,7 @@ void SceneShadowMap::initScene()
 
     glEnable(GL_DEPTH_TEST);
 
-    angle = (float)(PI/4.0f);
+	angle = glm::quarter_pi<float>();
 
     teapot = new VBOTeapot(14, mat4(1.0f));
     plane = new VBOPlane(40.0f, 40.0f, 2, 2);
@@ -134,7 +133,7 @@ void SceneShadowMap::update( float t )
   tPrev = t;
 
   angle += 0.2f * deltaT;
-  if( angle > TWOPI_F) angle -= TWOPI_F;
+  if (angle > glm::two_pi<float>()) angle -= glm::two_pi<float>();
 }
 
 void SceneShadowMap::render()

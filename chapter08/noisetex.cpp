@@ -29,8 +29,8 @@ int NoiseTex::generate2DTex(float baseFreq, float persistence, int w, int h, boo
 
   GLubyte *data = new GLubyte[ width * height * 4 ];
 
-  double xFactor = 1.0f / (width - 1);
-  double yFactor = 1.0f / (height - 1);
+  float xFactor = 1.0f / (width - 1);
+  float yFactor = 1.0f / (height - 1);
 
   for( int row = 0; row < height; row++ ) {
     for( int col = 0 ; col < width; col++ ) {

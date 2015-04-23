@@ -7,7 +7,6 @@ using std::cerr;
 using std::endl;
 
 #include "glutils.h"
-#include "defines.h"
 #include "noisetex.h"
 
 using glm::vec3;

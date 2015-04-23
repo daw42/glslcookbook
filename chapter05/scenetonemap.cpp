@@ -4,7 +4,6 @@
 #include <cstdlib>
 
 #include "glutils.h"
-#include "defines.h"
 
 #include <iostream>
 using std::endl;
@@ -13,8 +12,9 @@ using glm::vec3;
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/transform.hpp>
+#include <glm/gtc/constants.hpp>
 
-SceneToneMap::SceneToneMap() : width(800), height(600), angle(0.0f), tPrev(0.0f), rotSpeed(PI/8.0) { }
+SceneToneMap::SceneToneMap() : width(800), height(600), angle(0.0f), tPrev(0.0f), rotSpeed(glm::pi<float>() / 8.0f) { }
 
 void SceneToneMap::initScene()
 {
@@ -26,7 +26,7 @@ void SceneToneMap::initScene()
     teapot = new VBOTeapot(14, mat4(1.0));
     sphere = new VBOSphere(2.0f, 50, 50);
 
-    angle = PI / 2.0;
+	angle = glm::pi<float>() / 2.0f;
 
     // Array for quad
     GLfloat verts[] = {

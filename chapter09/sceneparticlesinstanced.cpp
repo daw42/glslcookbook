@@ -7,7 +7,6 @@ using std::endl;
 using std::cerr;
 
 #include "glutils.h"
-#include "defines.h"
 
 using glm::vec3;
 
@@ -29,7 +28,7 @@ void SceneParticlesInstanced::initScene()
     torus = new VBOTorus(0.7f * c, 0.3f * c, 20, 20);
     projection = mat4(1.0f);
 
-    angle = (float)(PI / 2.0f);
+	angle = glm::half_pi<float>();
     model = mat4(1.0f);
 
     initBuffers();
@@ -60,8 +59,8 @@ void SceneParticlesInstanced::initBuffers()
     GLfloat *data = new GLfloat[nParticles * 3];
     for( int i = 0; i < nParticles; i++ ) {
 
-        theta = glm::mix(0.0f, (float)PI / 6.0f, randFloat());
-        phi = glm::mix(0.0f, (float)TWOPI, randFloat());
+		theta = glm::mix(0.0f, glm::pi<float>() / 6.0f, randFloat());
+		phi = glm::mix(0.0f, glm::two_pi<float>(), randFloat());
 
         v.x = sinf(theta) * cosf(phi);
         v.y = cosf(theta);

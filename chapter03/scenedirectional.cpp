@@ -4,7 +4,6 @@
 #include <cstdlib>
 
 #include "glutils.h"
-#include "defines.h"
 
 #include <iostream>
 using std::endl;

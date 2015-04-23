@@ -1,8 +1,6 @@
 #ifndef FRUSTUM_H
 #define FRUSTUM_H
 
-#include "defines.h"
-
 #include "cookbookogl.h"
 
 #include <glm/glm.hpp>

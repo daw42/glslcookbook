@@ -7,7 +7,6 @@ using std::endl;
 using std::cerr;
 
 #include "glutils.h"
-#include "defines.h"
 
 #include <vector>
 using std::vector;
@@ -49,9 +48,9 @@ void SceneParticles::initBuffers()
   vector<GLfloat> initPos;
   vector<GLfloat> initVel(totalParticles * 4, 0.0f);
   glm::vec4 p(0.0f, 0.0f, 0.0f, 1.0f);
-  GLfloat dx = 2.0 / (nParticles.x - 1),
-          dy = 2.0 / (nParticles.y - 1),
-          dz = 2.0 / (nParticles.z - 1);
+  GLfloat dx = 2.0f / (nParticles.x - 1),
+          dy = 2.0f / (nParticles.y - 1),
+          dz = 2.0f / (nParticles.z - 1);
   // We want to center the particles at (0,0,0)
   glm::mat4 transf = glm::translate(glm::mat4(1.0f), glm::vec3(-1,-1,-1));
   for( int i = 0; i < nParticles.x; i++ ) {

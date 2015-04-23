@@ -3,7 +3,6 @@
 #include <cstdio>
 
 #include "glutils.h"
-#include "defines.h"
 #include "tgaio.h"
 
 using glm::vec3;
@@ -122,7 +121,7 @@ void SceneShadowVolume::update( float t )
   tPrev = t;
   if( animating() ) {
     angle += deltaT * rotSpeed;
-    if( angle > 2 * PI ) angle -= 2.0 * PI;
+	if (angle > glm::two_pi<float>()) angle -= glm::two_pi<float>();
     updateLight();
   }
 }

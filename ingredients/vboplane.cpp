@@ -1,5 +1,4 @@
 #include "vboplane.h"
-#include "defines.h"
 #include "glutils.h"
 
 #include "cookbookogl.h"

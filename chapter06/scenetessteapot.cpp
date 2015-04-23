@@ -7,14 +7,14 @@ using std::cerr;
 using std::endl;
 
 #include "glutils.h"
-#include "defines.h"
 
 using glm::vec3;
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/transform.hpp>
+#include <glm/gtc/constants.hpp>
 
-SceneTessTeapot::SceneTessTeapot() :angle(0.0f), tPrev(0.0f), rotSpeed(PI/8.0) {}
+SceneTessTeapot::SceneTessTeapot() :angle(0.0f), tPrev(0.0f), rotSpeed(glm::pi<float>() / 8.0f) {}
 
 void SceneTessTeapot::initScene()
 {
@@ -24,7 +24,7 @@ void SceneTessTeapot::initScene()
 
     glEnable(GL_DEPTH_TEST);
 
-    angle = (float)(PI / 3.0);
+	angle = glm::pi<float>() / 3.0f;
     teapot = new VBOTeapotPatch();
 
     ///////////// Uniforms ////////////////////
@@ -47,7 +47,7 @@ void SceneTessTeapot::update( float t )
 	tPrev = t;
 
     angle += rotSpeed * deltaT;
-    if( angle > TWOPI_F) angle -= TWOPI_F;
+	if (angle > glm::two_pi<float>()) angle -= glm::two_pi<float>();
 }
 
 void SceneTessTeapot::render()

@@ -1,12 +1,13 @@
 #include "vbosphere.h"
-#include "defines.h"
 
 #include "glutils.h"
 
 #include <cstdio>
 #include <cmath>
 
-VBOSphere::VBOSphere(float rad, int sl, int st) :
+#include <glm/gtc/constants.hpp>
+
+VBOSphere::VBOSphere(float rad, GLuint sl, GLuint st) :
        radius(rad), slices(sl), stacks(st) 
 {
   
@@ -77,14 +78,14 @@ void VBOSphere::generateVerts(float * verts, float * norms, float * tex,
 {
 	// Generate positions and normals
 	GLfloat theta, phi;
-	GLfloat thetaFac = (2.0 * PI) / slices;
-	GLfloat phiFac = PI / stacks;
+	GLfloat thetaFac = glm::two_pi<float>() / slices;
+	GLfloat phiFac = glm::pi<float>() / stacks;
 	GLfloat nx, ny, nz, s, t;
 	GLuint idx = 0, tIdx = 0;
-	for( int i = 0; i <= slices; i++ ) {
+	for( GLuint i = 0; i <= slices; i++ ) {
 		theta = i * thetaFac;
                 s = (GLfloat)i / slices;
-		for( int j = 0; j <= stacks; j++ ) {
+		for( GLuint j = 0; j <= stacks; j++ ) {
 			phi = j * phiFac;
                         t = (GLfloat)j / stacks;
 			nx = sinf(phi) * cosf(theta);
@@ -102,10 +103,10 @@ void VBOSphere::generateVerts(float * verts, float * norms, float * tex,
 
 	// Generate the element list
 	idx = 0;
-	for( int i = 0; i < slices; i++ ) {
+	for( GLuint i = 0; i < slices; i++ ) {
 		GLuint stackStart = i * (stacks + 1);
 		GLuint nextStackStart = (i+1) * (stacks+1);
-		for( int j = 0; j < stacks; j++ ) {
+		for( GLuint j = 0; j < stacks; j++ ) {
 			if( j == 0 ) {
 				el[idx] = stackStart;
 				el[idx+1] = stackStart + 1;

@@ -13,29 +13,31 @@ using glm::vec4;
 #include <string>
 using std::string;
 
+#include "cookbookogl.h"
+
 class VBOMeshAdj : public Drawable
 {
 private:
-    unsigned int faces;
-    unsigned int vaoHandle;
+    GLuint faces;
+    GLuint vaoHandle;
 
     void trimString( string & str );
     void determineAdjacency(
-            vector<int> & el
+            vector<GLuint> & el
             );
     void storeVBO( const vector<vec3> & points,
                             const vector<vec3> & normals,
                             const vector<vec2> &texCoords,
                             const vector<vec4> &tangents,
-                            const vector<int> &elements );
+                            const vector<GLuint> &elements );
     void generateAveragedNormals(
             const vector<vec3> & points,
             vector<vec3> & normals,
-            const vector<int> & faces );
+            const vector<GLuint> & faces );
     void generateTangents(
             const vector<vec3> & points,
             const vector<vec3> & normals,
-            const vector<int> & faces,
+            const vector<GLuint> & faces,
             const vector<vec2> & texCoords,
             vector<vec4> & tangents);
     void center(vector<vec3> &);

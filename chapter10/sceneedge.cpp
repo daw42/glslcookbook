@@ -4,7 +4,6 @@
 #include <cstdlib>
 
 #include "glutils.h"
-#include "defines.h"
 
 #include <iostream>
 using std::endl;
@@ -13,8 +12,9 @@ using glm::vec3;
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/transform.hpp>
+#include <glm/gtc/constants.hpp>
 
-SceneEdge::SceneEdge() : width(800), height(600), angle(0.0f), tPrev(0.0f), rotSpeed(PI/4.0)
+SceneEdge::SceneEdge() : width(800), height(600), angle(0.0f), tPrev(0.0f), rotSpeed(glm::pi<float>() / 4.0f)
 {}
 
 void SceneEdge::initScene()
@@ -32,7 +32,7 @@ void SceneEdge::initScene()
 
     projection = mat4(1.0f);
 
-    angle = PI / 4.0;
+	angle = glm::pi<float>() / 4.0f;
 
     setupFBO();
 
@@ -127,7 +127,7 @@ void SceneEdge::update( float t )
 	tPrev = t;
 
     angle += rotSpeed * deltaT;
-    if( angle > TWOPI_F) angle -= TWOPI_F;
+	if (angle > glm::two_pi<float>()) angle -= glm::two_pi<float>();
 }
 
 void SceneEdge::render()

@@ -4,7 +4,6 @@
 #include <cstdlib>
 
 #include "glutils.h"
-#include "defines.h"
 
 #include <iostream>
 using std::endl;
@@ -47,7 +46,7 @@ void SceneFog::update( float t )
   tPrev = t;
 
   angle += 1.0f * deltaT;
-  if( angle > TWOPI_F) angle -= TWOPI_F;
+  if (angle > glm::two_pi<float>()) angle -= glm::two_pi<float>();
 }
 
 void SceneFog::render()

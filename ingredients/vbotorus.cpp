@@ -1,11 +1,12 @@
 #include "vbotorus.h"
-#include "defines.h"
 #include "cookbookogl.h"
 
 #include "glutils.h"
 
 #include <cstdio>
 #include <cmath>
+
+#include <glm/gtc/constants.hpp>
 
 VBOTorus::VBOTorus(float outerRadius, float innerRadius, int nsides, int nrings) :
         rings(nrings), sides(nsides)
@@ -76,8 +77,8 @@ void VBOTorus::generateVerts(float * verts, float * norms, float * tex,
                              unsigned int * el,
                              float outerRadius, float innerRadius)
 {
-    float ringFactor  = (float)(TWOPI / rings);
-    float sideFactor = (float)(TWOPI / sides);
+	float ringFactor = glm::two_pi<float>() / rings;
+	float sideFactor = glm::two_pi<float>() / sides;
     int idx = 0, tidx = 0;
     for( int ring = 0; ring <= rings; ring++ ) {
         float u = ring * ringFactor;
@@ -94,8 +95,8 @@ void VBOTorus::generateVerts(float * verts, float * norms, float * tex,
             norms[idx] = cv * cu * r;
             norms[idx + 1] = cv * su * r;
             norms[idx + 2] = sv * r;
-            tex[tidx] = (float)(u / TWOPI);
-            tex[tidx+1] = (float)(v / TWOPI);
+			tex[tidx] = u / glm::two_pi<float>();
+			tex[tidx + 1] = v / glm::two_pi<float>();
             tidx += 2;
             // Normalize
             float len = sqrt( norms[idx] * norms[idx] +

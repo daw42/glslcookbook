@@ -7,14 +7,14 @@ using std::cerr;
 using std::endl;
 
 #include "glutils.h"
-#include "defines.h"
 
 using glm::vec3;
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/transform.hpp>
+#include <glm/gtc/constants.hpp>
 
-SceneSilhouette::SceneSilhouette() : angle(0.0f), tPrev(0.0f), rotSpeed(PI/8.0) { }
+SceneSilhouette::SceneSilhouette() : angle(0.0f), tPrev(0.0f), rotSpeed(glm::pi<float>() / 8.0f) { }
 
 void SceneSilhouette::initScene()
 {
@@ -26,7 +26,7 @@ void SceneSilhouette::initScene()
 
     ogre = new VBOMeshAdj("../media/bs_ears.obj");
 
-    angle = (float)(PI / 2.0);
+	angle = glm::half_pi<float>();
 
     ///////////// Uniforms ////////////////////
     prog.setUniform("EdgeWidth", 0.015f);
@@ -47,7 +47,7 @@ void SceneSilhouette::update( float t )
 	tPrev = t;
 
     angle += rotSpeed * deltaT;
-    if( angle > TWOPI_F) angle -= TWOPI_F;
+	if (angle > glm::two_pi<float>()) angle -= glm::two_pi<float>();
 }
 
 void SceneSilhouette::render()

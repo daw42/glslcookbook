@@ -4,7 +4,6 @@
 #include <cstdlib>
 
 #include "glutils.h"
-#include "defines.h"
 
 #include <iostream>
 using std::endl;
@@ -16,9 +15,10 @@ using glm::vec3;
 using std::vector;
 
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/constants.hpp>
 
 SceneOit::SceneOit() : width(800), height(600), angle(0.0f), tPrev(0.0f),
-  rotSpeed(PI/8.0)
+rotSpeed(glm::pi<float>() / 8.0f)
 { }
 
 void SceneOit::initScene()
@@ -32,7 +32,7 @@ void SceneOit::initScene()
   cube = new VBOCube();
   sphere = new VBOSphere(1.0f, 40, 40);
 
-  angle = (PI / 180.0f) * 210.0f;
+  angle = glm::radians(210.0f);
 
   //  glEnable(GL_BLEND);
   glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );

@@ -8,14 +8,14 @@ using std::cerr;
 #include <cstdlib>
 
 #include "glutils.h"
-#include "defines.h"
 
 using glm::vec3;
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/transform.hpp>
+#include <glm/gtc/constants.hpp>
 
-SceneRenderToTex::SceneRenderToTex() : angle(0.0f), tPrev(0.0f), rotSpeed(PI/8.0) { }
+SceneRenderToTex::SceneRenderToTex() : angle(0.0f), tPrev(0.0f), rotSpeed(glm::pi<float>()/8.0f) { }
 
 void SceneRenderToTex::initScene()
 {
@@ -94,7 +94,7 @@ void SceneRenderToTex::update( float t )
   tPrev = t;
 
   angle += rotSpeed * deltaT;
-  if( angle > TWOPI_F) angle -= TWOPI_F;
+  if (angle > glm::two_pi<float>()) angle -= glm::two_pi<float>();
 }
 
 void SceneRenderToTex::render()

@@ -7,7 +7,6 @@ using std::endl;
 using std::cerr;
 
 #include "glutils.h"
-#include "defines.h"
 
 #include <vector>
 using std::vector;
@@ -137,7 +136,7 @@ void SceneCloth::initBuffers()
   glBindBuffer(GL_ARRAY_BUFFER, tcBuf);
   glBufferData(GL_ARRAY_BUFFER, initTc.size() * sizeof(GLfloat), &initTc[0], GL_STATIC_DRAW);
 
-  numElements = el.size();
+  numElements = GLuint(el.size());
 
   // Set up the VAO
   glGenVertexArrays(1, &clothVao);

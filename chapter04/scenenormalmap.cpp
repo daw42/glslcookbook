@@ -6,7 +6,6 @@
 #include "tgaio.h"
 
 #include "glutils.h"
-#include "defines.h"
 
 #include <iostream>
 using std::endl;
@@ -16,8 +15,9 @@ using glm::vec3;
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/transform.hpp>
+#include <glm/gtc/constants.hpp>
 
-SceneNormalMap::SceneNormalMap() : angle(0.0f), tPrev(0.0f), rotSpeed(PI/8.0) { }
+SceneNormalMap::SceneNormalMap() : angle(0.0f), tPrev(0.0f), rotSpeed(glm::pi<float>() / 8.0f) { }
 
 void SceneNormalMap::initScene()
 {
@@ -52,7 +52,7 @@ void SceneNormalMap::update( float t )
 
     if( this->m_animate) {
 	angle += rotSpeed * deltaT;
-	if( angle > TWOPI_F) angle -= TWOPI_F;
+	if (angle > glm::two_pi<float>()) angle -= glm::two_pi<float>();
     }
 }
 

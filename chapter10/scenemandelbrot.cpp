@@ -7,7 +7,6 @@ using std::endl;
 using std::cerr;
 
 #include "glutils.h"
-#include "defines.h"
 
 using glm::vec3;
 

@@ -11,14 +11,14 @@ using std::endl;
 #include "tgaio.h"
 
 #include "glutils.h"
-#include "defines.h"
 
 using glm::vec3;
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/transform.hpp>
+#include <glm/gtc/constants.hpp>
 
-SceneProjTex::SceneProjTex() : angle(0.0f), tPrev(0.0f), rotSpeed(PI/8.0) { }
+SceneProjTex::SceneProjTex() : angle(0.0f), tPrev(0.0f), rotSpeed(glm::pi<float>() / 8.0f) { }
 
 void SceneProjTex::initScene()
 {
@@ -31,7 +31,7 @@ void SceneProjTex::initScene()
 
     projection = mat4(1.0f);
 
-    angle = glm::radians(90.0);
+    angle = glm::radians(90.0f);
 
     vec3 projPos = vec3(2.0f,5.0f,5.0f);
     vec3 projAt = vec3(-2.0f,-4.0f,0.0f);
@@ -58,7 +58,7 @@ void SceneProjTex::update( float t )
   tPrev = t;
 
   angle += rotSpeed * deltaT;
-  if( angle > TWOPI_F) angle -= TWOPI_F;
+  if (angle > glm::two_pi<float>()) angle -= glm::two_pi<float>();
 }
 
 void SceneProjTex::render()

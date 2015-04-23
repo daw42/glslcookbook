@@ -7,7 +7,6 @@ using std::endl;
 #include "bmpreader.h"
 
 #include "glutils.h"
-#include "defines.h"
 
 #include <cstdlib>
 
@@ -26,7 +25,7 @@ void SceneAo::initScene()
 
     glEnable(GL_DEPTH_TEST);
 
-    angle = (float)(PI/2.0f);
+	angle = glm::pi<float>() / 2.0f;
 
     ogre = new VBOMesh("../media/bs_ears.obj", false, true);
 
@@ -52,7 +51,7 @@ void SceneAo::initScene()
 void SceneAo::update( float t )
 {
     angle += 0.003f;
-    if( angle > TWOPI_F) angle -= TWOPI_F;
+	if (angle > glm::two_pi<float>()) angle -= glm::two_pi<float>();
 }
 
 void SceneAo::render()

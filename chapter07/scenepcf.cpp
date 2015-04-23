@@ -6,7 +6,6 @@ using std::cerr;
 using std::endl;
 
 #include "glutils.h"
-#include "defines.h"
 
 using glm::vec3;
 
@@ -26,7 +25,7 @@ void ScenePcf::initScene()
 
     glEnable(GL_DEPTH_TEST);
 
-    angle = TWOPI_F * 0.85f;
+    angle = glm::two_pi<float>() * 0.85f;
 
     teapot = new VBOTeapot(14, mat4(1.0f));
     plane = new VBOPlane(20.0f, 20.0f, 2, 2);
@@ -105,7 +104,7 @@ void ScenePcf::update( float t )
   tPrev = t;
 
   angle += 0.2f * deltaT;
-  if( angle > TWOPI_F) angle -= TWOPI_F;
+  if (angle > glm::two_pi<float>()) angle -= glm::two_pi<float>();
 }
 
 void ScenePcf::render()

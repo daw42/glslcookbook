@@ -5,7 +5,6 @@
 using std::cerr;
 using std::endl;
 #include "glutils.h"
-#include "defines.h"
 
 using glm::vec3;
 using glm::vec2;
@@ -36,7 +35,7 @@ void SceneJitter::initScene()
 
     glEnable(GL_DEPTH_TEST);
 
-    angle = TWOPI_F * 0.85f;
+    angle = glm::two_pi<float>() * 0.85f;
 
     teapot = new VBOTeapot(14, mat4(1.0f));
     plane = new VBOPlane(20.0f, 20.0f, 2, 2);
@@ -143,10 +142,10 @@ void SceneJitter::buildJitterTex()
 
                 // Warp to disk
                 int cell = ((k/2) * size * size + j * size + i) * 4;
-                data[cell+0] = sqrtf(v.y) * cosf( TWOPI_F * v.x );
-                data[cell+1] = sqrtf(v.y) * sinf( TWOPI_F * v.x );
-                data[cell+2] = sqrtf(v.w) * cosf( TWOPI_F * v.z );
-                data[cell+3] = sqrtf(v.w) * sinf( TWOPI_F * v.z );
+				data[cell + 0] = sqrtf(v.y) * cosf(glm::two_pi<float>() * v.x);
+				data[cell + 1] = sqrtf(v.y) * sinf(glm::two_pi<float>() * v.x);
+				data[cell + 2] = sqrtf(v.w) * cosf(glm::two_pi<float>() * v.z);
+				data[cell + 3] = sqrtf(v.w) * sinf(glm::two_pi<float>() * v.z);
             }
         }
     }
@@ -172,7 +171,7 @@ float SceneJitter::jitter() {
 void SceneJitter::update( float t )
 {
     angle += 0.003f;
-    if( angle > TWOPI_F) angle -= TWOPI_F;
+	if (angle > glm::two_pi<float>()) angle -= glm::two_pi<float>();
 }
 
 void SceneJitter::render()

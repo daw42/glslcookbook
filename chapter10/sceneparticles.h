@@ -15,7 +15,7 @@ private:
     GLSLProgram renderProg, computeProg;
 
     int width, height;
-    glm::vec3 nParticles;
+    glm::ivec3 nParticles;
     GLuint totalParticles;
 
     float time, deltaT, speed, angle;

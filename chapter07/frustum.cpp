@@ -78,14 +78,14 @@ void Frustum::enclose( const Frustum & other )
 
     // Get 8 points that define the frustum
     if( other.type == Projection::PERSPECTIVE ) {
-        float dy = other.mNear * tanf( (float)TO_RADIANS(other.fovy) / 2.0f );
+        float dy = other.mNear * tanf( glm::radians(other.fovy) / 2.0f );
         float dx = other.ar * dy;
         vec3 c = other.origin - n * other.mNear;
         p[0] = c + u * dx + v * dy;
         p[1] = c - u * dx + v * dy;
         p[2] = c - u * dx - v * dy;
         p[3] = c + u * dx - v * dy;
-        dy = other.mFar * tanf( (float)TO_RADIANS(other.fovy) / 2.0f );
+        dy = other.mFar * tanf( glm::radians(other.fovy) / 2.0f );
         dx = other.ar * dy;
         c = other.origin - n * other.mFar;
         p[4] = c + u * dx + v * dy;
@@ -119,13 +119,13 @@ void Frustum::enclose( const Frustum & other )
                 float d = -pt.z;
                 float angle = atanf( fabs(pt.x) / d );
                 if( angle > maxHorizAngle ) maxHorizAngle = angle;
-                angle = (float)TO_DEGREES( atanf( fabs(pt.y) / d ) );
+                angle = glm::degrees( atanf( fabs(pt.y) / d ) );
                 if( angle * 2.0f > fovy ) fovy = angle * 2.0f;
                 if( mNear > d ) mNear = d;
                 if( mFar < d ) mFar = d;
             }
         }
-        float h = ( mNear * tanf( (float)TO_RADIANS(fovy)/ 2.0f) ) * 2.0f;
+        float h = ( mNear * tanf( glm::radians(fovy)/ 2.0f) ) * 2.0f;
         float w = ( mNear * tanf( maxHorizAngle ) ) * 2.0f;
         ar = w / h;
     } else {
@@ -198,14 +198,14 @@ void Frustum::render() const
         vec3 u = glm::normalize(glm::cross(this->up, n));
         vec3 v = glm::normalize(glm::cross(n, u));
 
-        float dy = mNear * tanf( (float)TO_RADIANS(fovy) / 2.0f );
+        float dy = mNear * tanf( glm::radians(fovy) / 2.0f );
         float dx = ar * dy;
         vec3 c = origin - n * mNear;  // Center of near plane
         p[0] = c + u * dx + v * dy;
         p[1] = c - u * dx + v * dy;
         p[2] = c - u * dx - v * dy;
         p[3] = c + u * dx - v * dy;
-        dy = mFar * tanf( (float)TO_RADIANS(fovy) / 2.0f );
+        dy = mFar * tanf( glm::radians(fovy) / 2.0f );
         dx = ar * dy;
         c = origin - n * mFar;      // Center of far plane
         p[4] = c + u * dx + v * dy;

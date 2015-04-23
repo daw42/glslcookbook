@@ -1,5 +1,4 @@
 #include "vbocube.h"
-#include "defines.h"
 
 #include "cookbookogl.h"
 #include "glutils.h"

@@ -6,7 +6,6 @@
 #include "tgaio.h"
 
 #include "glutils.h"
-#include "defines.h"
 
 #include <iostream>
 using std::endl;

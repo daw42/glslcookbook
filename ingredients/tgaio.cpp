@@ -44,7 +44,7 @@ int readInt(ifstream & fstr) {
 
 } // Namespace LE
 
-GLubyte * read( const char * fName, int & width, int & height ) throw(IOException) {
+GLubyte * read( const char * fName, int & width, int & height ) {
 	
 	// Open file for reading
 	std::ifstream inFile(fName, std::ios::binary);
@@ -107,7 +107,7 @@ GLubyte * read( const char * fName, int & width, int & height ) throw(IOExceptio
 	}
 }
 
-void write( GLubyte * pd, int width, int height, const char * fName) throw(IOException) {
+void write( GLubyte * pd, int width, int height, const char * fName) {
 	
 	std::ofstream oFile(fName, std::ios::binary);
 	

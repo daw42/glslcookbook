@@ -2,9 +2,9 @@
 
 #include <cstdio>
 #include <cstdlib>
+#include <sstream>
 
 #include "glutils.h"
-#include "defines.h"
 
 #include <iostream>
 using std::endl;
@@ -37,7 +37,7 @@ void SceneHdrBloom::initScene()
 
     projection = mat4(1.0f);
 
-    angle = PI / 2.0;
+	angle = glm::pi<float>() / 2.0f;
 
     setupFBO();
 
@@ -87,22 +87,22 @@ void SceneHdrBloom::initScene()
 
     prog.setUniform("LumThresh", 1.7f);
 
-    char uniName[100];
     float weights[10], sum, sigma2 = 25.0f;
 
     // Compute and sum the weights
     weights[0] = gauss(0,sigma2);
     sum = weights[0];
     for( int i = 1; i < 10; i++ ) {
-        weights[i] = gauss(i, sigma2);
+        weights[i] = gauss(float(i), sigma2);
         sum += 2 * weights[i];
     }
 
     // Normalize the weights and set the uniform
     for( int i = 0; i < 10; i++ ) {
-        sprintf(uniName, "Weight[%d]", i);
+		std::stringstream uniName;
+		uniName << "Weight[" << i << "]";
         float val = weights[i] / sum;
-        prog.setUniform(uniName, val);
+        prog.setUniform(uniName.str().c_str(), val);
     }
 
     // Set up two sampler objects for linear and nearest filtering
@@ -339,7 +339,7 @@ void SceneHdrBloom::compileAndLinkShader()
 
 float SceneHdrBloom::gauss(float x, float sigma2 )
 {
-    double coeff = 1.0 / (2.0 * PI * sigma2);
+	double coeff = 1.0 / (glm::two_pi<double>() * sigma2);
     double expon = -(x*x) / (2.0 * sigma2);
     return (float) (coeff*exp(expon));
 }

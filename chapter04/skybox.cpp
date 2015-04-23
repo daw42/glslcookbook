@@ -1,5 +1,4 @@
 #include "skybox.h"
-#include "defines.h"
 
 #include "cookbookogl.h"
 

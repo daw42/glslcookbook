@@ -4,7 +4,6 @@
 #include <cstdlib>
 
 #include "glutils.h"
-#include "defines.h"
 
 #include <iostream>
 using std::endl;
@@ -13,8 +12,9 @@ using glm::vec3;
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/transform.hpp>
+#include <glm/gtc/constants.hpp>
 
-SceneGamma::SceneGamma() : width(800), height(600), angle(0.0f), tPrev(0.0f), rotSpeed(PI/8.0)
+SceneGamma::SceneGamma() : width(800), height(600), angle(0.0f), tPrev(0.0f), rotSpeed(glm::pi<float>() / 8.0f)
 { }
 
 void SceneGamma::initScene()
@@ -33,7 +33,7 @@ void SceneGamma::initScene()
     torus = new VBOTorus(0.7f * c, 0.3f * c, 50,50);
     ogre = new VBOMesh("../media/bs_ears.obj");
 
-    angle = PI / 2.0;
+	angle = glm::pi<float>() / 2.0f;
 
     prog.setUniform("Light.Intensity", vec3(1.0f,1.0f,1.0f) );
     prog.setUniform("Gamma",2.2f);
@@ -47,7 +47,7 @@ void SceneGamma::update( float t )
 	tPrev = t;
 
     angle += rotSpeed * deltaT;
-    if( angle > TWOPI_F) angle -= TWOPI_F;
+	if (angle > glm::two_pi<float>()) angle -= glm::two_pi<float>();
 }
 
 void SceneGamma::render()

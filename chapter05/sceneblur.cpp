@@ -2,9 +2,9 @@
 
 #include <cstdio>
 #include <cstdlib>
+#include <sstream>
 
 #include "glutils.h"
-#include "defines.h"
 
 #include <iostream>
 using std::endl;
@@ -13,8 +13,9 @@ using glm::vec3;
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/transform.hpp>
+#include <glm/gtc/constants.hpp>
 
-SceneBlur::SceneBlur() : width(800), height(600), angle(0.0f), tPrev(0.0f), rotSpeed(PI/8.0)
+SceneBlur::SceneBlur() : width(800), height(600), angle(0.0f), tPrev(0.0f), rotSpeed(glm::pi<float>() / 8.0f)
 { }
 
 void SceneBlur::initScene()
@@ -32,7 +33,7 @@ void SceneBlur::initScene()
 
     projection = mat4(1.0f);
 
-    angle = PI / 4.0;
+	angle = glm::pi<float>() / 4.0f;
 
     setupFBO();
 
@@ -80,22 +81,22 @@ void SceneBlur::initScene()
 
     prog.setUniform("Light.Intensity", vec3(1.0f,1.0f,1.0f) );
 
-    char uniName[100];
     float weights[5], sum, sigma2 = 8.0f;
 
     // Compute and sum the weights
     weights[0] = gauss(0,sigma2);
     sum = weights[0];
     for( int i = 1; i < 5; i++ ) {
-        weights[i] = gauss(i, sigma2);
+        weights[i] = gauss(float(i), sigma2);
         sum += 2 * weights[i];
     }
 
     // Normalize the weights and set the uniform
     for( int i = 0; i < 5; i++ ) {
-        sprintf(uniName, "Weight[%d]", i);
+		std::stringstream uniName;
+		uniName << "Weight[" << i << "]";
         float val = weights[i] / sum;
-        prog.setUniform(uniName, val);
+        prog.setUniform(uniName.str().c_str(), val);
     }
 }
 
@@ -162,7 +163,7 @@ void SceneBlur::update( float t )
 	tPrev = t;
 
     angle += rotSpeed * deltaT;
-    if( angle > TWOPI_F) angle -= TWOPI_F;
+	if (angle > glm::two_pi<float>()) angle -= glm::two_pi<float>();
 }
 
 void SceneBlur::render()
@@ -288,7 +289,7 @@ void SceneBlur::compileAndLinkShader()
 
 float SceneBlur::gauss(float x, float sigma2 )
 {
-    double coeff = 1.0 / (2.0 * PI * sigma2);
+	double coeff = 1.0 / (glm::two_pi<double>() * sigma2);
     double expon = -(x*x) / (2.0 * sigma2);
     return (float) (coeff*exp(expon));
 }

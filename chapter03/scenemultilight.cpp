@@ -2,9 +2,9 @@
 
 #include <cstdio>
 #include <cstdlib>
+#include <sstream>
 
 #include "glutils.h"
-#include "defines.h"
 
 #include <iostream>
 using std::endl;
@@ -31,13 +31,13 @@ void SceneMultiLight::initScene()
     view = glm::lookAt(vec3(0.5f,0.75f,0.75f), vec3(0.0f,0.0f,0.0f), vec3(0.0f,1.0f,0.0f));
     projection = mat4(1.0f);
 
-    char name[20];
     float x, z;
     for( int i = 0; i < 5; i++ ) {
-        sprintf(name, "lights[%d].Position", i);
-        x = 2.0f * cosf((TWOPI_F / 5) * i);
-        z = 2.0f * sinf((TWOPI_F / 5) * i);
-        prog.setUniform(name, view * vec4(x, 1.2f, z + 1.0f, 1.0f) );
+		std::stringstream name;
+        name << "lights[" << i << "].Position";
+        x = 2.0f * cosf((glm::two_pi<float>() / 5) * i);
+        z = 2.0f * sinf((glm::two_pi<float>() / 5) * i);
+        prog.setUniform(name.str().c_str(), view * vec4(x, 1.2f, z + 1.0f, 1.0f) );
     }
 
     prog.setUniform("lights[0].Intensity", vec3(0.0f,0.8f,0.8f) );

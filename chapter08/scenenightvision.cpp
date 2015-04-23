@@ -6,7 +6,6 @@
 using std::cerr;
 using std::endl;
 #include "glutils.h"
-#include "defines.h"
 #include "noisetex.h"
 
 using glm::vec3;
@@ -31,7 +30,7 @@ void SceneNightVision::initScene()
 
     projection = mat4(1.0f);
 
-    angle = (float)(PI / 4.0);
+	angle = glm::pi<float>() / 4.0f;
 
     setupFBO();
 
@@ -122,7 +121,7 @@ void SceneNightVision::setupFBO() {
 void SceneNightVision::update( float t )
 {
     angle += 0.001f;
-    if( angle > TWOPI_F) angle -= TWOPI_F;
+	if (angle > glm::two_pi<float>()) angle -= glm::two_pi<float>();
 }
 
 void SceneNightVision::render()

@@ -7,7 +7,6 @@ using std::endl;
 using std::cerr;
 
 #include "glutils.h"
-#include "defines.h"
 
 using glm::vec3;
 
@@ -29,7 +28,7 @@ void SceneWave::initScene()
 
     prog.setUniform("Light.Intensity", vec3(1.0f,1.0f,1.0f) );
 
-    angle = (float)(PI / 2.0f);
+	angle = glm::half_pi<float>();
 }
 
 void SceneWave::update( float t )

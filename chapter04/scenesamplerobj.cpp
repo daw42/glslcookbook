@@ -8,7 +8,6 @@ using std::cerr;
 
 #include "tgaio.h"
 #include "glutils.h"
-#include "defines.h"
 
 using glm::vec3;
 
