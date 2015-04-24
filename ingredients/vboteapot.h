@@ -28,10 +28,10 @@ private:
     void computeBasisFunctions( float * B, float * dB, int grid );
     vec3 evaluate( int gridU, int gridV, float *B, vec3 patch[][4] );
     vec3 evaluateNormal( int gridU, int gridV, float *B, float *dB, vec3 patch[][4] );
-    void moveLid(int,float *,mat4);
+    void moveLid(int,float *,const glm::mat4 &);
 
 public:
-    VBOTeapot(int grid, mat4 lidTransform);
+    VBOTeapot(int grid, const glm::mat4& lidTransform);
 
     void render() const;
 };

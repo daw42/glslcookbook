@@ -10,7 +10,7 @@
 using glm::mat4;
 using glm::vec4;
 
-VBOTeapot::VBOTeapot(int grid, mat4 lidTransform)
+VBOTeapot::VBOTeapot(int grid, const mat4 & lidTransform)
 {
     int verts = 32 * (grid + 1) * (grid + 1);
     faces = grid * grid * 32;
@@ -86,7 +86,7 @@ void VBOTeapot::generatePatches(float * v, float * n, float * tc, unsigned int* 
     delete [] dB;
 }
 
-void VBOTeapot::moveLid(int grid, float *v, mat4 lidTransform) {
+void VBOTeapot::moveLid(int grid, float *v, const mat4 & lidTransform) {
 
     int start = 3 * 12 * (grid+1) * (grid+1);
     int end = 3 * 20 * (grid+1) * (grid+1);
