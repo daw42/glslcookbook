@@ -23,17 +23,11 @@ list( APPEND GLSLCOOKBOOK_LIBS ${GLFW3_LIBRARY} )
 if( UNIX )
   add_definitions(-Wall)
 
-  find_package( OpenGL REQUIRED )
-  list( APPEND GLSLCOOKBOOK_LIBS ${OPENGL_gl_LIBRARY} )
-
-  find_package( Threads REQUIRED )
-  list( APPEND GLSLCOOKBOOK_LIBS ${CMAKE_THREAD_LIBS_INIT} )
-
   find_package( X11 REQUIRED )
-  list( APPEND GLSLCOOKBOOK_LIBS ${X11_Xrandr_LIB} ${X11_Xxf86vm_LIB} ${X11_Xi_LIB} )
-
+  find_package( OpenGL REQUIRED )
+  find_package( Threads REQUIRED )
   find_library( RT_LIB rt )
-  list( APPEND GLSLCOOKBOOK_LIBS ${RT_LIB} )
+  list( APPEND GLSLCOOKBOOK_LIBS X11 Xrandr Xinerama Xi Xxf86vm Xcursor GL dl pthread)
 endif()
 
 if( WIN32 )
