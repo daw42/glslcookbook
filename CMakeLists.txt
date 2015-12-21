@@ -26,7 +26,7 @@ if( UNIX )
   find_package( X11 REQUIRED )
   find_package( OpenGL REQUIRED )
   find_package( Threads REQUIRED )
-  find_library( RT_LIB rt )
+
   list( APPEND GLSLCOOKBOOK_LIBS ${X11_X11_LIB} ${X11_Xrandr_LIB} ${X11_Xinerama_LIB} ${X11_Xi_LIB} ${X11_Xxf86vm_LIB} ${X11_Xcursor_LIB} ${OPENGL_gl_LIBRARY} ${CMAKE_DL_LIBS} ${CMAKE_THREAD_LIBS_INIT})
 endif()
 
