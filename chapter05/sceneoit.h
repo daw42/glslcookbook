@@ -43,7 +43,6 @@ private:
 
     void setMatrices();
     void compileAndLinkShader();
-    void setupFBO();
     void drawScene();
     void initShaderStorage();
     void pass1();
