@@ -154,6 +154,7 @@ void SceneBasic::initScene()
 
     glBindBuffer(GL_ARRAY_BUFFER, colorBufferHandle);
     glVertexAttribPointer( 1, 3, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL );
+    glBindVertexArray(0);
 }
 
 void SceneBasic::linkMe(GLint vertShader, GLint fragShader)
@@ -213,6 +214,7 @@ void SceneBasic::render()
 
     glBindVertexArray(vaoHandle);
     glDrawArrays(GL_TRIANGLES, 0, 3 );
+    glBindVertexArray(0);
 }
 
 void SceneBasic::resize(int w, int h)

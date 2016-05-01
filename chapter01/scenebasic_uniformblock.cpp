@@ -21,7 +21,7 @@ SceneBasic_UniformBlock::SceneBasic_UniformBlock() : angle(0.0f) { }
 void SceneBasic_UniformBlock::initUniformBlockBuffer()
 {
 	GLuint programHandle = prog.getHandle();
-	
+
     // Get the index of the uniform block
     GLuint blockIndex = glGetUniformBlockIndex(programHandle, "BlobSettings");
 
@@ -38,7 +38,7 @@ void SceneBasic_UniformBlock::initUniformBlockBuffer()
 
     GLuint indices[4];
     glGetUniformIndices(programHandle, 4, names, indices);
-    
+
     GLint offset[4];
     glGetActiveUniformsiv(programHandle, 4, indices, GL_UNIFORM_OFFSET, offset);
 
@@ -60,20 +60,20 @@ void SceneBasic_UniformBlock::initUniformBlockBuffer()
 
     // Bind the buffer object to the uniform block
     glBindBufferBase( GL_UNIFORM_BUFFER, 1, uboHandle );
-    
-    // We don't need this if we specify the binding within the shader
-//    glUniformBlockBinding(programHandle, blockIndex, 0);
+
+#ifdef __APPLE__
+    // We don't need this if we specify the binding within the shader (OpenGL 4.2 and above)
+    glUniformBlockBinding(programHandle, blockIndex, 1);
+#endif
 }
 
 void SceneBasic_UniformBlock::initScene()
 {
     compile();
-    
+
     std::cout << std::endl;
-    
-    prog.printActiveUniformBlocks();
-    
     initUniformBlockBuffer();
+		prog.printActiveUniformBlocks();
 
     /////////////////// Create the VBO ////////////////////
     float positionData[] = {
@@ -92,7 +92,6 @@ void SceneBasic_UniformBlock::initScene()
         1.0f, 1.0f,
         0.0f, 1.0f
     };
-
 
     // Create and populate the buffer objects
     GLuint vboHandles[2];
@@ -121,17 +120,20 @@ void SceneBasic_UniformBlock::initScene()
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
 }
 
 void SceneBasic_UniformBlock::compile()
 {
 	try {
+#ifdef __APPLE__
+		prog.compileShader("shader/basic_uniformblock_41.vert");
+		prog.compileShader("shader/basic_uniformblock_41.frag");
+#else
 		prog.compileShader("shader/basic_uniformblock.vert");
 		prog.compileShader("shader/basic_uniformblock.frag");
+#endif
 		prog.link();
-		prog.validate();
-		prog.use();	
+		prog.use();
 	} catch (GLSLProgramException &e) {
 		cerr << e.what() << endl;
 		exit(EXIT_FAILURE);
@@ -156,4 +158,3 @@ void SceneBasic_UniformBlock::resize(int w, int h)
 {
     glViewport(0,0,w,h);
 }
-

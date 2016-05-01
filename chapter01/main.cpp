@@ -54,9 +54,15 @@ int main(int argc, char *argv[])
 	// Initialize GLFW
 	if( !glfwInit() ) exit( EXIT_FAILURE );
 
-	// Select OpenGL 4.3 with a forward compatible core profile.
+#ifdef __APPLE__
+  // Select OpenGL 4.1
 	glfwWindowHint( GLFW_CONTEXT_VERSION_MAJOR, 4 );
-	glfwWindowHint( GLFW_CONTEXT_VERSION_MINOR, 3 );
+	glfwWindowHint( GLFW_CONTEXT_VERSION_MINOR, 1 );
+#else
+  	// Select OpenGL 4.3
+  glfwWindowHint( GLFW_CONTEXT_VERSION_MAJOR, 4 );
+  glfwWindowHint( GLFW_CONTEXT_VERSION_MINOR, 3 );
+#endif
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);

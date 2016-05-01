@@ -15,7 +15,7 @@ namespace GLSLShaderInfo {
     GLSLShader::GLSLShaderType type;
   };
 
-  struct shader_file_extension extensions[] = 
+  struct shader_file_extension extensions[] =
   {
     {".vs", GLSLShader::VERTEX},
     {".vert", GLSLShader::VERTEX},
@@ -25,7 +25,7 @@ namespace GLSLShaderInfo {
     {".tes", GLSLShader::TESS_EVALUATION},
     {".fs", GLSLShader::FRAGMENT},
     {".frag", GLSLShader::FRAGMENT},
-    {".cs", GLSLShader::COMPUTE}   
+    {".cs", GLSLShader::COMPUTE}
   };
 }
 
@@ -119,7 +119,7 @@ throw( GLSLProgramException )
   compileShader(code.str(), type, fileName);
 }
 
-void GLSLProgram::compileShader( const string & source, 
+void GLSLProgram::compileShader( const string & source,
     GLSLShader::GLSLShaderType type,
     const char * fileName )
 throw(GLSLProgramException)
@@ -173,7 +173,7 @@ throw(GLSLProgramException)
 void GLSLProgram::link() throw(GLSLProgramException)
 {
   if( linked ) return;
-  if( handle <= 0 ) 
+  if( handle <= 0 )
     throw GLSLProgramException("Program has not been compiled.");
 
   glLinkProgram(handle);
@@ -199,12 +199,12 @@ void GLSLProgram::link() throw(GLSLProgramException)
   } else {
     uniformLocations.clear();
     linked = true;
-  }    
+  }
 }
 
 void GLSLProgram::use() throw(GLSLProgramException)
 {
-  if( handle <= 0 || (! linked) ) 
+  if( handle <= 0 || (! linked) )
     throw GLSLProgramException("Shader has not been linked");
   glUseProgram( handle );
 }
@@ -289,6 +289,29 @@ void GLSLProgram::setUniform( const char *name, bool val )
 }
 
 void GLSLProgram::printActiveUniforms() {
+#ifdef __APPLE__
+  // For OpenGL 4.1, use glGetActiveUniform
+  GLint nUniforms, size, location, maxLen;
+  GLchar * name;
+  GLsizei written;
+  GLenum type;
+
+  glGetProgramiv( handle, GL_ACTIVE_UNIFORM_MAX_LENGTH, &maxLen);
+  glGetProgramiv( handle, GL_ACTIVE_UNIFORMS, &nUniforms);
+
+  name = new GLchar[ maxLen ];
+
+  printf("Active uniforms:\n");
+  printf("------------------------------------------------\n");
+  for( int i = 0; i < nUniforms; ++i ) {
+      glGetActiveUniform( handle, i, maxLen, &written, &size, &type, name );
+      location = glGetUniformLocation(handle, name);
+      printf(" %-5d %s (%s)\n", location, name, getTypeString(type));
+  }
+
+  delete [] name;
+#else
+  // For OpenGL 4.3 and above, use glGetProgramResource
   GLint numUniforms = 0;
   glGetProgramInterfaceiv( handle, GL_UNIFORM, GL_ACTIVE_RESOURCES, &numUniforms);
 
@@ -299,16 +322,54 @@ void GLSLProgram::printActiveUniforms() {
     GLint results[4];
     glGetProgramResourceiv(handle, GL_UNIFORM, i, 4, properties, 4, NULL, results);
 
-    if( results[3] != -1 ) continue;  // Skip uniforms in blocks 
+    if( results[3] != -1 ) continue;  // Skip uniforms in blocks
     GLint nameBufSize = results[0] + 1;
     char * name = new char[nameBufSize];
     glGetProgramResourceName(handle, GL_UNIFORM, i, nameBufSize, NULL, name);
     printf("%-5d %s (%s)\n", results[2], name, getTypeString(results[1]));
     delete [] name;
   }
+#endif
 }
 
 void GLSLProgram::printActiveUniformBlocks() {
+#ifdef __APPLE__
+  // For OpenGL 4.1, use glGetActiveUniformBlockiv
+  GLint written, maxLength, maxUniLen, nBlocks, binding;
+  GLchar * name;
+
+  glGetProgramiv(handle, GL_ACTIVE_UNIFORM_BLOCK_MAX_NAME_LENGTH, &maxLength);
+  glGetProgramiv(handle, GL_ACTIVE_UNIFORM_BLOCKS, &nBlocks);
+  glGetProgramiv(handle, GL_ACTIVE_UNIFORM_MAX_LENGTH, &maxUniLen);
+  GLchar * uniName = new GLchar[maxUniLen];
+  name = new GLchar[maxLength];
+
+  printf("Active Uniform blocks: \n");
+  printf("------------------------------------------------\n");
+  for( int i = 0; i < nBlocks; i++ ) {
+      glGetActiveUniformBlockName( handle, i, maxLength, &written, name );
+      glGetActiveUniformBlockiv( handle, i, GL_UNIFORM_BLOCK_BINDING, &binding);
+      printf("Uniform block \"%s\" (%d):\n", name, binding);
+
+      GLint nUnis;
+      glGetActiveUniformBlockiv( handle, i, GL_UNIFORM_BLOCK_ACTIVE_UNIFORMS, &nUnis);
+      GLint * unifIndexes = new GLint[nUnis];
+      glGetActiveUniformBlockiv( handle, i, GL_UNIFORM_BLOCK_ACTIVE_UNIFORM_INDICES, unifIndexes);
+
+      for( int unif = 0; unif < nUnis; ++unif ) {
+        GLint uniIndex = unifIndexes[unif];
+        GLint size;
+        GLenum type;
+
+        glGetActiveUniform( handle, uniIndex, maxUniLen, &written, &size, &type, uniName );
+        printf("    %s (%s)\n", name, getTypeString(type));
+      }
+
+      delete [] unifIndexes;
+  }
+  delete [] name;
+  delete [] uniName;
+#else
   GLint numBlocks = 0;
 
   glGetProgramInterfaceiv(handle, GL_UNIFORM_BLOCK, GL_ACTIVE_RESOURCES, &numBlocks);
@@ -343,9 +404,30 @@ void GLSLProgram::printActiveUniformBlocks() {
 
     delete [] unifIndexes;
   }
+#endif
 }
 
 void GLSLProgram::printActiveAttribs() {
+#ifdef __APPLE__
+  // For OpenGL 4.1, use glGetActiveAttrib
+  GLint written, size, location, maxLength, nAttribs;
+  GLenum type;
+  GLchar * name;
+
+  glGetProgramiv(handle, GL_ACTIVE_ATTRIBUTE_MAX_LENGTH, &maxLength);
+  glGetProgramiv(handle, GL_ACTIVE_ATTRIBUTES, &nAttribs);
+
+  name = new GLchar[maxLength];
+  printf("Active Attributes: \n");
+  printf("------------------------------------------------\n");
+  for( int i = 0; i < nAttribs; i++ ) {
+      glGetActiveAttrib( handle, i, maxLength, &written, &size, &type, name );
+      location = glGetAttribLocation(handle, name);
+      printf(" %-5d %s (%s)\n", location, name, getTypeString(type));
+  }
+  delete [] name;
+#else
+  // >= OpenGL 4.3, use glGetProgramResource
   GLint numAttribs;
   glGetProgramInterfaceiv( handle, GL_PROGRAM_INPUT, GL_ACTIVE_RESOURCES, &numAttribs);
 
@@ -362,6 +444,7 @@ void GLSLProgram::printActiveAttribs() {
     printf("%-5d %s (%s)\n", results[2], name, getTypeString(results[1]));
     delete [] name;
   }
+#endif
 }
 
 const char * GLSLProgram::getTypeString( GLenum type ) {
@@ -397,7 +480,7 @@ const char * GLSLProgram::getTypeString( GLenum type ) {
 
 void GLSLProgram::validate() throw(GLSLProgramException)
 {
-  if( ! isLinked() ) 
+  if( ! isLinked() )
     throw GLSLProgramException("Program is not linked");
 
   GLint status;

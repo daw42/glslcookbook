@@ -1,14 +1,10 @@
 #include "tgaio.h"
 
-#include <fstream>
-using std::ifstream;
-using std::ofstream;
-
 namespace TGAIO {
 
 namespace LE {
 
-int readShort(ifstream & stream) {
+int readShort(std::ifstream & stream) {
 	unsigned char ic;     // input char
 	int result;           // result
 
@@ -19,7 +15,7 @@ int readShort(ifstream & stream) {
 	return result;
 }
 
-void writeShort(ofstream & stream, int value) {
+void writeShort(std::ofstream & stream, int value) {
 	unsigned char lowOrder = (unsigned char)value;
 	unsigned char highOrder = (unsigned char)(value >> 8);
 
@@ -27,7 +23,7 @@ void writeShort(ofstream & stream, int value) {
 	stream.put(highOrder);
 }
 
-int readInt(ifstream & fstr) {
+int readInt(std::ifstream & fstr) {
 	int result = 0;
 	unsigned char ic = 0;
 
@@ -45,16 +41,16 @@ int readInt(ifstream & fstr) {
 } // Namespace LE
 
 GLubyte * read( const char * fName, int & width, int & height ) {
-	
+
 	// Open file for reading
 	std::ifstream inFile(fName, std::ios::binary);
-	
+
 	try {
 		if (!inFile) {
 			std::string msg = std::string("Error: can't open ") + fName ;
 			throw IOException(msg);
 		}
-		
+
 		int idLen = inFile.get();      // Length of image ID field
 		int mapType = inFile.get();    // Color map type (expect 0 == no color map)
 		int typeCode = inFile.get();   // Image type code (expect 2 == uncompressed)
@@ -65,23 +61,23 @@ GLubyte * read( const char * fName, int & width, int & height ) {
 		height = LE::readShort(inFile);       // Image height
 		int bpp = inFile.get();               // Bits per pixel (expect 24 or 32)
 		inFile.ignore();                      // Image descriptor (expect 0 for 24bpp and 8 for 32bpp)
-		
+
 		if( typeCode != 2 || mapType != 0 ) {
 			throw IOException("File does not appear to be a non-color-mapped, uncompressed TGA image");
 		}
-		
+
 		if( bpp != 24 && bpp != 32 ) {
 			throw IOException("File must be 24 or 32 bits per pixel.\n");
 		}
-		
+
 		// Skip the image ID data
 		if( idLen > 0 ) inFile.ignore(idLen);
-		
+
 		// Color map data would be here, but we assume no color map
-		
+
 		printf("%s: (%d x %d) %d bpp origin (%d, %d)\n", fName, width, height, bpp,
 		       xOrigin, yOrigin);
-		
+
 		// Read pixel data
 		GLubyte *p = new GLubyte[width * height * 4];
 		// 24 bpp -- Blue, Green, Red
@@ -91,13 +87,13 @@ GLubyte * read( const char * fName, int & width, int & height ) {
 		{
 			p[i*4 + 2] = inFile.get();  // Blue
 			p[i*4 + 1] = inFile.get();  // Green
-			p[i*4    ] = inFile.get();  // Red 
+			p[i*4    ] = inFile.get();  // Red
 			if( bpp == 32 )
 				p[i*4 + 3] = inFile.get();
 			else
 				p[i*4 + 3] = 0xFF;
 		}
-		
+
 		inFile.close();
 		return p;
 	}
@@ -108,18 +104,18 @@ GLubyte * read( const char * fName, int & width, int & height ) {
 }
 
 void write( GLubyte * pd, int width, int height, const char * fName) {
-	
+
 	std::ofstream oFile(fName, std::ios::binary);
-	
+
 	try {
 		if( ! oFile ) {
 			std::string msg = std::string("Unable to open file ") + fName +
 				std::string(" for writing.");
 			throw IOException(msg);
 		}
-		
+
 		const char zero[] = {0,0,0,0,0};
-		
+
 		oFile.put(0);          // Length of image ID field
 		oFile.put(0);          // Color map type (0 == no color map)
 		oFile.put(2);          // Image type code (2 == uncompressed)
@@ -130,22 +126,22 @@ void write( GLubyte * pd, int width, int height, const char * fName) {
 		LE::writeShort(oFile, height);   // Image height
 		oFile.put(32);               // Bits per pixel (32)
 		oFile.put(8);                // Image descriptor (8 => 32bpp)
-		
+
 		for( int i = 0; i < (width * height); i++ ) {
 			oFile.put( pd[i*4 + 2] );  // Blue
 			oFile.put( pd[i*4 + 1] );  // Green
-			oFile.put( pd[i*4    ] );  // Red 
+			oFile.put( pd[i*4    ] );  // Red
 			oFile.put( pd[i*4 + 3] );  // alpha
 		}
-		
+
 		oFile.close();
-		
+
 	} catch(IOException & e) {
 		oFile.close();
 		throw e;
 	}
-	
-	
+
+
 }
 
 GLuint loadTex(const char* fName, GLint & width, GLint &height) {

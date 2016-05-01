@@ -20,9 +20,9 @@ SceneBasic_Uniform::SceneBasic_Uniform() : angle(0.0f) {}
 void SceneBasic_Uniform::initScene()
 {
     compile();
-    
+
     std::cout << std::endl;
-    
+
     prog.printActiveUniforms();
 
     /////////////////// Create the VBO ////////////////////
@@ -34,7 +34,6 @@ void SceneBasic_Uniform::initScene()
         1.0f, 0.0f, 0.0f,
         0.0f, 1.0f, 0.0f,
         0.0f, 0.0f, 1.0f };
-
 
     // Create and populate the buffer objects
     GLuint vboHandles[2];
@@ -55,12 +54,22 @@ void SceneBasic_Uniform::initScene()
     glEnableVertexAttribArray(0);  // Vertex position
     glEnableVertexAttribArray(1);  // Vertex color
 
-    glBindBuffer(GL_ARRAY_BUFFER, positionBufferHandle);
-    glVertexAttribPointer( 0, 3, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL );
+    #ifdef __APPLE__
+        glBindBuffer(GL_ARRAY_BUFFER, positionBufferHandle);
+        glVertexAttribPointer( 0, 3, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL );
 
-    glBindBuffer(GL_ARRAY_BUFFER, colorBufferHandle);
-    glVertexAttribPointer( 1, 3, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL );
+        glBindBuffer(GL_ARRAY_BUFFER, colorBufferHandle);
+        glVertexAttribPointer( 1, 3, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL );
+    #else
+    		glBindVertexBuffer(0, positionBufferHandle, 0, sizeof(GLfloat)*3);
+    		glBindVertexBuffer(1, colorBufferHandle, 0, sizeof(GLfloat)*3);
 
+    		glVertexAttribFormat(0, 3, GL_FLOAT, GL_FALSE, 0);
+    		glVertexAttribBinding(0, 0);
+    		glVertexAttribFormat(1, 3, GL_FLOAT, GL_FALSE, 0);
+    	  glVertexAttribBinding(1, 1);
+    #endif
+    glBindVertexArray(0);
 }
 
 void SceneBasic_Uniform::compile()
@@ -69,7 +78,7 @@ void SceneBasic_Uniform::compile()
 		prog.compileShader("shader/basic_uniform.vert");
 		prog.compileShader("shader/basic_uniform.frag");
 		prog.link();
-		prog.use();	
+		prog.use();
 	} catch (GLSLProgramException &e) {
 		cerr << e.what() << endl;
 		exit(EXIT_FAILURE);
@@ -105,5 +114,3 @@ void SceneBasic_Uniform::resize(int w, int h)
 {
     glViewport(0,0,w,h);
 }
-
-

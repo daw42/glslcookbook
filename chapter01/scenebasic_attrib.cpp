@@ -15,15 +15,17 @@ SceneBasic_Attrib::SceneBasic_Attrib() { }
 
 void SceneBasic_Attrib::initScene()
 {
+#ifndef __APPLE__
 	glDebugMessageCallback(GLUtils::debugCallback, NULL);
 	glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, NULL, GL_TRUE);
-	glDebugMessageInsert(GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_MARKER, 0, 
+	glDebugMessageInsert(GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_MARKER, 0,
 		GL_DEBUG_SEVERITY_NOTIFICATION, -1 , "Start debugging");
+#endif
 
 	compileShaderProgram();
-	
+
 	std::cout << std::endl;
-	
+
 	prog.printActiveAttribs();
 
     /////////////////// Create the VBO ////////////////////
@@ -55,20 +57,22 @@ void SceneBasic_Attrib::initScene()
     glEnableVertexAttribArray(0);  // Vertex position
     glEnableVertexAttribArray(1);  // Vertex color
 
-//    glBindBuffer(GL_ARRAY_BUFFER, positionBufferHandle);
-//    glVertexAttribPointer( 0, 3, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL );
+#ifdef __APPLE__
+    glBindBuffer(GL_ARRAY_BUFFER, positionBufferHandle);
+    glVertexAttribPointer( 0, 3, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL );
 
-//    glBindBuffer(GL_ARRAY_BUFFER, colorBufferHandle);
-//    glVertexAttribPointer( 1, 3, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL );
+    glBindBuffer(GL_ARRAY_BUFFER, colorBufferHandle);
+    glVertexAttribPointer( 1, 3, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL );
+#else
+		glBindVertexBuffer(0, positionBufferHandle, 0, sizeof(GLfloat)*3);
+		glBindVertexBuffer(1, colorBufferHandle, 0, sizeof(GLfloat)*3);
 
-	glBindVertexBuffer(0, positionBufferHandle, 0, sizeof(GLfloat)*3);
-	glBindVertexBuffer(1, colorBufferHandle, 0, sizeof(GLfloat)*3);
-	
-	glVertexAttribFormat(0, 3, GL_FLOAT, GL_FALSE, 0);
-	glVertexAttribBinding(0, 0);
-	glVertexAttribFormat(1, 3, GL_FLOAT, GL_FALSE, 0);    
-    glVertexAttribBinding(1, 1);
-    
+		glVertexAttribFormat(0, 3, GL_FLOAT, GL_FALSE, 0);
+		glVertexAttribBinding(0, 0);
+		glVertexAttribFormat(1, 3, GL_FLOAT, GL_FALSE, 0);
+	  glVertexAttribBinding(1, 1);
+#endif
+
     glBindVertexArray(0);
 }
 
@@ -78,7 +82,7 @@ void SceneBasic_Attrib::compileShaderProgram()
 		prog.compileShader("shader/basic.vert" );
 		prog.compileShader("shader/basic.frag" );
 		prog.link();
-		prog.use();	
+		prog.use();
 	} catch (GLSLProgramException &e) {
 		cerr << e.what() << endl;
 		exit(EXIT_FAILURE);
@@ -93,10 +97,10 @@ void SceneBasic_Attrib::render()
 
     glBindVertexArray(vaoHandle);
     glDrawArrays(GL_TRIANGLES, 0, 3 );
+		glBindVertexArray(0);
 }
 
 void SceneBasic_Attrib::resize(int w, int h)
 {
     glViewport(0,0,w,h);
 }
-

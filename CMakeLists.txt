@@ -20,7 +20,17 @@ list( APPEND GLSLCOOKBOOK_INCLUDE ${GLM_INCLUDE_DIRS} )
 list( APPEND GLSLCOOKBOOK_INCLUDE ${GLFW3_INCLUDE_DIR} )
 list( APPEND GLSLCOOKBOOK_LIBS ${GLFW3_LIBRARY} )
 
-if( UNIX )
+if( APPLE )
+  add_definitions(-Wall)
+
+  find_library( APPLE_OPENGL OpenGL )
+  find_library( APPLE_COCOA Cocoa )
+  find_library( APPLE_IO IOKit )
+  find_library( APPLE_CORE_FOUNDATION_FRAMEWORK CoreFoundation)
+  find_library( APPLE_CORE_VIDEO_FRAMEWORK CoreVideo)
+
+  list( APPEND GLSLCOOKBOOK_LIBS  ${APPLE_COCOA} ${APPLE_IO} ${APPLE_CORE_FOUNDATION_FRAMEWORK} ${APPLE_CORE_VIDEO_FRAMEWORK})
+elseif( UNIX )
   add_definitions(-Wall)
 
   find_package( X11 REQUIRED )
@@ -28,9 +38,7 @@ if( UNIX )
   find_package( Threads REQUIRED )
 
   list( APPEND GLSLCOOKBOOK_LIBS ${X11_X11_LIB} ${X11_Xrandr_LIB} ${X11_Xinerama_LIB} ${X11_Xi_LIB} ${X11_Xxf86vm_LIB} ${X11_Xcursor_LIB} ${OPENGL_gl_LIBRARY} ${CMAKE_DL_LIBS} ${CMAKE_THREAD_LIBS_INIT})
-endif()
-
-if( WIN32 )
+elseif( WIN32 )
   find_package( OpenGL REQUIRED )
   list( APPEND GLSLCOOKBOOK_LIBS ${OPENGL_gl_LIBRARY} )
 endif()

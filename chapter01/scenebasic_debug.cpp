@@ -17,16 +17,20 @@ void SceneBasic_Debug::initScene()
 {
 	// Not necessary when we have a debug context.
 	//glEnable(GL_DEBUG_OUTPUT);
-	
+#ifdef __APPLE__
+  std::cerr << "This example requires OpenGL 4.3 or above." << std::endl;
+	exit(1);
+#endif
+
 	glDebugMessageCallback(GLUtils::debugCallback, NULL);
 	glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, NULL, GL_TRUE);
-	glDebugMessageInsert(GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_MARKER, 0, 
+	glDebugMessageInsert(GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_MARKER, 0,
 		GL_DEBUG_SEVERITY_NOTIFICATION, -1 , "Start debugging");
 
 	compileShaderProgram();
-	
+
 	std::cout << std::endl;
-	
+
 	prog.printActiveAttribs();
 
     /////////////////// Create the VBO ////////////////////
@@ -71,7 +75,7 @@ void SceneBasic_Debug::compileShaderProgram()
 		prog.compileShader("shader/basic.vert" );
 		prog.compileShader("shader/basic.frag" );
 		prog.link();
-		prog.use();	
+		prog.use();
 	} catch (GLSLProgramException &e) {
 		cerr << e.what() << endl;
 		exit(EXIT_FAILURE);
@@ -92,4 +96,3 @@ void SceneBasic_Debug::resize(int w, int h)
 {
     glViewport(0,0,w,h);
 }
-
