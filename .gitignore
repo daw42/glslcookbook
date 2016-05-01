@@ -13,3 +13,8 @@ CMakeFiles/
 cmake_install.cmake
 CMakeCache.txt
 Makefile
+
+# Compiled output
+ingredients/libingredients.a
+chapter??/chapter??
+chapter??/chapter??.exe
