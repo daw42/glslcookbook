@@ -1,8 +1,6 @@
 #include "vbomeshadj.h"
 #include "glutils.h"
 
-#define uint unsigned int
-
 #include <cstdlib>
 #include <iostream>
 using std::cout;
@@ -32,7 +30,7 @@ void VBOMeshAdj::determineAdjacency(vector<GLuint> &el)
     vector<GLuint> elAdj;
 
     // Copy and make room for adjacency info
-    for( uint i = 0; i < el.size(); i+=3)
+    for( GLuint i = 0; i < el.size(); i+=3)
     {
         elAdj.push_back(el[i]);
         elAdj.push_back(-1);
@@ -43,7 +41,7 @@ void VBOMeshAdj::determineAdjacency(vector<GLuint> &el)
     }
 
     // Find matching edges
-    for( uint i = 0; i < elAdj.size(); i+=6)
+    for( GLuint i = 0; i < elAdj.size(); i+=6)
     {
         // A triangle
         int a1 = elAdj[i];
@@ -51,7 +49,7 @@ void VBOMeshAdj::determineAdjacency(vector<GLuint> &el)
         int c1 = elAdj[i+4];
 
         // Scan subsequent triangles
-        for(uint j = i+6; j < elAdj.size(); j+=6)
+        for(GLuint j = i+6; j < elAdj.size(); j+=6)
         {
             int a2 = elAdj[j];
             int b2 = elAdj[j+2];
@@ -115,7 +113,7 @@ void VBOMeshAdj::determineAdjacency(vector<GLuint> &el)
     }
 
     // Look for any outside edges
-    for( uint i = 0; i < elAdj.size(); i+=6)
+    for( GLuint i = 0; i < elAdj.size(); i+=6)
     {
         if( elAdj[i+1] == -1 ) elAdj[i+1] = elAdj[i+4];
         if( elAdj[i+3] == -1 ) elAdj[i+3] = elAdj[i];
@@ -269,7 +267,7 @@ void VBOMeshAdj::center( vector<vec3> & points ) {
     vec3 minPoint = points[0];
 
     // Find the AABB
-    for( uint i = 0; i < points.size(); ++i ) {
+    for( GLuint i = 0; i < points.size(); ++i ) {
         vec3 & point = points[i];
         if( point.x > maxPoint.x ) maxPoint.x = point.x;
         if( point.y > maxPoint.y ) maxPoint.y = point.y;
@@ -285,7 +283,7 @@ void VBOMeshAdj::center( vector<vec3> & points ) {
                         (maxPoint.z + minPoint.z) / 2.0f );
 
     // Translate center of the AABB to the origin
-    for( uint i = 0; i < points.size(); ++i ) {
+    for( GLuint i = 0; i < points.size(); ++i ) {
         vec3 & point = points[i];
         point = point - center;
     }
@@ -296,11 +294,11 @@ void VBOMeshAdj::generateAveragedNormals(
         vector<vec3> & normals,
         const vector<GLuint> & faces )
 {
-    for( uint i = 0; i < points.size(); i++ ) {
+    for( GLuint i = 0; i < points.size(); i++ ) {
         normals.push_back(vec3(0.0f));
     }
 
-    for( uint i = 0; i < faces.size(); i += 3) {
+    for( GLuint i = 0; i < faces.size(); i += 3) {
         const vec3 & p1 = points[faces[i]];
         const vec3 & p2 = points[faces[i+1]];
         const vec3 & p3 = points[faces[i+2]];
@@ -314,7 +312,7 @@ void VBOMeshAdj::generateAveragedNormals(
         normals[faces[i+2]] += n;
     }
 
-    for( uint i = 0; i < normals.size(); i++ ) {
+    for( GLuint i = 0; i < normals.size(); i++ ) {
         normals[i] = glm::normalize(normals[i]);
     }
 }
@@ -329,7 +327,7 @@ void VBOMeshAdj::generateTangents(
     vector<vec3> tan1Accum;
     vector<vec3> tan2Accum;
 
-    for( uint i = 0; i < points.size(); i++ ) {
+    for( GLuint i = 0; i < points.size(); i++ ) {
         tan1Accum.push_back(vec3(0.0f));
         tan2Accum.push_back(vec3(0.0f));
         tangents.push_back(vec4(0.0f));
@@ -365,7 +363,7 @@ void VBOMeshAdj::generateTangents(
         tan2Accum[faces[i+2]] += tan2;
     }
 
-    for( uint i = 0; i < points.size(); ++i )
+    for( GLuint i = 0; i < points.size(); ++i )
     {
         const vec3 &n = normals[i];
         vec3 &t1 = tan1Accum[i];
