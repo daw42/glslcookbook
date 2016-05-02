@@ -1,4 +1,4 @@
-#version 430
+#version 410
 
 in vec3 Position;
 in vec3 Normal;
@@ -21,6 +21,7 @@ layout( location = 0 ) out vec4 FragColor;
 
 vec3 adsWithSpotlight( )
 {
+    vec3 n = normalize(Normal);
     vec3 s = normalize( vec3( Spot.position) - Position );
     vec3 spotDir = normalize( Spot.direction);
     float angle = acos( dot(-s, spotDir) );
@@ -35,8 +36,8 @@ vec3 adsWithSpotlight( )
         return
             ambient +
             spotFactor * Spot.intensity * (
-              Kd * max( dot(s, Normal), 0.0 ) +
-              Ks * pow( max( dot(h,Normal), 0.0 ), Shininess )
+              Kd * max( dot(s, n), 0.0 ) +
+              Ks * pow( max( dot(h,n), 0.0 ), Shininess )
            );
     } else {
         return ambient;
