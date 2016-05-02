@@ -12,7 +12,7 @@ using std::string;
 
 #include "glutils.h"
 
-SceneBasic::SceneBasic() { }
+SceneBasic::SceneBasic() : width(0), height(0) { }
 
 void SceneBasic::initScene()
 {
@@ -219,5 +219,7 @@ void SceneBasic::render()
 
 void SceneBasic::resize(int w, int h)
 {
+    width = w;
+    height = h;
     glViewport(0,0,w,h);
 }

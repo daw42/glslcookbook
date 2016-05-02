@@ -13,7 +13,6 @@ class SceneBasic_UniformBlock : public Scene
 {
 private:
     int width, height;
-    GLuint vboHandles[2];
     GLuint vaoHandle;
     GLSLProgram prog;
     float angle;

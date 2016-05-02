@@ -10,7 +10,6 @@ class SceneBasic_Attrib : public Scene
 {
 private:
     int width, height;
-    GLuint vboHandles[2];
     GLuint vaoHandle;
     GLSLProgram prog;
 

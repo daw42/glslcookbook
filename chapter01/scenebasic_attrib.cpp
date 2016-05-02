@@ -11,7 +11,7 @@ using std::endl;
 
 #include "glutils.h"
 
-SceneBasic_Attrib::SceneBasic_Attrib() { }
+SceneBasic_Attrib::SceneBasic_Attrib() : width(0), height(0) { }
 
 void SceneBasic_Attrib::initScene()
 {
@@ -102,5 +102,7 @@ void SceneBasic_Attrib::render()
 
 void SceneBasic_Attrib::resize(int w, int h)
 {
+		width = w;
+		height = h;
     glViewport(0,0,w,h);
 }
