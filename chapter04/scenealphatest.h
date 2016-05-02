@@ -19,8 +19,6 @@ private:
     GLSLProgram prog;
 
     int width, height;
-    VBOPlane *plane;
-    VBOCube *cube;
     VBOTeapot *teapot;
 
     mat4 model;

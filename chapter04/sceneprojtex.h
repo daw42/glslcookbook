@@ -23,10 +23,8 @@ private:
 
     int width, height;
     VBOTeapot *teapot;
-    VBOTorus *torus;
     VBOPlane *plane;
-    SkyBox *sky;
-
+    
     mat4 model;
     mat4 view;
     mat4 projection;

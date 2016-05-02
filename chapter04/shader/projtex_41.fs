@@ -1,10 +1,10 @@
-#version 430
+#version 410
 
 in vec3 EyeNormal;       // Normal in eye coordinates
 in vec4 EyePosition;     // Position in eye coordinates
 in vec4 ProjTexCoord;
 
-layout(binding=0) uniform sampler2D ProjectorTex;
+uniform sampler2D ProjectorTex;
 
 struct MaterialInfo {
     vec3 Kd;

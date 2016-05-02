@@ -20,7 +20,6 @@ private:
 
     GLuint fboHandle;
     int width, height;
-    VBOPlane *plane;
     VBOCube *cube;
     VBOTeapot *teapot;
 

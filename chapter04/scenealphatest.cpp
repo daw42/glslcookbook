@@ -25,7 +25,6 @@ void SceneAlphaTest::initScene()
 
     glEnable(GL_DEPTH_TEST);
 
-    plane = new VBOPlane(50.0f, 50.0f, 1, 1);
     teapot = new VBOTeapot(14, mat4(1.0f));
 
     projection = mat4(1.0f);
@@ -39,6 +38,11 @@ void SceneAlphaTest::initScene()
     // Load moss texture file
     glActiveTexture(GL_TEXTURE1);
     TGAIO::loadTex("../media/texture/moss.tga");
+
+#ifdef __APPLE__
+  prog.setUniform("BaseTex", 0);
+  prog.setUniform("AlphaTex", 1);
+#endif
 
 }
 
@@ -94,8 +98,13 @@ void SceneAlphaTest::resize(int w, int h)
 void SceneAlphaTest::compileAndLinkShader()
 {
   try {
-    prog.compileShader("shader/alphatest.vs",GLSLShader::VERTEX);
-    prog.compileShader("shader/alphatest.fs",GLSLShader::FRAGMENT);
+#ifdef __APPLE__
+    prog.compileShader("shader/alphatest_41.vs");
+    prog.compileShader("shader/alphatest_41.fs");
+#else
+    prog.compileShader("shader/alphatest.vs");
+    prog.compileShader("shader/alphatest.fs");
+#endif
     prog.link();
     prog.use();
   } catch(GLSLProgramException & e) {

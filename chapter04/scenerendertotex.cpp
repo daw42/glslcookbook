@@ -23,7 +23,6 @@ void SceneRenderToTex::initScene()
 
     glEnable(GL_DEPTH_TEST);
 
-    plane = new VBOPlane(50.0f, 50.0f, 1, 1);
     cube = new VBOCube();
 
     projection = mat4(1.0f);
@@ -41,7 +40,11 @@ void SceneRenderToTex::initScene()
     glActiveTexture(GL_TEXTURE1);
     glGenTextures(1, &whiteTexHandle);
     glBindTexture(GL_TEXTURE_2D,whiteTexHandle);
+#ifdef __APPLE__
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+#else
     glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA8, 1, 1);
+#endif
     glTexSubImage2D(GL_TEXTURE_2D,0,0,0,1,1,GL_RGBA,GL_UNSIGNED_BYTE,whiteTex);
 }
 
@@ -55,7 +58,11 @@ void SceneRenderToTex::setupFBO() {
     glGenTextures(1, &renderTex);
     glActiveTexture(GL_TEXTURE0);  // Use texture unit 0
     glBindTexture(GL_TEXTURE_2D, renderTex);
+#ifdef __APPLE__
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 512, 512, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+#else
     glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA8, 512, 512);
+#endif
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
@@ -170,8 +177,8 @@ void SceneRenderToTex::resize(int w, int h)
 void SceneRenderToTex::compileAndLinkShader()
 {
   try {
-    prog.compileShader("shader/rendertotex.vs",GLSLShader::VERTEX);
-    prog.compileShader("shader/rendertotex.fs",GLSLShader::FRAGMENT);
+    prog.compileShader("shader/rendertotex.vs");
+    prog.compileShader("shader/rendertotex.fs");
     prog.link();
     prog.use();
   } catch(GLSLProgramException & e) {

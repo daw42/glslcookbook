@@ -3,7 +3,6 @@
 
 #include "scene.h"
 #include "glslprogram.h"
-#include "vboplane.h"
 #include "vbocube.h"
 
 // OpenGL headers
@@ -18,7 +17,6 @@ private:
     GLSLProgram prog;
 
     int width, height;
-    VBOPlane *plane;
     VBOCube *cube;
 
     mat4 model;

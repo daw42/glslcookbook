@@ -24,7 +24,6 @@ void SceneMultiTex::initScene()
 
     glEnable(GL_DEPTH_TEST);
 
-    plane = new VBOPlane(50.0f, 50.0f, 1, 1);
     cube = new VBOCube();
 
     view = glm::lookAt(vec3(1.0f,1.25f,1.25f), vec3(0.0f,0.0f,0.0f), vec3(0.0f,1.0f,0.0f));
@@ -39,6 +38,11 @@ void SceneMultiTex::initScene()
     // Load moss texture file into channel 1
     glActiveTexture(GL_TEXTURE1);
     TGAIO::loadTex("../media/texture/moss.tga");
+
+#ifdef __APPLE__
+    prog.setUniform("BaseTex", 0);
+    prog.setUniform("MossTex", 1);
+#endif
 }
 
 void SceneMultiTex::update( float t ) { }
@@ -78,8 +82,13 @@ void SceneMultiTex::resize(int w, int h)
 void SceneMultiTex::compileAndLinkShader()
 {
   try {
-    prog.compileShader("shader/multitex.vs",GLSLShader::VERTEX);
-    prog.compileShader("shader/multitex.fs",GLSLShader::FRAGMENT);
+#ifdef __APPLE__
+    prog.compileShader("shader/multitex_41.vs");
+    prog.compileShader("shader/multitex_41.fs");
+#else
+    prog.compileShader("shader/multitex.vs");
+    prog.compileShader("shader/multitex.fs");
+#endif
     prog.link();
     prog.use();
   } catch(GLSLProgramException & e) {

@@ -49,6 +49,10 @@ void SceneProjTex::initScene()
 
     prog.setUniform("Light.Position", vec4(0.0f,0.0f,0.0f,1.0f) );
     prog.setUniform("Light.Intensity", vec3(1.0f,1.0f,1.0f));
+
+#ifdef __APPLE__
+    prog.setUniform("ProjectorTex", 0);
+#endif
 }
 
 void SceneProjTex::update( float t )
@@ -110,8 +114,13 @@ void SceneProjTex::resize(int w, int h)
 void SceneProjTex::compileAndLinkShader()
 {
   try {
-    prog.compileShader("shader/projtex.vs",GLSLShader::VERTEX);
-    prog.compileShader("shader/projtex.fs",GLSLShader::FRAGMENT);
+#ifdef __APPLE__
+    prog.compileShader("shader/projtex_41.vs");
+    prog.compileShader("shader/projtex_41.fs");
+#else
+    prog.compileShader("shader/projtex.vs");
+    prog.compileShader("shader/projtex.fs");
+#endif
     prog.link();
     prog.use();
   } catch(GLSLProgramException & e) {

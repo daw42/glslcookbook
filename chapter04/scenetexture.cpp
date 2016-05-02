@@ -22,7 +22,6 @@ void SceneTexture::initScene()
 
     glEnable(GL_DEPTH_TEST);
 
-    plane = new VBOPlane(50.0f, 50.0f, 1, 1);
     cube = new VBOCube();
 
     view = glm::lookAt(vec3(1.0f,1.25f,1.25f), vec3(0.0f,0.0f,0.0f), vec3(0.0f,1.0f,0.0f));
@@ -41,12 +40,21 @@ void SceneTexture::initScene()
     glGenTextures(1, &texID);
 
     glBindTexture(GL_TEXTURE_2D, texID);
+#ifdef __APPLE__
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+#else
     glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA8, w, h);
+#endif
     glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, w, h, GL_RGBA, GL_UNSIGNED_BYTE, data);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
     delete [] data;
+
+#ifdef __APPLE__
+    // Set the sampler uniform
+    prog.setUniform("Tex1", 0);
+#endif
 }
 
 void SceneTexture::update( float t ) { }
@@ -86,8 +94,13 @@ void SceneTexture::resize(int w, int h)
 void SceneTexture::compileAndLinkShader()
 {
   try {
-    prog.compileShader("shader/texture.vs");
-    prog.compileShader("shader/texture.fs");
+#ifdef __APPLE__
+      prog.compileShader("shader/texture_41.vs");
+    	prog.compileShader("shader/texture_41.fs");
+#else
+    	prog.compileShader("shader/texture.vs");
+    	prog.compileShader("shader/texture.fs");
+#endif
     prog.link();
     prog.use();
   } catch(GLSLProgramException & e) {

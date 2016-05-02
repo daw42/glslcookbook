@@ -42,6 +42,10 @@ void SceneNormalMap::initScene()
     glActiveTexture(GL_TEXTURE1);
     TGAIO::loadTex("../media/texture/ogre_normalmap.tga");
 
+#ifdef __APPLE__
+    prog.setUniform("ColorTex", 0);
+    prog.setUniform("NormalMapTex", 1);
+#endif
 }
 
 void SceneNormalMap::update( float t )
@@ -91,8 +95,13 @@ void SceneNormalMap::resize(int w, int h)
 void SceneNormalMap::compileAndLinkShader()
 {
   try {
+#ifdef __APPLE__
+    prog.compileShader("shader/normalmap_41.vs");
+    prog.compileShader("shader/normalmap_41.fs");
+#else
     prog.compileShader("shader/normalmap.vs");
     prog.compileShader("shader/normalmap.fs");
+#endif
     prog.link();
     prog.use();
   } catch(GLSLProgramException & e) {

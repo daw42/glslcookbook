@@ -3,11 +3,9 @@
 
 #include "scene.h"
 #include "glslprogram.h"
-#include "vboplane.h"
 #include "vbocube.h"
 #include "vbomesh.h"
 #include "vboteapot.h"
-#include "vbotorus.h"
 #include "skybox.h"
 
 // OpenGL headers
@@ -23,8 +21,6 @@ private:
 
     int width, height;
     VBOTeapot *teapot;
-    VBOTorus *torus;
-    VBOPlane *plane;
     SkyBox *sky;
 
     mat4 model;

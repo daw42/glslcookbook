@@ -152,10 +152,15 @@ GLuint loadTex(const char* fName, GLint & width, GLint &height) {
 
 	glBindTexture(GL_TEXTURE_2D, texID);
 
+#ifdef __APPLE__
+	      glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+#else
+				// Use immutable storage if we have OpenGL 4.2
         // Allocate storage
         glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA8, width, height);
         // Copy data into storage
         glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, data);
+#endif
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);

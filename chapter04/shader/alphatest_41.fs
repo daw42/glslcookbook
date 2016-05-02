@@ -4,7 +4,8 @@ in vec3 Position;
 in vec3 Normal;
 in vec2 TexCoord;
 
-uniform sampler2D RenderTex;
+uniform sampler2D BaseTex;
+uniform sampler2D AlphaTex;
 
 struct LightInfo {
   vec4 Position;  // Light position in eye coords.
@@ -38,7 +39,18 @@ vec3 phongModel( vec3 pos, vec3 norm ) {
 }
 
 void main() {
-    vec4 texColor = texture( RenderTex, TexCoord );
-    FragColor = vec4( phongModel(Position,Normal), 1.0 ) *
-                      texColor;
+    vec4 baseColor = texture( BaseTex, TexCoord );
+    vec4 alphaMap = texture( AlphaTex, TexCoord );
+
+    if(alphaMap.a < 0.15 )
+        discard;
+    else {
+        if( gl_FrontFacing ) {
+            FragColor = vec4( phongModel(Position,Normal), 1.0 ) *
+                baseColor;
+        } else {
+            FragColor = vec4( phongModel(Position,-Normal), 1.0 ) *
+                baseColor;
+        }
+    }
 }

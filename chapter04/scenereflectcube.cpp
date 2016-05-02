@@ -27,9 +27,6 @@ void SceneReflectCube::initScene()
 
     teapot = new VBOTeapot(14, mat4(1.0f));
     sky = new SkyBox();
-    plane = new VBOPlane(1.0f,1.0f,1,1);
-    float c = 3.5f;
-    torus = new VBOTorus(0.7f * c, 0.3f * c, 50, 50);
 
     projection = mat4(1.0f);
 
@@ -54,16 +51,23 @@ void SceneReflectCube::loadCubeMap( const char * baseFileName )
     };
 
     GLint w,h;
-    // Allocate the cube map texture
+
+#ifndef __APPLE__
+    // Allocate immutable storage for the cube map texture
     glTexStorage2D(GL_TEXTURE_CUBE_MAP, 1, GL_RGBA8, 256, 256);
+#endif
 
     // Load each cube-map face
     for( int i = 0; i < 6; i++ ) {
-	string texName = string(baseFileName) + "_" + suffixes[i] + ".tga";
-	GLubyte * data = TGAIO::read(texName.c_str(), w, h);
-	glTexSubImage2D(targets[i], 0, 0, 0, w, h,
-		    GL_RGBA, GL_UNSIGNED_BYTE, data);
-	delete [] data;
+    	string texName = string(baseFileName) + "_" + suffixes[i] + ".tga";
+    	GLubyte * data = TGAIO::read(texName.c_str(), w, h);
+#ifdef __APPLE__
+      glTexImage2D(targets[i], 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, data );
+#else
+    	glTexSubImage2D(targets[i], 0, 0, 0, w, h,
+    		    GL_RGBA, GL_UNSIGNED_BYTE, data);
+#endif
+    	delete [] data;
     }
 
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -71,6 +75,10 @@ void SceneReflectCube::loadCubeMap( const char * baseFileName )
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+#ifdef __APPLE__
+    prog.setUniform("CubeMapTex", 0);
+#endif
 }
 
 void SceneReflectCube::update( float t )
@@ -125,8 +133,13 @@ void SceneReflectCube::resize(int w, int h)
 void SceneReflectCube::compileAndLinkShader()
 {
 	try {
-		prog.compileShader("shader/cubemap_reflect.vs",GLSLShader::VERTEX);
-		prog.compileShader("shader/cubemap_reflect.fs",GLSLShader::FRAGMENT);
+#ifdef __APPLE__
+    prog.compileShader("shader/cubemap_reflect_41.vs");
+		prog.compileShader("shader/cubemap_reflect_41.fs");
+#else
+		prog.compileShader("shader/cubemap_reflect.vs");
+		prog.compileShader("shader/cubemap_reflect.fs");
+#endif
     	prog.link();
     	prog.use();
     } catch(GLSLProgramException & e) {

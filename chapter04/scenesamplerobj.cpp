@@ -21,7 +21,7 @@ void SceneSamplerObj::initScene()
     compileAndLinkShader();
 
     glEnable(GL_DEPTH_TEST);
-	glClearColor( 0.9f, 0.9f, 0.9f, 1.0f );
+	  glClearColor( 0.9f, 0.9f, 0.9f, 1.0f );
     plane = new VBOPlane(10.0f, 10.0f, 1, 1);
 
     view = glm::lookAt(vec3(0.0f,0.1f,6.0f), vec3(0.0f,0.0f,0.0f), vec3(0.0f,1.0f,0.0f));
@@ -52,7 +52,11 @@ void SceneSamplerObj::initScene()
     GLuint texID;
     glGenTextures(1, &texID);
     glBindTexture(GL_TEXTURE_2D, texID);
+#ifdef __APPLE__
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+#else
     glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA8, w, h);
+#endif
     glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, w, h, GL_RGBA, GL_UNSIGNED_BYTE, data);
     delete [] data;
 
@@ -74,8 +78,10 @@ void SceneSamplerObj::initScene()
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, texID);
 
+#ifdef __APPLE__
     // Bind the sampler object to the same texture unit and set the sampler uniform
     prog.setUniform("Tex1", 0);
+#endif
 }
 
 void SceneSamplerObj::update( float t ) {}
@@ -123,12 +129,17 @@ void SceneSamplerObj::resize(int w, int h)
 void SceneSamplerObj::compileAndLinkShader()
 {
     try {
-	prog.compileShader("shader/texture.vs");
-	prog.compileShader("shader/texture.fs");
+#ifdef __APPLE__
+      prog.compileShader("shader/texture_41.vs");
+    	prog.compileShader("shader/texture_41.fs");
+#else
+    	prog.compileShader("shader/texture.vs");
+    	prog.compileShader("shader/texture.fs");
+#endif
     	prog.link();
     	prog.use();
     } catch(GLSLProgramException & e) {
- 	cerr << e.what() << endl;
- 	exit( EXIT_FAILURE );
+     	cerr << e.what() << endl;
+     	exit( EXIT_FAILURE );
     }
 }
