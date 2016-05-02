@@ -13,7 +13,7 @@ using glm::vec3;
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/transform.hpp>
 
-SceneDiscard::SceneDiscard() : angle(0.0f)
+SceneDiscard::SceneDiscard()
 {
 }
 
@@ -77,7 +77,6 @@ void SceneDiscard::compileAndLinkShader()
     	prog.compileShader("shader/discard.vert");
     	prog.compileShader("shader/discard.frag");
     	prog.link();
-    	prog.validate();
     	prog.use();
     } catch(GLSLProgramException & e) {
  		cerr << e.what() << endl;

@@ -77,7 +77,6 @@ void SceneFlat::compileAndLinkShader()
     	prog.compileShader("shader/flat.vert");
     	prog.compileShader("shader/flat.frag");
     	prog.link();
-    	prog.validate();
     	prog.use();
     } catch(GLSLProgramException & e) {
  		cerr << e.what() << endl;

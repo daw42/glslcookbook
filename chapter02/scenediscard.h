@@ -17,8 +17,7 @@ private:
 
     int width, height;
     VBOTeapot *teapot;
-    float angle;
-
+    
     mat4 model;
     mat4 view;
     mat4 projection;

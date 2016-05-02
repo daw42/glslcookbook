@@ -78,10 +78,9 @@ void SceneADS::compileAndLinkShader()
     	prog.compileShader("shader/phong.vert");
     	prog.compileShader("shader/phong.frag");
     	prog.link();
-    	prog.validate();
     	prog.use();
     } catch(GLSLProgramException & e) {
- 		cerr << e.what() << endl;
- 		exit( EXIT_FAILURE );
+   		cerr << e.what() << endl;
+   		exit( EXIT_FAILURE );
     }
 }

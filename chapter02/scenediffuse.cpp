@@ -73,10 +73,9 @@ void SceneDiffuse::compileAndLinkShader()
     	prog.compileShader("shader/diffuse.vert");
     	prog.compileShader("shader/diffuse.frag");
     	prog.link();
-    	prog.validate();
     	prog.use();
     } catch(GLSLProgramException & e) {
- 		cerr << e.what() << endl;
- 		exit( EXIT_FAILURE );
+   		cerr << e.what() << endl;
+   		exit( EXIT_FAILURE );
     }
 }

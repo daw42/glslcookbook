@@ -1,4 +1,4 @@
-#version 430
+#version 410
 
 subroutine vec3 shadeModelType( vec4 position, vec3 normal);
 subroutine uniform shadeModelType shadeModel;

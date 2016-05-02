@@ -80,7 +80,6 @@ void SceneTwoSide::compileAndLinkShader()
     	prog.compileShader("shader/twoside.vert");
     	prog.compileShader("shader/twoside.frag");
     	prog.link();
-    	prog.validate();
     	prog.use();
     } catch(GLSLProgramException & e) {
  		   cerr << e.what() << endl;

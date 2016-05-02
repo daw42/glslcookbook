@@ -13,7 +13,7 @@ using glm::vec3;
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/transform.hpp>
 
-SceneSubroutine::SceneSubroutine() : angle(0.0f)
+SceneSubroutine::SceneSubroutine()
 {
 }
 
@@ -95,7 +95,6 @@ void SceneSubroutine::compileAndLinkShader()
     	prog.compileShader("shader/subroutine.vert");
     	prog.compileShader("shader/subroutine.frag");
     	prog.link();
-    	prog.validate();
     	prog.use();
     } catch(GLSLProgramException & e) {
  		cerr << e.what() << endl;

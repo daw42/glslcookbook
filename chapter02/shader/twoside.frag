@@ -1,4 +1,4 @@
-#version 430
+#version 410
 
 in vec3 FrontColor;
 in vec3 BackColor;

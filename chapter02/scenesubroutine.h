@@ -19,7 +19,6 @@ private:
     int width, height;
     VBOTorus *torus;
     VBOTeapot *teapot;
-    float angle;
 
     mat4 model;
     mat4 view;
