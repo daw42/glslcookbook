@@ -11,6 +11,14 @@ set( ingredients_SOURCES vboteapotpatch.cpp
         vbosphere.cpp
 	bmpreader.cpp
 	tgaio.cpp
-	gl_core_4_4.c)
+		cookbookogl.h
+		scene.h
+		teapotdata.h
+		glad/src/glad.c)
 
 add_library( ingredients STATIC ${ingredients_SOURCES} )
+
+target_include_directories( ingredients PUBLIC glad/include )
+
+target_link_libraries( ingredients PUBLIC glm )
+

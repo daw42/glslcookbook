@@ -18,3 +18,6 @@ Makefile
 ingredients/libingredients.a
 chapter??/chapter??
 chapter??/chapter??.exe
+
+.idea/
+*.cbp

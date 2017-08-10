@@ -1,6 +1,6 @@
+#include <GLFW/glfw3.h>
 
 #include "cookbookogl.h"
-#include <GLFW/glfw3.h>
 
 #include "scene.h"
 #include "glutils.h"
@@ -63,10 +63,10 @@ int main(int argc, char *argv[])
   glfwWindowHint( GLFW_CONTEXT_VERSION_MAJOR, 4 );
   glfwWindowHint( GLFW_CONTEXT_VERSION_MINOR, 3 );
 #endif
-	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, true);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
-	glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
+	glfwWindowHint(GLFW_RESIZABLE, false);
+	glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true);
 
 	// Open the window
 	string title = "Chapter 01 -- " + recipe;
@@ -79,12 +79,9 @@ int main(int argc, char *argv[])
 	glfwSetKeyCallback(window, key_callback);
 
 	// Load the OpenGL functions.
-	if( ogl_LoadFunctions() == ogl_LOAD_FAILED ) {
-		glfwTerminate();
-		exit(EXIT_FAILURE);
-	}
+	if(!gladLoadGL()) { exit(-1); }
 
-	GLUtils::dumpGLInfo();
+    GLUtils::dumpGLInfo();
 
 	// Initialization
 	initializeGL();
