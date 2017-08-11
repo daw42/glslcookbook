@@ -11,7 +11,6 @@ using std::endl;
 using glm::vec3;
 
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform.hpp>
 
 SceneDiscard::SceneDiscard()
 {
@@ -48,8 +47,8 @@ void SceneDiscard::render()
     prog.setUniform("Light.Position", lightPos );
 
     model = mat4(1.0f);
-    model *= glm::translate(vec3(0.0,-1.5,0.0));
-    model *= glm::rotate(glm::radians(-90.0f), vec3(1.0f,0.0f,0.0f));
+    model = glm::translate(model, vec3(0.0,-1.5,0.0));
+    model = glm::rotate(model, glm::radians(-90.0f), vec3(1.0f,0.0f,0.0f));
     setMatrices();
     teapot->render();
 }

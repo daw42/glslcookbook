@@ -12,7 +12,6 @@ using std::cerr;
 using glm::vec3;
 
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform.hpp>
 
 SceneToon::SceneToon() : tPrev(0) { }
 
@@ -55,9 +54,9 @@ void SceneToon::render()
     prog.setUniform("Ka", 0.9f * 0.3f, 0.5f * 0.3f, 0.3f * 0.3f);
 
     model = mat4(1.0f);
-    model *= glm::translate(vec3(0.0f,0.0f,-2.0f));
-    model *= glm::rotate(glm::radians(45.0f), vec3(0.0f,1.0f,0.0f));
-    model *= glm::rotate(glm::radians(-90.0f), vec3(1.0f,0.0f,0.0f));
+    model = glm::translate(model, vec3(0.0f,0.0f,-2.0f));
+    model = glm::rotate(model, glm::radians(45.0f), vec3(0.0f,1.0f,0.0f));
+    model = glm::rotate(model, glm::radians(-90.0f), vec3(1.0f,0.0f,0.0f));
     setMatrices();
     teapot->render();
 
@@ -65,8 +64,8 @@ void SceneToon::render()
     prog.setUniform("Ka", 0.9f * 0.3f, 0.5f * 0.3f, 0.3f * 0.3f);
 
     model = mat4(1.0f);
-    model *= glm::translate(vec3(-1.0f,0.75f,3.0f));
-    model *= glm::rotate(glm::radians(-90.0f), vec3(1.0f,0.0f,0.0f));
+    model = glm::translate(model, vec3(-1.0f,0.75f,3.0f));
+    model = glm::rotate(model, glm::radians(-90.0f), vec3(1.0f,0.0f,0.0f));
     setMatrices();
     torus->render();
 
@@ -98,8 +97,8 @@ void SceneToon::resize(int w, int h)
 void SceneToon::compileAndLinkShader()
 {
 	try {
-		prog.compileShader("shader/toon.vs",GLSLShader::VERTEX);
-		prog.compileShader("shader/toon.fs",GLSLShader::FRAGMENT);
+		prog.compileShader("shader/toon.vs");
+		prog.compileShader("shader/toon.fs");
     	prog.link();
     	prog.use();
     } catch(GLSLProgramException & e) {

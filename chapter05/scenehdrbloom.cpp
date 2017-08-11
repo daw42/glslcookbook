@@ -12,7 +12,6 @@ using std::cerr;
 using glm::vec3;
 
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform.hpp>
 
 SceneHdrBloom::SceneHdrBloom() : width(800), height(600), angle(0.0f), tPrev(0.0f),
   bloomBufWidth(width/8), bloomBufHeight(height/8)
@@ -130,6 +129,12 @@ void SceneHdrBloom::initScene()
     glBindSampler(0, nearestSampler);
     glBindSampler(1, nearestSampler);
     glBindSampler(2, nearestSampler);
+
+#ifdef __APPLE__
+    prog.setUniform("HdrTex", 0);
+    prog.setUniform("BlurTex1", 1);
+    prog.setUniform("BlurTex2", 2);
+#endif
 }
 
 void SceneHdrBloom::setupFBO() {
@@ -192,10 +197,14 @@ void SceneHdrBloom::update( float t )
 void SceneHdrBloom::render()
 {
     pass1();
+    glFlush();
     computeLogAveLuminance();
     pass2();
+    glFlush();
     pass3();
+    glFlush();
     pass4();
+    glFlush();
     pass5();
 }
 
@@ -213,7 +222,6 @@ void SceneHdrBloom::computeLogAveLuminance()
    }
 
    prog.setUniform( "AveLum", expf( sum / (width*height) ) );
-   //printf("(%f)\n", exp( sum / (width*height) ) );
    delete [] texData;
 }
 
@@ -244,7 +252,6 @@ void SceneHdrBloom::pass2()
 
     // We're writing to tex1 this time
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, tex1, 0);
-//glBindFramebuffer(GL_FRAMEBUFFER,0);
 
     glViewport(0,0,bloomBufWidth, bloomBufHeight);
     glDisable(GL_DEPTH_TEST);
@@ -268,7 +275,7 @@ void SceneHdrBloom::pass3()
     glUniformSubroutinesuiv( GL_FRAGMENT_SHADER, 1, &pass3Index);
     // We're writing to tex2 this time
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, tex2, 0);
-//glBindFramebuffer(GL_FRAMEBUFFER,0);
+
     // Render the full-screen quad
     glBindVertexArray(fsQuad);
     glDrawArrays(GL_TRIANGLES, 0, 6);
@@ -279,8 +286,8 @@ void SceneHdrBloom::pass4()
     glUniformSubroutinesuiv( GL_FRAGMENT_SHADER, 1, &pass4Index);
     // We're writing to tex1 this time
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, tex1, 0);
- //glBindFramebuffer(GL_FRAMEBUFFER,0);
- // Render the full-screen quad
+
+    // Render the full-screen quad
     glBindVertexArray(fsQuad);
     glDrawArrays(GL_TRIANGLES, 0, 6);
 }
@@ -327,8 +334,13 @@ void SceneHdrBloom::resize(int w, int h)
 void SceneHdrBloom::compileAndLinkShader()
 {
     try {
-    	prog.compileShader("shader/hdrbloom.vs");
+#ifdef __APPLE__
+        prog.compileShader("shader/hdrbloom_41.vs");
+        prog.compileShader("shader/hdrbloom_41.fs");
+#else
+        prog.compileShader("shader/hdrbloom.vs");
     	prog.compileShader("shader/hdrbloom.fs");
+#endif
     	prog.link();
     	prog.use();
     } catch(GLSLProgramException &e ) {

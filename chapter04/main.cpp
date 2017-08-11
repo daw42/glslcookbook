@@ -88,17 +88,18 @@ int main(int argc, char *argv[])
 	glfwMakeContextCurrent(window);
 	glfwSetKeyCallback(window, key_callback);
 
+	// Get framebuffer size
+	int fbw, fbh;
+	glfwGetFramebufferSize(window, &fbw, &fbh);
+
 	// Load the OpenGL functions.
-	if( ogl_LoadFunctions() == ogl_LOAD_FAILED ) {
-		glfwTerminate();
-		exit(EXIT_FAILURE);
-	}
+	if(!gladLoadGL()) { exit(-1); }
 
 	GLUtils::dumpGLInfo();
 
 	// Initialization
 	initializeGL();
-	resizeGL(WIN_WIDTH,WIN_HEIGHT);
+	resizeGL(fbw, fbh);
 
 	// Enter the main loop
 	mainLoop();

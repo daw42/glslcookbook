@@ -12,7 +12,6 @@ using std::endl;
 using std::cerr;
 
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform.hpp>
 
 ScenePerFragment::ScenePerFragment() : tPrev(0)
 {
@@ -57,8 +56,8 @@ void ScenePerFragment::render()
     prog.setUniform("Shininess", 100.0f);
 
     model = mat4(1.0f);
-    model *= glm::translate(vec3(0.0f,0.0f,0.0f));
-    model *= glm::rotate(glm::radians(-90.0f), vec3(1.0f,0.0f,0.0f));
+    model = glm::translate(model, vec3(0.0f,0.0f,0.0f));
+    model = glm::rotate(model, glm::radians(-90.0f), vec3(1.0f,0.0f,0.0f));
     setMatrices();
     teapot->render();
 
@@ -68,7 +67,7 @@ void ScenePerFragment::render()
     prog.setUniform("Shininess", 180.0f);
 
     model = mat4(1.0f);
-    model *= glm::translate(vec3(0.0f,-0.45f,0.0f));
+    model = glm::translate(model, vec3(0.0f,-0.45f,0.0f));
     setMatrices();
     plane->render();
 }

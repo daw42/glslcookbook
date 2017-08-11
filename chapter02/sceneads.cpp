@@ -11,7 +11,6 @@ using std::endl;
 using glm::vec3;
 
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform.hpp>
 
 SceneADS::SceneADS() : angle(0.0f) { }
 
@@ -24,8 +23,8 @@ void SceneADS::initScene()
     torus = new VBOTorus(0.7f, 0.3f, 50, 50);
 
     model = mat4(1.0f);
-    model *= glm::rotate(glm::radians(-35.0f), vec3(1.0f,0.0f,0.0f));
-    model *= glm::rotate(glm::radians(35.0f), vec3(0.0f,1.0f,0.0f));
+    model = glm::rotate(model, glm::radians(-35.0f), vec3(1.0f,0.0f,0.0f));
+    model = glm::rotate(model, glm::radians(35.0f), vec3(0.0f,1.0f,0.0f));
     view = glm::lookAt(vec3(0.0f,0.0f,2.0f), vec3(0.0f,0.0f,0.0f), vec3(0.0f,1.0f,0.0f));
     projection = mat4(1.0f);
     vec4 worldLight = vec4(5.0f,5.0f,2.0f,1.0f);
@@ -47,9 +46,9 @@ void SceneADS::render()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     model = mat4(1.0f);
-    model *= glm::rotate(glm::radians(angle), vec3(0.0f,1.0f,0.0f));
-    model *= glm::rotate(glm::radians(-35.0f), vec3(1.0f,0.0f,0.0f));
-    model *= glm::rotate(glm::radians(35.0f), vec3(0.0f,1.0f,0.0f));
+    model = glm::rotate(model, glm::radians(angle), vec3(0.0f,1.0f,0.0f));
+    model = glm::rotate(model, glm::radians(-35.0f), vec3(1.0f,0.0f,0.0f));
+    model = glm::rotate(model, glm::radians(35.0f), vec3(0.0f,1.0f,0.0f));
 
     setMatrices();
     torus->render();

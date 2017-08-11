@@ -78,6 +78,7 @@ void SceneOit::render()
 {
   clearBuffers();
   pass1();
+  glFlush();
   pass2();
 }
 

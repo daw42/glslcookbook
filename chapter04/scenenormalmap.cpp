@@ -14,7 +14,6 @@ using std::cerr;
 using glm::vec3;
 
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform.hpp>
 #include <glm/gtc/constants.hpp>
 
 SceneNormalMap::SceneNormalMap() : angle(0.0f), tPrev(0.0f), rotSpeed(glm::pi<float>() / 8.0f) { }

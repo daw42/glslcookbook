@@ -12,8 +12,6 @@ using std::cerr;
 using glm::vec3;
 
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform.hpp>
-#include <glm/gtc/constants.hpp>
 
 SceneBlur::SceneBlur() : width(800), height(600), angle(0.0f), tPrev(0.0f), rotSpeed(glm::pi<float>() / 8.0f)
 { }
@@ -98,6 +96,11 @@ void SceneBlur::initScene()
         float val = weights[i] / sum;
         prog.setUniform(uniName.str().c_str(), val);
     }
+
+#ifdef __APPLE__
+    prog.setUniform("Texture0", 0);
+#endif
+
 }
 
 void SceneBlur::setupFBO() {
@@ -108,9 +111,14 @@ void SceneBlur::setupFBO() {
     // Create the texture object
     glGenTextures(1, &renderTex);
     glBindTexture(GL_TEXTURE_2D, renderTex);
+#ifdef __APPLE__
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+#else
     glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA8, width, height);
+#endif
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
 
     // Bind the texture to the FBO
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, renderTex, 0);
@@ -140,9 +148,14 @@ void SceneBlur::setupFBO() {
     glGenTextures(1, &intermediateTex);
     glActiveTexture(GL_TEXTURE0);  // Use texture unit 0
     glBindTexture(GL_TEXTURE_2D, intermediateTex);
+#ifdef __APPLE__
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+#else
     glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA8, width, height);
+#endif
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
 
     // Bind the texture to the FBO
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, intermediateTex, 0);
@@ -169,7 +182,9 @@ void SceneBlur::update( float t )
 void SceneBlur::render()
 {
     pass1();
+    glFlush();
     pass2();
+    glFlush();
     pass3();
 }
 
@@ -190,8 +205,7 @@ void SceneBlur::pass1()
     prog.setUniform("Material.Shininess", 100.0f);
 
     model = mat4(1.0f);
-    model *= glm::translate(vec3(0.0f,0.0f,0.0f));
-    model *= glm::rotate(glm::radians(-90.0f), vec3(1.0f,0.0f,0.0f));
+    model = glm::rotate(model, glm::radians(-90.0f), vec3(1.0f,0.0f,0.0f));
     setMatrices();
     teapot->render();
 
@@ -200,7 +214,7 @@ void SceneBlur::pass1()
     prog.setUniform("Material.Ka", 0.1f, 0.1f, 0.1f);
     prog.setUniform("Material.Shininess", 1.0f);
     model = mat4(1.0f);
-    model *= glm::translate(vec3(0.0f,-0.75f,0.0f));
+    model = glm::translate(model, vec3(0.0f,-0.75f,0.0f));
     setMatrices();
     plane->render();
 
@@ -210,8 +224,8 @@ void SceneBlur::pass1()
     prog.setUniform("Material.Ka", 0.1f, 0.1f, 0.1f);
     prog.setUniform("Material.Shininess", 100.0f);
     model = mat4(1.0f);
-    model *= glm::translate(vec3(1.0f,1.0f,3.0f));
-    model *= glm::rotate(glm::radians(90.0f), vec3(1.0f,0.0f,0.0f));
+    model = glm::translate(model, vec3(1.0f,1.0f,3.0f));
+    model = glm::rotate(model, glm::radians(90.0f), vec3(1.0f,0.0f,0.0f));
     setMatrices();
     torus->render();
 }
@@ -222,8 +236,8 @@ void SceneBlur::pass2()
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, renderTex);
-    glDisable(GL_DEPTH_TEST);
 
+    glDisable(GL_DEPTH_TEST);
     glClear(GL_COLOR_BUFFER_BIT);
 
     glUniformSubroutinesuiv( GL_FRAGMENT_SHADER, 1, &pass2Index);
@@ -277,8 +291,13 @@ void SceneBlur::resize(int w, int h)
 void SceneBlur::compileAndLinkShader()
 {
 	try {
-    	prog.compileShader("shader/blur.vs",GLSLShader::VERTEX);
-    	prog.compileShader("shader/blur.fs",GLSLShader::FRAGMENT);
+#ifdef __APPLE__
+        prog.compileShader("shader/blur_41.vs");
+        prog.compileShader("shader/blur_41.fs");
+#else
+        prog.compileShader("shader/blur.vs");
+        prog.compileShader("shader/blur.fs");
+#endif
     	prog.link();
     	prog.use();
     } catch(GLSLProgramException &e ) {

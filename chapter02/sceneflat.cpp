@@ -11,7 +11,6 @@ using std::endl;
 using glm::vec3;
 
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform.hpp>
 
 SceneFlat::SceneFlat() : angle(0.0f) { }
 
@@ -44,11 +43,11 @@ void SceneFlat::render()
 
 
     vec4 worldLight = vec4(2.0f,4.0f,1.0f,1.0f);
-    model = glm::rotate(glm::radians(angle), vec3(0.0f,1.0f,0.0f));
+    model = glm::rotate(mat4(), glm::radians(angle), vec3(0.0f,1.0f,0.0f));
     prog.setUniform("Light.Position", view * model * worldLight );
 
     model = mat4(1.0f);
-    model *= glm::rotate(glm::radians(25.0f), vec3(0.0f,1.0f,0.0f));
+    model = glm::rotate(model, glm::radians(25.0f), vec3(0.0f,1.0f,0.0f));
 
     setMatrices();
     ogre->render();

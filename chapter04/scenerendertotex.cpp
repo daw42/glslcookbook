@@ -12,7 +12,6 @@ using std::cerr;
 using glm::vec3;
 
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform.hpp>
 #include <glm/gtc/constants.hpp>
 
 SceneRenderToTex::SceneRenderToTex() : angle(0.0f), tPrev(0.0f), rotSpeed(glm::pi<float>()/8.0f) { }
@@ -108,6 +107,7 @@ void SceneRenderToTex::render()
 {
     glBindFramebuffer(GL_FRAMEBUFFER, fboHandle);
     renderToTexture();
+    glFlush();
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     renderScene();

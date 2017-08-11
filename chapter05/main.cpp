@@ -37,11 +37,12 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 void initializeGL() {
   glClearColor(0.5f,0.5f,0.5f,1.0f);
 
+#ifndef __APPLE__
   glDebugMessageCallback(GLUtils::debugCallback, NULL);
-  glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, NULL, GL_TRUE);
-  glDebugMessageInsert(GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_MARKER, 0,
-      GL_DEBUG_SEVERITY_NOTIFICATION, -1 , "Start debugging");
-
+    glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, NULL, GL_TRUE);
+    glDebugMessageInsert(GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_MARKER, 0,
+		GL_DEBUG_SEVERITY_NOTIFICATION, -1 , "Start debugging");
+#endif
   scene->initScene();
 }
 
@@ -87,13 +88,19 @@ int main(int argc, char *argv[])
   // Initialize GLFW
   if( !glfwInit() ) exit( EXIT_FAILURE );
 
-  // Select OpenGL 4.3 with a forward compatible core profile.
+#ifdef __APPLE__
+  // Select OpenGL 4.1
   glfwWindowHint( GLFW_CONTEXT_VERSION_MAJOR, 4 );
-  glfwWindowHint( GLFW_CONTEXT_VERSION_MINOR, 3 );
+  glfwWindowHint( GLFW_CONTEXT_VERSION_MINOR, 1 );
+#else
+  // Select OpenGL 4.3
+  	glfwWindowHint( GLFW_CONTEXT_VERSION_MAJOR, 4 );
+  	glfwWindowHint( GLFW_CONTEXT_VERSION_MINOR, 3 );
+#endif
   glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
   glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
-  //	glfwWindowHint(GLFW_SAMPLES, 8);
+  glfwWindowHint(GLFW_SAMPLES, 8);
   glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
 
   // Open the window
@@ -106,17 +113,18 @@ int main(int argc, char *argv[])
   glfwMakeContextCurrent(window);
   glfwSetKeyCallback(window, key_callback);
 
+  // Get framebuffer size
+  int fbw, fbh;
+  glfwGetFramebufferSize(window, &fbw, &fbh);
+
   // Load the OpenGL functions.
-  if( ogl_LoadFunctions() == ogl_LOAD_FAILED ) {
-    glfwTerminate();
-    exit(EXIT_FAILURE);
-  }
+  if(!gladLoadGL()) { exit(-1); }
 
   GLUtils::dumpGLInfo();
 
   // Initialization
+  resizeGL(fbw, fbh);
   initializeGL();
-  resizeGL(WIN_WIDTH,WIN_HEIGHT);
 
   // Enter the main loop
   mainLoop();
@@ -151,7 +159,12 @@ string parseCLArgs(int argc, char ** argv) {
   } else if( recipe == "hdr-bloom" ) {
     scene = new SceneHdrBloom();
   } else if( recipe == "oit" ) {
+#ifdef __APPLE__
+    printf("OIT example is not supported on MacOS.\n");
+    exit(EXIT_FAILURE);
+#else
     scene = new SceneOit();
+#endif
   } else {
     printf("Unknown recipe: %s\n", recipe.c_str());
     exit(EXIT_FAILURE);
@@ -170,5 +183,5 @@ void printHelpInfo(const char * exeFile) {
   printf("  msaa     : multisample anti-aliasing\n");
   printf("  tone-map : tone mapping example.\n");
   printf("  hdr-bloom: bloom example with HDR tone mapping.\n");
-  printf("  oit      : order independent transparency\n");
+  printf("  oit      : order independent transparency (requires OpenGL 4.3)\n");
 }

@@ -19,7 +19,7 @@ private:
     GLSLProgram prog;
 
     int width, height;
-    GLuint fsQuad, pass1Index, pass2Index, fboHandle;
+    GLuint fsQuad, pass1Index, pass2Index, fboHandle, renderTex;
 
     VBOPlane *plane;
     VBOTorus *torus;

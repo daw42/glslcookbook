@@ -43,10 +43,6 @@ void mainLoop() {
 	}
 }
 
-void resizeGL(int w, int h ) {
-    scene->resize(w,h);
-}
-
 int main(int argc, char *argv[])
 {
 	string recipe = parseCLArgs(argc, argv);
@@ -77,6 +73,10 @@ int main(int argc, char *argv[])
 	}
 	glfwMakeContextCurrent(window);
 	glfwSetKeyCallback(window, key_callback);
+
+    // Get framebuffer size
+    int fbw, fbh;
+    glfwGetFramebufferSize(window, &fbw, &fbh);
 
 	// Load the OpenGL functions.
 	if(!gladLoadGL()) { exit(-1); }

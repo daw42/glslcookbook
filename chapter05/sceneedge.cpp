@@ -11,7 +11,6 @@ using std::cerr;
 using glm::vec3;
 
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform.hpp>
 #include <glm/gtc/constants.hpp>
 
 SceneEdge::SceneEdge() : width(800), height(600), angle(0.0f), tPrev(0.0f), rotSpeed(glm::pi<float>() / 8.0f)
@@ -21,7 +20,7 @@ void SceneEdge::initScene()
 {
     compileAndLinkShader();
 
-    glClearColor(0.0f,0.0f,0.0f,1.0f);
+    glClearColor(1.0f,0.0f,0.0f,1.0f);
 
     glEnable(GL_DEPTH_TEST);
 
@@ -77,8 +76,13 @@ void SceneEdge::initScene()
     pass1Index = glGetSubroutineIndex( programHandle, GL_FRAGMENT_SHADER, "pass1");
     pass2Index = glGetSubroutineIndex( programHandle, GL_FRAGMENT_SHADER, "pass2");
 
-    prog.setUniform("EdgeThreshold", 0.1f);
+    prog.setUniform("EdgeThreshold", 0.05f);
     prog.setUniform("Light.Intensity", vec3(1.0f,1.0f,1.0f) );
+
+#ifdef __APPLE__
+    prog.setUniform("RenderTex", 0);
+#endif
+
 }
 
 void SceneEdge::setupFBO() {
@@ -87,13 +91,16 @@ void SceneEdge::setupFBO() {
     glBindFramebuffer(GL_FRAMEBUFFER, fboHandle);
 
     // Create the texture object
-    GLuint renderTex;
     glGenTextures(1, &renderTex);
-    glActiveTexture(GL_TEXTURE0);  // Use texture unit 0
     glBindTexture(GL_TEXTURE_2D, renderTex);
+#ifdef __APPLE__
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+#else
     glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA8, width, height);
+#endif
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
 
     // Bind the texture to the FBO
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, renderTex, 0);
@@ -129,14 +136,15 @@ void SceneEdge::update( float t )
 void SceneEdge::render()
 {
     pass1();
+    glFlush();
     pass2();
 }
 
 void SceneEdge::pass1()
 {
     glBindFramebuffer(GL_FRAMEBUFFER, fboHandle);
+    glEnable(GL_DEPTH_TEST);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
     glUniformSubroutinesuiv( GL_FRAGMENT_SHADER, 1, &pass1Index);
 
     view = glm::lookAt(vec3(7.0f * cos(angle),4.0f,7.0f * sin(angle)), vec3(0.0f,0.0f,0.0f), vec3(0.0f,1.0f,0.0f));
@@ -149,8 +157,7 @@ void SceneEdge::pass1()
     prog.setUniform("Material.Shininess", 100.0f);
 
     model = mat4(1.0f);
-    model *= glm::translate(vec3(0.0f,0.0f,0.0f));
-    model *= glm::rotate(glm::radians(-90.0f), vec3(1.0f,0.0f,0.0f));
+    model = glm::rotate(model, glm::radians(-90.0f), vec3(1.0f,0.0f,0.0f));
     setMatrices();
     teapot->render();
 
@@ -159,7 +166,7 @@ void SceneEdge::pass1()
     prog.setUniform("Material.Ka", 0.1f, 0.1f, 0.1f);
     prog.setUniform("Material.Shininess", 1.0f);
     model = mat4(1.0f);
-    model *= glm::translate(vec3(0.0f,-0.75f,0.0f));
+    model = glm::translate(model, vec3(0.0f,-0.75f,0.0f));
     setMatrices();
     plane->render();
 
@@ -169,8 +176,8 @@ void SceneEdge::pass1()
     prog.setUniform("Material.Ka", 0.1f, 0.1f, 0.1f);
     prog.setUniform("Material.Shininess", 100.0f);
     model = mat4(1.0f);
-    model *= glm::translate(vec3(1.0f,1.0f,3.0f));
-    model *= glm::rotate(glm::radians(90.0f), vec3(1.0f,0.0f,0.0f));
+    model = glm::translate(model, vec3(1.0f,1.0f,3.0f));
+    model = glm::rotate(model, glm::radians(90.0f), vec3(1.0f,0.0f,0.0f));
     setMatrices();
     torus->render();
 }
@@ -178,7 +185,11 @@ void SceneEdge::pass1()
 void SceneEdge::pass2()
 {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, renderTex);
+
+    glDisable(GL_DEPTH_TEST);
+    glClear(GL_COLOR_BUFFER_BIT);
 
     glUniformSubroutinesuiv( GL_FRAGMENT_SHADER, 1, &pass2Index);
     model = mat4(1.0f);
@@ -189,6 +200,7 @@ void SceneEdge::pass2()
     // Render the full-screen quad
     glBindVertexArray(fsQuad);
     glDrawArrays(GL_TRIANGLES, 0, 6);
+    glBindVertexArray(0);
 }
 
 void SceneEdge::setMatrices()
@@ -211,8 +223,13 @@ void SceneEdge::resize(int w, int h)
 void SceneEdge::compileAndLinkShader()
 {
   try {
-    prog.compileShader("shader/edge.vs",GLSLShader::VERTEX);
-    prog.compileShader("shader/edge.fs",GLSLShader::FRAGMENT);
+#ifdef __APPLE__
+      prog.compileShader("shader/edge_41.vs");
+      prog.compileShader("shader/edge_41.fs");
+#else
+      prog.compileShader("shader/edge.vs");
+      prog.compileShader("shader/edge.fs");
+#endif
     prog.link();
     prog.use();
   } catch(GLSLProgramException &e ) {

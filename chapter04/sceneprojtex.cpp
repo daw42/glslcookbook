@@ -15,7 +15,6 @@ using std::endl;
 using glm::vec3;
 
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform.hpp>
 #include <glm/gtc/constants.hpp>
 
 SceneProjTex::SceneProjTex() : angle(0.0f), tPrev(0.0f), rotSpeed(glm::pi<float>() / 8.0f) { }
@@ -38,7 +37,7 @@ void SceneProjTex::initScene()
     vec3 projUp = vec3(0.0f,1.0f,0.0f);
     mat4 projView = glm::lookAt(projPos, projAt, projUp);
     mat4 projProj = glm::perspective(glm::radians(30.0f), 1.0f, 0.2f, 1000.0f);
-    mat4 projScaleTrans = glm::translate(vec3(0.5f)) * glm::scale(vec3(0.5f));
+    mat4 projScaleTrans = glm::translate(mat4(), vec3(0.5f)) * glm::scale(mat4(), vec3(0.5f));
     prog.setUniform("ProjectorMatrix", projScaleTrans * projProj * projView);
 
     // Load texture file
@@ -78,8 +77,8 @@ void SceneProjTex::render()
     prog.setUniform("Material.Shininess", 100.0f);
 
     model = mat4(1.0f);
-    model *= glm::translate(vec3(0.0f,-1.0f,0.0f));
-    model *= glm::rotate(glm::radians(-90.0f), vec3(1.0f,0.0f,0.0f));
+    model = glm::translate(model, vec3(0.0f,-1.0f,0.0f));
+    model = glm::rotate(model, glm::radians(-90.0f), vec3(1.0f,0.0f,0.0f));
     setMatrices();
     teapot->render();
 
@@ -88,7 +87,7 @@ void SceneProjTex::render()
     prog.setUniform("Material.Ka", 0.1f, 0.1f, 0.1f);
     prog.setUniform("Material.Shininess", 1.0f);
     model = mat4(1.0f);
-    model *= glm::translate(vec3(0.0f,-0.75f,0.0f));
+    model = glm::translate(model, vec3(0.0f,-0.75f,0.0f));
     setMatrices();
     plane->render();
 }

@@ -11,7 +11,6 @@ using std::cerr;
 using glm::vec3;
 
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform.hpp>
 #include <glm/gtc/constants.hpp>
 
 SceneGamma::SceneGamma() : width(800), height(600), angle(0.0f), tPrev(0.0f), rotSpeed(glm::pi<float>() / 8.0f)
@@ -88,8 +87,8 @@ void SceneGamma::resize(int w, int h)
 void SceneGamma::compileAndLinkShader()
 {
 	try {
-    	prog.compileShader("shader/gamma.vs",GLSLShader::VERTEX);
-    	prog.compileShader("shader/gamma.fs",GLSLShader::FRAGMENT);
+    	prog.compileShader("shader/gamma.vs");
+    	prog.compileShader("shader/gamma.fs");
     	prog.link();
     	prog.use();
     } catch(GLSLProgramException &e ) {

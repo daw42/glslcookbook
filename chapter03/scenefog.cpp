@@ -12,7 +12,6 @@ using std::cerr;
 using glm::vec3;
 
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform.hpp>
 
 SceneFog::SceneFog() : tPrev(0.0f)
 {
@@ -64,8 +63,8 @@ void SceneFog::render()
     float dist = 0.0f;
     for( int i = 0 ; i < 4; i++ ) {
         model = mat4(1.0f);
-        model *= glm::translate(vec3(dist * 0.6f - 1.0f,0.0f,-dist));
-        model *= glm::rotate(glm::radians(-90.0f), vec3(1.0f,0.0f,0.0f));
+        model = glm::translate(model, vec3(dist * 0.6f - 1.0f,0.0f,-dist));
+        model = glm::rotate(model, glm::radians(-90.0f), vec3(1.0f,0.0f,0.0f));
         setMatrices();
         teapot->render();
         dist += 7.0f;
@@ -101,8 +100,8 @@ void SceneFog::resize(int w, int h)
 void SceneFog::compileAndLinkShader()
 {
 	try {
-		prog.compileShader("shader/fog.vs",GLSLShader::VERTEX);
-		prog.compileShader("shader/fog.fs",GLSLShader::FRAGMENT);
+		prog.compileShader("shader/fog.vs");
+		prog.compileShader("shader/fog.fs");
     	prog.link();
     	prog.use();
     } catch(GLSLProgramException & e) {

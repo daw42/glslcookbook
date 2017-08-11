@@ -12,7 +12,6 @@ using std::cerr;
 using glm::vec3;
 
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform.hpp>
 #include <glm/gtc/constants.hpp>
 
 SceneMsaa::SceneMsaa() : width(800), height(600), angle(0.0f), tPrev(0.0f), rotSpeed(glm::pi<float>() / 8.0f)
@@ -92,7 +91,7 @@ void SceneMsaa::render()
 
     view = glm::lookAt(vec3(3.0f * cos(angle),0.0f,3.0f * sin(angle)), vec3(0.0f,0.0f,0.0f), vec3(0.0f,1.0f,0.0f));
 
-    model = glm::rotate(glm::radians(30.0f), vec3(0.0f,0.0f,1.0f));
+    model = glm::rotate(glm::mat4(), glm::radians(30.0f), vec3(0.0f,0.0f,1.0f));
     setMatrices();
 
     // Render the quad
@@ -118,8 +117,8 @@ void SceneMsaa::resize(int w, int h)
 void SceneMsaa::compileAndLinkShader()
 {
 	try {
-    	prog.compileShader("shader/centroid.vs",GLSLShader::VERTEX);
-    	prog.compileShader("shader/centroid.fs",GLSLShader::FRAGMENT);
+    	prog.compileShader("shader/centroid.vs");
+    	prog.compileShader("shader/centroid.fs");
     	prog.link();
     	prog.use();
     } catch(GLSLProgramException &e ) {

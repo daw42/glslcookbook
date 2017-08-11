@@ -11,7 +11,6 @@ using std::endl;
 using glm::vec3;
 
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform.hpp>
 
 SceneSubroutine::SceneSubroutine()
 {
@@ -59,15 +58,15 @@ void SceneSubroutine::render()
 
     glUniformSubroutinesuiv( GL_VERTEX_SHADER, 1, &adsIndex);
     model = mat4(1.0f);
-    model *= glm::translate(vec3(-3.0,-1.5,0.0));
-    model *= glm::rotate(glm::radians(-90.0f), vec3(1.0f,0.0f,0.0f));
+    model = glm::translate(model, vec3(-3.0,-1.5,0.0));
+    model = glm::rotate(model, glm::radians(-90.0f), vec3(1.0f,0.0f,0.0f));
     setMatrices();
     teapot->render();
 
     glUniformSubroutinesuiv( GL_VERTEX_SHADER, 1, &diffuseIndex);
     model = mat4(1.0f);
-    model *= glm::translate(vec3(3.0f, -1.5f, 0.0f));
-    model *= glm::rotate(glm::radians(-90.0f), vec3(1.0f,0.0f,0.0f));
+    model = glm::translate(model, vec3(3.0f, -1.5f, 0.0f));
+    model = glm::rotate(model, glm::radians(-90.0f), vec3(1.0f,0.0f,0.0f));
     setMatrices();
     teapot->render();
 }

@@ -12,7 +12,6 @@ using std::endl;
 using std::cerr;
 
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform.hpp>
 
 SceneSpot::SceneSpot() : tPrev(0)
 {
@@ -63,9 +62,9 @@ void SceneSpot::render()
     prog.setUniform("Shininess", 100.0f);
 
     model = mat4(1.0f);
-    model *= glm::translate(vec3(0.0f,0.0f,-2.0f));
-    model *= glm::rotate(glm::radians(45.0f), vec3(0.0f,1.0f,0.0f));
-    model *= glm::rotate(glm::radians(-90.0f), vec3(1.0f,0.0f,0.0f));
+    model = glm::translate(model, vec3(0.0f,0.0f,-2.0f));
+    model = glm::rotate(model, glm::radians(45.0f), vec3(0.0f,1.0f,0.0f));
+    model = glm::rotate(model, glm::radians(-90.0f), vec3(1.0f,0.0f,0.0f));
     setMatrices();
     teapot->render();
 
@@ -75,8 +74,8 @@ void SceneSpot::render()
     prog.setUniform("Shininess", 100.0f);
 
     model = mat4(1.0f);
-    model *= glm::translate(vec3(-1.0f,0.75f,3.0f));
-    model *= glm::rotate(glm::radians(-90.0f), vec3(1.0f,0.0f,0.0f));
+    model = glm::translate(model, vec3(-1.0f,0.75f,3.0f));
+    model = glm::rotate(model, glm::radians(-90.0f), vec3(1.0f,0.0f,0.0f));
     setMatrices();
     torus->render();
 
@@ -110,8 +109,8 @@ void SceneSpot::resize(int w, int h)
 void SceneSpot::compileAndLinkShader()
 {
 	try {
-		prog.compileShader("shader/spot.vs",GLSLShader::VERTEX);
-		prog.compileShader("shader/spot.fs",GLSLShader::FRAGMENT);
+		prog.compileShader("shader/spot.vs");
+		prog.compileShader("shader/spot.fs");
     	prog.link();
     	prog.use();
     } catch(GLSLProgramException & e) {

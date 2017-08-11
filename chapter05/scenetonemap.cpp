@@ -11,7 +11,6 @@ using std::cerr;
 using glm::vec3;
 
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform.hpp>
 #include <glm/gtc/constants.hpp>
 
 SceneToneMap::SceneToneMap() : width(800), height(600), angle(0.0f), tPrev(0.0f), rotSpeed(glm::pi<float>() / 8.0f) { }
@@ -73,6 +72,11 @@ void SceneToneMap::initScene()
     prog.setUniform("Lights[0].Intensity", intense );
     prog.setUniform("Lights[1].Intensity", intense );
     prog.setUniform("Lights[2].Intensity", intense );
+
+#ifdef __APPLE__
+    prog.setUniform("HdrTex", 0);
+#endif
+
 }
 
 void SceneToneMap::setupFBO()
@@ -193,8 +197,13 @@ void SceneToneMap::resize(int w, int h)
 void SceneToneMap::compileAndLinkShader()
 {
     try {
-    	prog.compileShader("shader/tonemap.vs");
+#ifdef __APPLE__
+        prog.compileShader("shader/tonemap_41.vs");
+        prog.compileShader("shader/tonemap_41.fs");
+#else
+        prog.compileShader("shader/tonemap.vs");
     	prog.compileShader("shader/tonemap.fs");
+#endif
     	prog.link();
     	prog.use();
     } catch(GLSLProgramException &e ) {

@@ -14,7 +14,6 @@ using std::endl;
 using glm::vec3;
 
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform.hpp>
 #include <glm/gtc/constants.hpp>
 
 SceneReflectCube::SceneReflectCube() : angle(0.0f), tPrev(0.0f), rotSpeed(glm::pi<float>() / 8.0f) { }
@@ -109,8 +108,8 @@ void SceneReflectCube::render()
     prog.setUniform("ReflectFactor", 0.85f);
 
     model = mat4(1.0f);
-    model *= glm::translate(vec3(0.0f,-1.0f,0.0f));
-    model *= glm::rotate(glm::radians(-90.0f), vec3(1.0f,0.0f,0.0f));
+    model = glm::translate(model, vec3(0.0f,-1.0f,0.0f));
+    model = glm::rotate(model, glm::radians(-90.0f), vec3(1.0f,0.0f,0.0f));
     setMatrices();
     teapot->render();
 }

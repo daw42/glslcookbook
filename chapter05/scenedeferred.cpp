@@ -11,7 +11,6 @@ using std::cerr;
 using glm::vec3;
 
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform.hpp>
 #include <glm/gtc/constants.hpp>
 
 SceneDeferred::SceneDeferred() : width(800), height(600), angle(0.0f), tPrev(0.0f), rotSpeed(glm::pi<float>() / 8.0f) { }
@@ -54,11 +53,11 @@ void SceneDeferred::initScene()
     glBindVertexArray(quad);
 
     glBindBuffer(GL_ARRAY_BUFFER, handle[0]);
-    glVertexAttribPointer( (GLuint)0, 3, GL_FLOAT, GL_FALSE, 0, ((GLubyte *)NULL + (0)) );
+    glVertexAttribPointer( (GLuint)0, 3, GL_FLOAT, GL_FALSE, 0, 0 );
     glEnableVertexAttribArray(0);  // Vertex position
 
     glBindBuffer(GL_ARRAY_BUFFER, handle[1]);
-    glVertexAttribPointer( (GLuint)2, 2, GL_FLOAT, GL_FALSE, 0, ((GLubyte *)NULL + (0)) );
+    glVertexAttribPointer( (GLuint)2, 2, GL_FLOAT, GL_FALSE, 0, 0 );
     glEnableVertexAttribArray(2);  // Texture coordinates
 
     glBindVertexArray(0);
@@ -71,15 +70,26 @@ void SceneDeferred::initScene()
     pass2Index = glGetSubroutineIndex( programHandle, GL_FRAGMENT_SHADER, "pass2");
 
     prog.setUniform("Light.Intensity", vec3(1.0f,1.0f,1.0f) );
+
+#ifdef __APPLE__
+    prog.setUniform("PositionTex", 0);
+    prog.setUniform("NormalTex", 1);
+    prog.setUniform("ColorTex", 2);
+#endif
 }
 
 void SceneDeferred::createGBufTex( GLenum texUnit, GLenum format, GLuint &texid ) {
     glActiveTexture(texUnit);
     glGenTextures(1, &texid);
     glBindTexture(GL_TEXTURE_2D, texid);
+#ifdef __APPLE__
+    glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+#else
     glTexStorage2D(GL_TEXTURE_2D, 1, format, width, height);
+#endif
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
 }
 
 void SceneDeferred::setupFBO()
@@ -126,6 +136,7 @@ void SceneDeferred::update( float t )
 void SceneDeferred::render()
 {
     pass1();
+    glFlush();
     pass2();
 }
 
@@ -143,22 +154,22 @@ void SceneDeferred::pass1()
     prog.setUniform("Material.Kd", 0.9f, 0.9f, 0.9f);
 
     model = mat4(1.0f);
-    model *= glm::translate(vec3(0.0f,0.0f,0.0f));
-    model *= glm::rotate(glm::radians(-90.0f), vec3(1.0f,0.0f,0.0f));
+    model = glm::translate(model, vec3(0.0f,0.0f,0.0f));
+    model = glm::rotate(model, glm::radians(-90.0f), vec3(1.0f,0.0f,0.0f));
     setMatrices();
     teapot->render();
 
     prog.setUniform("Material.Kd", 0.4f, 0.4f, 0.4f);
     model = mat4(1.0f);
-    model *= glm::translate(vec3(0.0f,-0.75f,0.0f));
+    model = glm::translate(model, vec3(0.0f,-0.75f,0.0f));
     setMatrices();
     plane->render();
 
     prog.setUniform("Light.Position", vec4(0.0f,0.0f,0.0f,1.0f) );
     prog.setUniform("Material.Kd", 0.9f, 0.5f, 0.2f);
     model = mat4(1.0f);
-    model *= glm::translate(vec3(1.0f,1.0f,3.0f));
-    model *= glm::rotate(glm::radians(90.0f), vec3(1.0f,0.0f,0.0f));
+    model = glm::translate(model, vec3(1.0f,1.0f,3.0f));
+    model = glm::rotate(model, glm::radians(90.0f), vec3(1.0f,0.0f,0.0f));
     setMatrices();
     torus->render();
 
@@ -204,8 +215,13 @@ void SceneDeferred::resize(int w, int h)
 void SceneDeferred::compileAndLinkShader()
 {
 	try {
-    	prog.compileShader("shader/deferred.vs",GLSLShader::VERTEX);
-    	prog.compileShader("shader/deferred.fs",GLSLShader::FRAGMENT);
+#ifdef __APPLE__
+        prog.compileShader("shader/deferred_41.vs");
+        prog.compileShader("shader/deferred_41.fs");
+#else
+        prog.compileShader("shader/deferred.vs");
+        prog.compileShader("shader/deferred.fs");
+#endif
     	prog.link();
     	prog.use();
     } catch(GLSLProgramException &e ) {
