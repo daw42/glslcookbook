@@ -13,6 +13,7 @@ CMakeFiles/
 cmake_install.cmake
 CMakeCache.txt
 Makefile
+**/*.dir/
 
 # Compiled output
 ingredients/libingredients.a
@@ -21,3 +22,10 @@ chapter??/chapter??.exe
 
 .idea/
 *.cbp
+
+# Visual Studio projects, solutions, build folders, etc.
+*.vcxproj
+*.sln
+*.vcxproj.filters
+.vs/
+x64/

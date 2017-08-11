@@ -334,7 +334,7 @@ void VBOMeshAdj::generateTangents(
     }
 
     // Compute the tangent vector
-    for( uint i = 0; i < faces.size(); i += 3 )
+    for( GLuint i = 0; i < faces.size(); i += 3 )
     {
         const vec3 &p1 = points[faces[i]];
         const vec3 &p2 = points[faces[i+1]];
