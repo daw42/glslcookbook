@@ -17,13 +17,9 @@ uniform sampler2D DiffTex;
 vec3 phongModelDiffuse()
 {
     vec3 n = Normal;
-    if( !gl_FrontFacing ) n = -n;
     vec3 s = normalize(vec3(Light.Position) - Position);
-    vec3 v = normalize(-Position.xyz);
     float sDotN = max( dot(s,n), 0.0 );
     vec3 diffColor = texture(DiffTex, TexCoord).rgb;
-    diffColor = pow( diffColor, vec3(1.8) );   // Gamma un-correct
-    //diffColor = vec3(1.0f);
     return Light.Intensity * diffColor * sDotN;
 }
 

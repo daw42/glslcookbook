@@ -35,9 +35,11 @@ VBOPlane::VBOPlane(float xsize, float zsize, int xdivs, int zdivs, float smax, f
 			n[vidx] = 0.0f;
 			n[vidx+1] = 1.0f;
 			n[vidx+2] = 0.0f;
-            vidx += 3;
+
             tex[tidx] = j * texi;
             tex[tidx+1] = i * texj;
+
+            vidx += 3;
             tidx += 2;
         }
     }

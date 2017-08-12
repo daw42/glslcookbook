@@ -1,9 +1,9 @@
-#version 430
+#version 410
 
 in vec3 Position;
 in vec3 Normal;
 
-layout(binding=0) uniform sampler2D DiffSpecTex;
+uniform sampler2D DiffSpecTex;
 layout( location = 0 ) out vec4 FragColor;
 
 void main() {

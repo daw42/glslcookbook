@@ -11,7 +11,6 @@ using std::cerr;
 using glm::vec3;
 
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform.hpp>
 
 SceneBezCurve::SceneBezCurve() {}
 
@@ -107,15 +106,15 @@ void SceneBezCurve::resize(int w, int h)
 void SceneBezCurve::compileAndLinkShader()
 {
 	try {
-		prog.compileShader("shader/bezcurve.vs",GLSLShader::VERTEX);
-		prog.compileShader("shader/bezcurve.fs",GLSLShader::FRAGMENT);
-		prog.compileShader("shader/bezcurve.tes",GLSLShader::TESS_EVALUATION);
-		prog.compileShader("shader/bezcurve.tcs",GLSLShader::TESS_CONTROL);
+		prog.compileShader("shader/bezcurve.vs");
+		prog.compileShader("shader/bezcurve.fs");
+		prog.compileShader("shader/bezcurve.tes");
+		prog.compileShader("shader/bezcurve.tcs");
     	prog.link();
     	prog.use();
 
-    	solidProg.compileShader("shader/solid.vs",GLSLShader::VERTEX);
-    	solidProg.compileShader("shader/solid.fs",GLSLShader::FRAGMENT);
+    	solidProg.compileShader("shader/solid.vs");
+    	solidProg.compileShader("shader/solid.fs");
     	solidProg.link();
     } catch(GLSLProgramException &e ) {
     	cerr << e.what() << endl;

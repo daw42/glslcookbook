@@ -54,32 +54,35 @@ void shadeWithShadow()
     ivec3 offsetCoord;
     offsetCoord.xy = ivec2( mod( gl_FragCoord.xy, OffsetTexSize.xy ) );
 
-    float sum = 0.0;
+    float sum = 0.0, shadow = 1.0;
     int samplesDiv2 = int(OffsetTexSize.z);
     vec4 sc = ShadowCoord;
 
-    for( int i = 0 ; i < 4; i++ ) {
-        offsetCoord.z = i;
-        vec4 offsets = texelFetch(OffsetTex,offsetCoord,0) * Radius * ShadowCoord.w;
-
-        sc.xy = ShadowCoord.xy + offsets.xy;
-        sum += textureProj(ShadowMap, sc);
-        sc.xy = ShadowCoord.xy + offsets.zw;
-        sum += textureProj(ShadowMap, sc);
-    }
-    float shadow = sum / 8.0;
-
-    if( shadow != 1.0 && shadow != 0.0 ) {
-        for( int i = 4; i < samplesDiv2; i++ ) {
+    // Don't test points behind the light source.
+    if( sc.z >= 0 ) {
+        for( int i = 0 ; i < 4; i++ ) {
             offsetCoord.z = i;
-            vec4 offsets = texelFetch(OffsetTex, offsetCoord,0) * Radius * ShadowCoord.w;
+            vec4 offsets = texelFetch(OffsetTex,offsetCoord,0) * Radius * ShadowCoord.w;
 
             sc.xy = ShadowCoord.xy + offsets.xy;
             sum += textureProj(ShadowMap, sc);
             sc.xy = ShadowCoord.xy + offsets.zw;
             sum += textureProj(ShadowMap, sc);
         }
-        shadow = sum / float(samplesDiv2 * 2.0);
+        shadow = sum / 8.0;
+
+        if( shadow != 1.0 && shadow != 0.0 ) {
+            for( int i = 4; i < samplesDiv2; i++ ) {
+                offsetCoord.z = i;
+                vec4 offsets = texelFetch(OffsetTex, offsetCoord,0) * Radius * ShadowCoord.w;
+
+                sc.xy = ShadowCoord.xy + offsets.xy;
+                sum += textureProj(ShadowMap, sc);
+                sc.xy = ShadowCoord.xy + offsets.zw;
+                sum += textureProj(ShadowMap, sc);
+            }
+            shadow = sum / float(samplesDiv2 * 2.0);
+        }
     }
 
     FragColor = vec4(diffAndSpec * shadow + ambient, 1.0);

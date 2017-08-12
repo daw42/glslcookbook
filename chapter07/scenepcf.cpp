@@ -12,7 +12,6 @@ using glm::vec3;
 #include <cstdlib>
 
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform.hpp>
 
 ScenePcf::ScenePcf() : tPrev(0), width(800), height(600), shadowMapWidth(512),
   shadowMapHeight(512) {}
@@ -21,14 +20,13 @@ void ScenePcf::initScene()
 {
     compileAndLinkShader();
 
-    glClearColor(0.5f,0.5f,0.5f,1.0f);
-
+    glClearColor(0.0f,0.5f,0.5f,1.0f);
     glEnable(GL_DEPTH_TEST);
 
     angle = glm::two_pi<float>() * 0.85f;
 
     teapot = new VBOTeapot(14, mat4(1.0f));
-    plane = new VBOPlane(20.0f, 20.0f, 2, 2);
+    plane = new VBOPlane(20.0f, 20.0f, 1, 1);
     float scale = 2.0f;
     torus = new VBOTorus(0.7f * scale,0.3f * scale,50,50);
     mesh = new VBOMesh("../media/building.obj");
@@ -54,13 +52,12 @@ void ScenePcf::initScene()
     lightPV = shadowScale * lightFrustum->getProjectionMatrix() * lightFrustum->getViewMatrix();
 
     prog.setUniform("Light.Intensity", vec3(0.85f));
-
     prog.setUniform("ShadowMap", 0);
 }
 
 void ScenePcf::setupFBO()
 {
-    GLfloat border[] = {1.0f, 0.0f,0.0f,0.0f };
+    GLfloat border[] = {1.0f,0.0f,0.0f,0.0f};
     // The depth buffer texture
     GLuint depthTex;
     glGenTextures(1, &depthTex);
@@ -123,6 +120,7 @@ void ScenePcf::render()
     drawBuildingScene();
     glCullFace(GL_BACK);
     glDisable(GL_POLYGON_OFFSET_FILL);
+    glFlush();
 
     // Pass 2 (render)
     vec3 cameraPos(1.8f * cos(angle),0.7f,1.8f * sin(angle));
@@ -135,7 +133,6 @@ void ScenePcf::render()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glViewport(0,0,width,height);
     glUniformSubroutinesuiv( GL_FRAGMENT_SHADER, 1, &pass2Index);
-    glDisable(GL_CULL_FACE);
     drawBuildingScene();
     glFinish();
 }
@@ -148,7 +145,6 @@ void ScenePcf::drawBuildingScene()
     prog.setUniform("Material.Ks", vec3(0.0f));
     prog.setUniform("Material.Shininess", 1.0f);
     model = mat4(1.0f);
-    model *= glm::translate(vec3(0.0f,0.0f,0.0f));
     setMatrices();
     mesh->render();
 
@@ -157,53 +153,8 @@ void ScenePcf::drawBuildingScene()
     prog.setUniform("Material.Ka", 0.05f, 0.05f, 0.05f);
     prog.setUniform("Material.Shininess", 1.0f);
     model = mat4(1.0f);
-    model *= glm::translate(vec3(0.0f,0.0f,0.0f));
     setMatrices();
     plane->render();
-}
-
-void ScenePcf::drawScene()
-{
-    vec3 color = vec3(0.7f,0.5f,0.3f);
-    prog.setUniform("Material.Ka", color * 0.05f);
-    prog.setUniform("Material.Kd", color);
-    prog.setUniform("Material.Ks", vec3(0.9f,0.9f,0.9f));
-    prog.setUniform("Material.Shininess", 150.0f);
-    model = mat4(1.0f);
-    model *= glm::translate(vec3(0.0f,0.0f,0.0f));
-    model *= glm::rotate(glm::radians(-90.0f), vec3(1.0f,0.0f,0.0f));
-    setMatrices();
-    teapot->render();
-
-    prog.setUniform("Material.Ka", color * 0.05f);
-    prog.setUniform("Material.Kd", color);
-    prog.setUniform("Material.Ks", vec3(0.9f,0.9f,0.9f));
-    prog.setUniform("Material.Shininess", 150.0f);
-    model = mat4(1.0f);
-    model *= glm::translate(vec3(0.0f,2.0f,5.0f));
-    model *= glm::rotate(glm::radians(-45.0f), vec3(1.0f,0.0f,0.0f));
-    setMatrices();
-    torus->render();
-
-    prog.setUniform("Material.Kd", 0.25f, 0.25f, 0.25f);
-    prog.setUniform("Material.Ks", 0.0f, 0.0f, 0.0f);
-    prog.setUniform("Material.Ka", 0.05f, 0.05f, 0.05f);
-    prog.setUniform("Material.Shininess", 1.0f);
-    model = mat4(1.0f);
-    model *= glm::translate(vec3(0.0f,0.0f,0.0f));
-    setMatrices();
-    plane->render();
-    model = mat4(1.0f);
-    model *= glm::translate(vec3(-5.0f,5.0f,0.0f));
-    model *= glm::rotate(glm::radians(-90.0f),vec3(0.0f,0.0f,1.0f));
-    setMatrices();
-    plane->render();
-    model = mat4(1.0f);
-    model *= glm::translate(vec3(0.0f,5.0f,-5.0f));
-    model *= glm::rotate(glm::radians(90.0f),vec3(1.0f,0.0f,0.0f));
-    setMatrices();
-    plane->render();
-    model = mat4(1.0f);
 }
 
 void ScenePcf::setMatrices()
@@ -226,8 +177,8 @@ void ScenePcf::resize(int w, int h)
 void ScenePcf::compileAndLinkShader()
 {
 	try {
-		prog.compileShader("shader/pcf.vs",GLSLShader::VERTEX);
-		prog.compileShader("shader/pcf.fs",GLSLShader::FRAGMENT);
+		prog.compileShader("shader/pcf.vs");
+		prog.compileShader("shader/pcf.fs");
     	prog.link();
     	prog.use();
     } catch(GLSLProgramException &e ) {

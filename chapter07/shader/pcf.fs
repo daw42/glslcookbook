@@ -23,7 +23,6 @@ layout (location = 0) out vec4 FragColor;
 vec3 phongModelDiffAndSpec()
 {
     vec3 n = Normal;
-    if( !gl_FrontFacing ) n = -n;
     vec3 s = normalize(vec3(Light.Position) - Position);
     vec3 v = normalize(-Position.xyz);
     vec3 r = reflect( -s, n );
@@ -48,14 +47,17 @@ void shadeWithShadow()
 
     // Lookup the texels nearby
     float sum = 0;
+    float shadow = 1.0;
 
-    // Sum contributions from 4 texels around ShadowCoord
-    sum += textureProjOffset(ShadowMap, ShadowCoord, ivec2(-1,-1));
-    sum += textureProjOffset(ShadowMap, ShadowCoord, ivec2(-1,1));
-    sum += textureProjOffset(ShadowMap, ShadowCoord, ivec2(1,1));
-    sum += textureProjOffset(ShadowMap, ShadowCoord, ivec2(1,-1));
-
-    float shadow = sum * 0.25;
+    // Dont' text points behind the light source.
+    if(ShadowCoord.z >= 0 ) {
+        // Sum contributions from 4 texels around ShadowCoord
+        sum += textureProjOffset(ShadowMap, ShadowCoord, ivec2(-1,-1));
+        sum += textureProjOffset(ShadowMap, ShadowCoord, ivec2(-1,1));
+        sum += textureProjOffset(ShadowMap, ShadowCoord, ivec2(1,1));
+        sum += textureProjOffset(ShadowMap, ShadowCoord, ivec2(1,-1));
+        shadow = sum * 0.25;
+    }
 
     FragColor = vec4( ambient + diffAndSpec * shadow, 1.0 );
 

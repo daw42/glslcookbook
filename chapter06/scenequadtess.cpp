@@ -11,7 +11,6 @@ using std::endl;
 using glm::vec3;
 
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform.hpp>
 
 SceneQuadTess::SceneQuadTess() { }
 
@@ -104,11 +103,11 @@ void SceneQuadTess::resize(int w, int h)
 void SceneQuadTess::compileAndLinkShader()
 {
 	try {
-		prog.compileShader("shader/quadtess.vs",GLSLShader::VERTEX);
-		prog.compileShader("shader/quadtess.fs",GLSLShader::FRAGMENT);
-		prog.compileShader("shader/quadtess.gs",GLSLShader::GEOMETRY);
-		prog.compileShader("shader/quadtess.tes",GLSLShader::TESS_EVALUATION);
-		prog.compileShader("shader/quadtess.tcs",GLSLShader::TESS_CONTROL);
+		prog.compileShader("shader/quadtess.vs");
+		prog.compileShader("shader/quadtess.fs");
+		prog.compileShader("shader/quadtess.gs");
+		prog.compileShader("shader/quadtess.tes");
+		prog.compileShader("shader/quadtess.tcs");
     	prog.link();
     	prog.use();
     } catch(GLSLProgramException &e ) {

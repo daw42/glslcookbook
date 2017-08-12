@@ -10,10 +10,7 @@ using glm::vec3;
 using std::cerr;
 using std::endl;
 
-#include <cstdlib>
-
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform.hpp>
 
 SceneShadowMap::SceneShadowMap() : tPrev(0), width(800), height(600), shadowMapWidth(512),
 shadowMapHeight(512) {}
@@ -148,9 +145,11 @@ void SceneShadowMap::render()
     glUniformSubroutinesuiv( GL_FRAGMENT_SHADER, 1, &pass1Index);
     glEnable(GL_CULL_FACE);
     glCullFace(GL_FRONT);
+    glEnable(GL_POLYGON_OFFSET_FILL);
+    glPolygonOffset(2.5f,10.0f);
     drawScene();
+    glCullFace(GL_BACK);
     glFlush();
-    glFinish();
     //spitOutDepthBuffer(); // This is just used to get an image of the depth buffer
 
     // Pass 2 (render)
@@ -164,7 +163,6 @@ void SceneShadowMap::render()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glViewport(0,0,width,height);
     glUniformSubroutinesuiv( GL_FRAGMENT_SHADER, 1, &pass2Index);
-    glDisable(GL_CULL_FACE);
     drawScene();
 
     // Uncomment to draw the light's frustum
@@ -185,8 +183,7 @@ void SceneShadowMap::drawScene()
     prog.setUniform("Material.Ks", vec3(0.9f,0.9f,0.9f));
     prog.setUniform("Material.Shininess", 150.0f);
     model = mat4(1.0f);
-    model *= glm::translate(vec3(0.0f,0.0f,0.0f));
-    model *= glm::rotate(glm::radians(-90.0f), vec3(1.0f,0.0f,0.0f));
+    model = glm::rotate(model, glm::radians(-90.0f), vec3(1.0f,0.0f,0.0f));
     setMatrices();
     teapot->render();
 
@@ -195,8 +192,8 @@ void SceneShadowMap::drawScene()
     prog.setUniform("Material.Ks", vec3(0.9f,0.9f,0.9f));
     prog.setUniform("Material.Shininess", 150.0f);
     model = mat4(1.0f);
-    model *= glm::translate(vec3(0.0f,2.0f,5.0f));
-    model *= glm::rotate(glm::radians(-45.0f), vec3(1.0f,0.0f,0.0f));
+    model = glm::translate(model, vec3(0.0f,2.0f,5.0f));
+    model = glm::rotate(model, glm::radians(-45.0f), vec3(1.0f,0.0f,0.0f));
     setMatrices();
     torus->render();
 
@@ -205,17 +202,16 @@ void SceneShadowMap::drawScene()
     prog.setUniform("Material.Ka", 0.05f, 0.05f, 0.05f);
     prog.setUniform("Material.Shininess", 1.0f);
     model = mat4(1.0f);
-    model *= glm::translate(vec3(0.0f,0.0f,0.0f));
     setMatrices();
     plane->render();
     model = mat4(1.0f);
-    model *= glm::translate(vec3(-5.0f,5.0f,0.0f));
-    model *= glm::rotate(glm::radians(-90.0f),vec3(0.0f,0.0f,1.0f));
+    model = glm::translate(model, vec3(-5.0f,5.0f,0.0f));
+    model = glm::rotate(model, glm::radians(-90.0f),vec3(0.0f,0.0f,1.0f));
     setMatrices();
     plane->render();
     model = mat4(1.0f);
-    model *= glm::translate(vec3(0.0f,5.0f,-5.0f));
-    model *= glm::rotate(glm::radians(90.0f),vec3(1.0f,0.0f,0.0f));
+    model = glm::translate(model, vec3(0.0f,5.0f,-5.0f));
+    model = glm::rotate(model, glm::radians(90.0f),vec3(1.0f,0.0f,0.0f));
     setMatrices();
     plane->render();
     model = mat4(1.0f);
@@ -241,14 +237,15 @@ void SceneShadowMap::resize(int w, int h)
 void SceneShadowMap::compileAndLinkShader()
 {
 	try {
-		prog.compileShader("shader/shadowmap.vs",GLSLShader::VERTEX);
-		prog.compileShader("shader/shadowmap.fs",GLSLShader::FRAGMENT);
+		prog.compileShader("shader/shadowmap.vs");
+		prog.compileShader("shader/shadowmap.fs");
     	prog.link();
     	prog.use();
 
-    	solidProg.compileShader("shader/solid.vs", GLSLShader::VERTEX);
-    	solidProg.compileShader("shader/solid.fs", GLSLShader::FRAGMENT);
-    	solidProg.link();
+        // Used when rendering light frustum
+    	//solidProg.compileShader("shader/solid.vs", GLSLShader::VERTEX);
+    	//solidProg.compileShader("shader/solid.fs", GLSLShader::FRAGMENT);
+    	//solidProg.link();
     } catch(GLSLProgramException &e ) {
     	cerr << e.what() << endl;
  		exit( EXIT_FAILURE );

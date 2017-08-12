@@ -12,7 +12,6 @@ using glm::vec2;
 #include <cstdlib>
 
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform.hpp>
 
 SceneJitter::SceneJitter()
 {
@@ -214,7 +213,6 @@ void SceneJitter::drawBuildingScene()
     prog.setUniform("Material.Ks", vec3(0.0f));
     prog.setUniform("Material.Shininess", 1.0f);
     model = mat4(1.0f);
-    model *= glm::translate(vec3(0.0f,0.0f,0.0f));
     setMatrices();
     mesh->render();
 
@@ -223,7 +221,6 @@ void SceneJitter::drawBuildingScene()
     prog.setUniform("Material.Ka", 0.05f, 0.05f, 0.05f);
     prog.setUniform("Material.Shininess", 1.0f);
     model = mat4(1.0f);
-    model *= glm::translate(vec3(0.0f,0.0f,0.0f));
     setMatrices();
     plane->render();
 }
@@ -236,8 +233,7 @@ void SceneJitter::drawScene()
     prog.setUniform("Material.Ks", vec3(0.9f,0.9f,0.9f));
     prog.setUniform("Material.Shininess", 150.0f);
     model = mat4(1.0f);
-    model *= glm::translate(vec3(0.0f,0.0f,0.0f));
-    model *= glm::rotate(glm::radians(-90.0f), vec3(1.0f,0.0f,0.0f));
+    model = glm::rotate(model, glm::radians(-90.0f), vec3(1.0f,0.0f,0.0f));
     setMatrices();
     teapot->render();
 
@@ -246,8 +242,8 @@ void SceneJitter::drawScene()
     prog.setUniform("Material.Ks", vec3(0.9f,0.9f,0.9f));
     prog.setUniform("Material.Shininess", 150.0f);
     model = mat4(1.0f);
-    model *= glm::translate(vec3(0.0f,2.0f,5.0f));
-    model *= glm::rotate(glm::radians(-45.0f), vec3(1.0f,0.0f,0.0f));
+    model = glm::translate(model, vec3(0.0f,2.0f,5.0f));
+    model = glm::rotate(model, glm::radians(-45.0f), vec3(1.0f,0.0f,0.0f));
     setMatrices();
     torus->render();
 
@@ -256,17 +252,16 @@ void SceneJitter::drawScene()
     prog.setUniform("Material.Ka", 0.05f, 0.05f, 0.05f);
     prog.setUniform("Material.Shininess", 1.0f);
     model = mat4(1.0f);
-    model *= glm::translate(vec3(0.0f,0.0f,0.0f));
     setMatrices();
     plane->render();
     model = mat4(1.0f);
-    model *= glm::translate(vec3(-5.0f,5.0f,0.0f));
-    model *= glm::rotate(glm::radians(-90.0f),vec3(0.0f,0.0f,1.0f));
+    model = glm::translate(model, vec3(-5.0f,5.0f,0.0f));
+    model = glm::rotate(model, glm::radians(-90.0f),vec3(0.0f,0.0f,1.0f));
     setMatrices();
     plane->render();
     model = mat4(1.0f);
-    model *= glm::translate(vec3(0.0f,5.0f,-5.0f));
-    model *= glm::rotate(glm::radians(90.0f),vec3(1.0f,0.0f,0.0f));
+    model = glm::translate(model, vec3(0.0f,5.0f,-5.0f));
+    model = glm::rotate(model, glm::radians(90.0f),vec3(1.0f,0.0f,0.0f));
     setMatrices();
     plane->render();
     model = mat4(1.0f);
@@ -292,8 +287,8 @@ void SceneJitter::resize(int w, int h)
 void SceneJitter::compileAndLinkShader()
 {
 	try {
-		prog.compileShader("shader/jitter.vs",GLSLShader::VERTEX);
-		prog.compileShader("shader/jitter.fs",GLSLShader::FRAGMENT);
+		prog.compileShader("shader/jitter.vs");
+		prog.compileShader("shader/jitter.fs");
     	prog.link();
     	prog.use();
     } catch(GLSLProgramException &e ) {

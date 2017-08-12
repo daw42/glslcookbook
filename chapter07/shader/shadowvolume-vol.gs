@@ -1,4 +1,4 @@
-#version 430
+#version 410
 
 layout( triangles_adjacency ) in;
 layout( triangle_strip, max_vertices = 18 ) out;

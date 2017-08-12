@@ -1,4 +1,4 @@
-#version 430
+#version 410
 
 in vec3 Position;
 in vec3 Normal;
@@ -7,7 +7,7 @@ in vec2 TexCoord;
 uniform vec4 LightPosition;
 uniform vec3 LightIntensity;
 
-layout(binding=2) uniform sampler2D Tex;
+uniform sampler2D Tex;
 
 uniform vec3 Kd;            // Diffuse reflectivity
 uniform vec3 Ka;            // Ambient reflectivity

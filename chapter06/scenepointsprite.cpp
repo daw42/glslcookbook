@@ -18,7 +18,6 @@ using std::endl;
 using glm::vec3;
 
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform.hpp>
 
 ScenePointSprite::ScenePointSprite() {}
 
@@ -107,9 +106,9 @@ void ScenePointSprite::resize(int w, int h)
 void ScenePointSprite::compileAndLinkShader()
 {
 	try {
-		prog.compileShader("shader/pointsprite.vs",GLSLShader::VERTEX);
-		prog.compileShader("shader/pointsprite.fs",GLSLShader::FRAGMENT);
-		prog.compileShader("shader/pointsprite.gs",GLSLShader::GEOMETRY);
+		prog.compileShader("shader/pointsprite.vs");
+		prog.compileShader("shader/pointsprite.fs");
+		prog.compileShader("shader/pointsprite.gs");
     	prog.link();
     	prog.use();
     } catch(GLSLProgramException &e ) {

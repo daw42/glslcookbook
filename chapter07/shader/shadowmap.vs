@@ -1,10 +1,5 @@
 #version 400
 
-// GPU gems 3 Chapter 10
-// GPU gems 2 Chapter 17
-// GPU gems Chapter ??
-// NVIDIA Whitepaper
-
 layout (location=0) in vec3 VertexPosition;
 layout (location=1) in vec3 VertexNormal;
 

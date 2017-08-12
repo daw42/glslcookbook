@@ -13,7 +13,6 @@ using std::endl;
 #include <cstdlib>
 
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform.hpp>
 
 SceneShadowVolume::SceneShadowVolume() : width(800), height(600), rotSpeed(0.1f), tPrev(0)
 { }
@@ -36,7 +35,7 @@ void SceneShadowVolume::initScene()
   setupFBO();
 
   renderProg.use();
-  renderProg.setUniform("LightIntensity", vec3(0.85f));
+  renderProg.setUniform("LightIntensity", vec3(1.0f));
 
   // Set up a  VAO for the full-screen quad
   GLfloat verts[] = { -1.0f, -1.0f, 0.0f, 1.0f, -1.0f, 0.0f,
@@ -62,6 +61,13 @@ void SceneShadowVolume::initScene()
   brickTex = TGAIO::loadTex("../media/texture/brick1.tga");
 
   updateLight();
+
+    renderProg.use();
+    renderProg.setUniform("Tex", 2);
+
+    compProg.use();
+    compProg.setUniform("DiffSpecTex", 0);
+
   this->animate(true);
 }
 
@@ -129,7 +135,9 @@ void SceneShadowVolume::update( float t )
 void SceneShadowVolume::render()
 {
   pass1();
+    glFlush();
   pass2();
+    glFlush();
   pass3();
 }
 
@@ -233,22 +241,22 @@ void SceneShadowVolume::drawScene(GLSLProgram &prog, bool onlyShadowCasters)
   }
 
   model = mat4(1.0f);
-  model *= glm::translate(vec3(-2.3f,1.0f,0.2f));
-  model *= glm::rotate(glm::radians(180.0f), vec3(0.0f,1.0f,0.0f));
+  model = glm::translate(model, vec3(-2.3f,1.0f,0.2f));
+  model = glm::rotate(model, glm::radians(180.0f), vec3(0.0f,1.0f,0.0f));
   model = glm::scale(model, vec3(1.5f));
   setMatrices(prog);
   spot->render();
 
   model = mat4(1.0f);
-  model *= glm::translate(vec3(2.5f,1.0f,-1.2f));
-  model *= glm::rotate(glm::radians(180.0f), vec3(0.0f,1.0f,0.0f));
+  model = glm::translate(model, vec3(2.5f,1.0f,-1.2f));
+  model = glm::rotate(model, glm::radians(180.0f), vec3(0.0f,1.0f,0.0f));
   model = glm::scale(model, vec3(1.5f));
   setMatrices(prog);
   spot->render();
 
   model = mat4(1.0f);
-  model *= glm::translate(vec3(0.5f,1.0f,2.7f));
-  model *= glm::rotate(glm::radians(180.0f), vec3(0.0f,1.0f,0.0f));
+  model = glm::translate(model, vec3(0.5f,1.0f,2.7f));
+  model = glm::rotate(model, glm::radians(180.0f), vec3(0.0f,1.0f,0.0f));
   model = glm::scale(model, vec3(1.5f));
   setMatrices(prog);
   spot->render();
@@ -265,14 +273,14 @@ void SceneShadowVolume::drawScene(GLSLProgram &prog, bool onlyShadowCasters)
     setMatrices(prog);
     plane->render();
     model = mat4(1.0f);
-    model *= glm::translate(vec3(-5.0f,5.0f,0.0f));
-    model *= glm::rotate(glm::radians(90.0f), vec3(1,0,0));
-    model *= glm::rotate(glm::radians(-90.0f),vec3(0.0f,0.0f,1.0f));
+    model = glm::translate(model, vec3(-5.0f,5.0f,0.0f));
+    model = glm::rotate(model, glm::radians(90.0f), vec3(1,0,0));
+    model = glm::rotate(model, glm::radians(-90.0f),vec3(0.0f,0.0f,1.0f));
     setMatrices(prog);
     plane->render();
     model = mat4(1.0f);
-    model *= glm::translate(vec3(0.0f,5.0f,-5.0f));
-    model *= glm::rotate(glm::radians(90.0f),vec3(1.0f,0.0f,0.0f));
+    model = glm::translate(model, vec3(0.0f,5.0f,-5.0f));
+    model = glm::rotate(model, glm::radians(90.0f),vec3(1.0f,0.0f,0.0f));
     setMatrices(prog);
     plane->render();
     model = mat4(1.0f);

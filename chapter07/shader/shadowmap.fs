@@ -23,7 +23,6 @@ layout (location = 0) out vec4 FragColor;
 vec3 phongModelDiffAndSpec()
 {
     vec3 n = Normal;
-    if( !gl_FrontFacing ) n = -n;
     vec3 s = normalize(vec3(Light.Position) - Position);
     vec3 v = normalize(-Position.xyz);
     vec3 r = reflect( -s, n );
@@ -46,7 +45,10 @@ void shadeWithShadow()
     vec3 ambient = Light.Intensity * Material.Ka;
     vec3 diffAndSpec = phongModelDiffAndSpec();
 
-    float shadow = textureProj(ShadowMap, ShadowCoord);
+    float shadow = 1.0;
+    if( ShadowCoord.z >= 0 ) {
+        shadow = textureProj(ShadowMap, ShadowCoord);
+    }
 
     // If the fragment is in shadow, use ambient light only.
     FragColor = vec4(diffAndSpec * shadow + ambient, 1.0);

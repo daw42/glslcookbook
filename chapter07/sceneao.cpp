@@ -13,7 +13,6 @@ using std::endl;
 using glm::vec3;
 
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform.hpp>
 
 SceneAo::SceneAo() {}
 
@@ -89,8 +88,8 @@ void SceneAo::resize(int w, int h)
 void SceneAo::compileAndLinkShader()
 {
 	try {
-		prog.compileShader("shader/ao.vs",GLSLShader::VERTEX);
-		prog.compileShader("shader/ao.fs",GLSLShader::FRAGMENT);
+		prog.compileShader("shader/ao.vs");
+		prog.compileShader("shader/ao.fs");
     	prog.link();
     	prog.use();
     } catch(GLSLProgramException &e ) {
