@@ -12,7 +12,6 @@ using std::endl;
 using glm::vec3;
 
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform2.hpp>
 
 #include<iostream>
 
@@ -66,10 +65,10 @@ void SceneWood::initScene()
     prog.setUniform("NoiseTex", 0);
 
     mat4 slice;
-    slice *= glm::rotate(glm::radians(10.0f), vec3(1.0, 0.0, 0.0));
-    slice *= glm::rotate(glm::radians(-20.0f), vec3(0.0,0.0,1.0));
-    slice *= glm::scale(vec3(40.0, 40.0, 1.0));
-    slice *= glm::translate( vec3(-0.35, -0.5, 2.0));
+    slice = glm::rotate(slice, glm::radians(10.0f), vec3(1.0, 0.0, 0.0));
+    slice = glm::rotate(slice, glm::radians(-20.0f), vec3(0.0,0.0,1.0));
+    slice = glm::scale(slice, vec3(40.0, 40.0, 1.0));
+    slice = glm::translate(slice, vec3(-0.35, -0.5, 2.0));
 
     prog.setUniform("Slice", slice);
 

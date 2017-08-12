@@ -11,7 +11,6 @@ using std::cerr;
 using glm::vec3;
 
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform.hpp>
 #include <glm/gtc/constants.hpp>
 
 SceneEdge::SceneEdge() : width(800), height(600), angle(0.0f), tPrev(0.0f), rotSpeed(glm::pi<float>() / 4.0f)
@@ -160,8 +159,8 @@ void SceneEdge::pass1()
     prog.setUniform("Material.Shininess", 100.0f);
 
     model = mat4(1.0f);
-    model *= glm::translate(vec3(0.0f,0.0f,0.0f));
-    model *= glm::rotate(glm::radians(-90.0f), vec3(1.0f,0.0f,0.0f));
+    model = glm::translate(model, vec3(0.0f,0.0f,0.0f));
+    model = glm::rotate(model, glm::radians(-90.0f), vec3(1.0f,0.0f,0.0f));
     setMatrices();
     teapot->render();
 
@@ -170,7 +169,7 @@ void SceneEdge::pass1()
     prog.setUniform("Material.Ka", 0.1f, 0.1f, 0.1f);
     prog.setUniform("Material.Shininess", 1.0f);
     model = mat4(1.0f);
-    model *= glm::translate(vec3(0.0f,-0.75f,0.0f));
+    model = glm::translate(model, vec3(0.0f,-0.75f,0.0f));
     setMatrices();
     plane->render();
 
@@ -180,8 +179,8 @@ void SceneEdge::pass1()
     prog.setUniform("Material.Ka", 0.1f, 0.1f, 0.1f);
     prog.setUniform("Material.Shininess", 100.0f);
     model = mat4(1.0f);
-    model *= glm::translate(vec3(1.0f,1.0f,3.0f));
-    model *= glm::rotate(glm::radians(90.0f), vec3(1.0f,0.0f,0.0f));
+    model = glm::translate(model, vec3(1.0f,1.0f,3.0f));
+    model = glm::rotate(model, glm::radians(90.0f), vec3(1.0f,0.0f,0.0f));
     setMatrices();
     torus->render();
 }
