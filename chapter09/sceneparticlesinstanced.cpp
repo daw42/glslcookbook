@@ -11,7 +11,6 @@ using std::cerr;
 using glm::vec3;
 
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform.hpp>
 
 SceneParticlesInstanced::SceneParticlesInstanced() : width(800), height(600), time(0), deltaT(0) {}
 
@@ -26,7 +25,6 @@ void SceneParticlesInstanced::initScene()
     plane = new VBOPlane(13.0f, 10.0f, 200, 2);
     float c = 0.15f;
     torus = new VBOTorus(0.7f * c, 0.3f * c, 20, 20);
-    projection = mat4(1.0f);
 
 	angle = glm::half_pi<float>();
     model = mat4(1.0f);

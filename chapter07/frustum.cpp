@@ -2,8 +2,7 @@
 #include "glutils.h"
 #include <limits>
 #include <cstdio>
-
-#include <glm/gtx/transform.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 Frustum::Frustum(Projection::ProjType t) : type(t)
 {

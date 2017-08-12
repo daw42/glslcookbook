@@ -27,8 +27,5 @@ void main()
 {
     float mixVal = edgeMix();
 
-    if( gl_FrontFacing )
-        FragColor = mix( QuadColor, LineColor, mixVal );
-    else
-        FragColor = vec4(1.0,0.0,0.0,1.0);
+    FragColor = mix( QuadColor, LineColor, mixVal );
 }

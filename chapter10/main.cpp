@@ -31,11 +31,12 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 
 void initializeGL() {
 
+#ifndef __APPLE__
   glDebugMessageCallback(GLUtils::debugCallback, NULL);
   glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, NULL, GL_TRUE);
   glDebugMessageInsert(GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_MARKER, 0,
   GL_DEBUG_SEVERITY_NOTIFICATION, -1 , "Start debugging");
-
+#endif
     glClearColor(0.5f,0.5f,0.5f,1.0f);
     scene->initScene();
 }
@@ -82,10 +83,16 @@ int main(int argc, char *argv[])
 	// Initialize GLFW
 	if( !glfwInit() ) exit( EXIT_FAILURE );
 
-	// Select OpenGL 4.4 with a forward compatible core profile.
-	glfwWindowHint( GLFW_CONTEXT_VERSION_MAJOR, 4 );
-	glfwWindowHint( GLFW_CONTEXT_VERSION_MINOR, 3 );
-	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+#ifdef __APPLE__
+    // Select OpenGL 4.1
+    glfwWindowHint( GLFW_CONTEXT_VERSION_MAJOR, 4 );
+    glfwWindowHint( GLFW_CONTEXT_VERSION_MINOR, 1 );
+#else
+    // Select OpenGL 4.3
+  	glfwWindowHint( GLFW_CONTEXT_VERSION_MAJOR, 4 );
+  	glfwWindowHint( GLFW_CONTEXT_VERSION_MINOR, 3 );
+#endif
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
         glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
@@ -101,17 +108,18 @@ int main(int argc, char *argv[])
 
         glfwSetKeyCallback(window, key_callback);
 
-	// Load the OpenGL functions.
-	if( ogl_LoadFunctions() == ogl_LOAD_FAILED ) {
-		glfwTerminate();
-		exit(EXIT_FAILURE);
-	}
+    // Get framebuffer size
+    int fbw, fbh;
+    glfwGetFramebufferSize(window, &fbw, &fbh);
+
+    // Load the OpenGL functions.
+    if(!gladLoadGL()) { exit(-1); }
 
 	GLUtils::dumpGLInfo();
 
 	// Initialization
 	initializeGL();
-	resizeGL(WIN_WIDTH,WIN_HEIGHT);
+	resizeGL(fbw, fbh);
 
 	// Enter the main loop
 	mainLoop();
@@ -132,7 +140,7 @@ string parseCLArgs(int argc, char ** argv) {
 	string recipe = argv[1];
 
 	if( recipe == "mandelbrot" ) {
-		scene = new SceneMandelbrot();
+        scene = new SceneMandelbrot();
         } else if( recipe == "cloth" ) {
           scene = new SceneCloth();
         } else if( recipe == "particles" ) {
@@ -149,6 +157,7 @@ string parseCLArgs(int argc, char ** argv) {
 }
 
 void printHelpInfo(const char * exeFile) {
+    printf("Note: Chapter 10 examples are not supported on MacOS.\n");
 	printf("Usage: %s recipe-name\n\n", exeFile);
 	printf("Recipe names: \n");
         printf("  particles            : Simple particle simulation\n");

@@ -11,7 +11,6 @@ using std::endl;
 using glm::vec3;
 
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform.hpp>
 
 SceneNightVision::SceneNightVision() : width(800), height(600) {}
 
@@ -75,14 +74,17 @@ void SceneNightVision::initScene()
     pass1Index = glGetSubroutineIndex( programHandle, GL_FRAGMENT_SHADER, "pass1");
     pass2Index = glGetSubroutineIndex( programHandle, GL_FRAGMENT_SHADER, "pass2");
 
-    prog.setUniform("Width", 800);
-    prog.setUniform("Height", 600);
-    prog.setUniform("Radius", 285.0f);
+    prog.setUniform("Width", width);
+    prog.setUniform("Height", height);
+    prog.setUniform("Radius", width / 3.5f);
     prog.setUniform("Light.Intensity", vec3(1.0f,1.0f,1.0f) );
 
     noiseTex = NoiseTex::generatePeriodic2DTex(200.0f, 0.5f, 512, 512);
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, noiseTex);
+
+    prog.setUniform("RenderTex", 0);
+    prog.setUniform("NoiseTex", 1);
 }
 
 void SceneNightVision::setupFBO() {
@@ -127,6 +129,7 @@ void SceneNightVision::update( float t )
 void SceneNightVision::render()
 {
     pass1();
+    glFlush();
     pass2();
 }
 
@@ -147,8 +150,8 @@ void SceneNightVision::pass1()
     prog.setUniform("Material.Shininess", 100.0f);
 
     model = mat4(1.0f);
-    model *= glm::translate(vec3(0.0f,0.0f,0.0f));
-    model *= glm::rotate(glm::radians(-90.0f), vec3(1.0f,0.0f,0.0f));
+    model = glm::translate(model, vec3(0.0f,0.0f,0.0f));
+    model = glm::rotate(model, glm::radians(-90.0f), vec3(1.0f,0.0f,0.0f));
     setMatrices();
     teapot->render();
 
@@ -157,7 +160,7 @@ void SceneNightVision::pass1()
     prog.setUniform("Material.Ka", 0.1f, 0.1f, 0.1f);
     prog.setUniform("Material.Shininess", 1.0f);
     model = mat4(1.0f);
-    model *= glm::translate(vec3(0.0f,-0.75f,0.0f));
+    model = glm::translate(model, vec3(0.0f,-0.75f,0.0f));
     setMatrices();
     plane->render();
 
@@ -167,8 +170,8 @@ void SceneNightVision::pass1()
     prog.setUniform("Material.Ka", 0.1f, 0.1f, 0.1f);
     prog.setUniform("Material.Shininess", 100.0f);
     model = mat4(1.0f);
-    model *= glm::translate(vec3(1.0f,1.0f,3.0f));
-    model *= glm::rotate(glm::radians(90.0f), vec3(1.0f,0.0f,0.0f));
+    model = glm::translate(model, vec3(1.0f,1.0f,3.0f));
+    model = glm::rotate(model, glm::radians(90.0f), vec3(1.0f,0.0f,0.0f));
     setMatrices();
     torus->render();
 }
@@ -214,8 +217,8 @@ void SceneNightVision::resize(int w, int h)
 void SceneNightVision::compileAndLinkShader()
 {
 	try {
-		prog.compileShader("shader/nightvision.vs",GLSLShader::VERTEX);
-		prog.compileShader("shader/nightvision.fs",GLSLShader::FRAGMENT);
+		prog.compileShader("shader/nightvision.vs");
+		prog.compileShader("shader/nightvision.fs");
     	prog.link();
     	prog.use();
     } catch(GLSLProgramException &e ) {

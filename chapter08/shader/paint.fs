@@ -25,7 +25,6 @@ layout ( location = 0 ) out vec4 FragColor;
 
 vec3 phongModel(vec3 kd) {
     vec3 n = Normal;
-    if( !gl_FrontFacing ) n = -n;
     vec3 s = normalize(Light.Position.xyz - Position.xyz);
     vec3 v = normalize(-Position.xyz);
     vec3 r = reflect( -s, n );

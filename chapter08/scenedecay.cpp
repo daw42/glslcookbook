@@ -11,7 +11,6 @@ using std::endl;
 using glm::vec3;
 
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform.hpp>
 
 #include<iostream>
 
@@ -85,8 +84,8 @@ void SceneDecay::resize(int w, int h)
 void SceneDecay::compileAndLinkShader()
 {
 	try {
-		prog.compileShader("shader/decay.vs",GLSLShader::VERTEX);
-		prog.compileShader("shader/decay.fs",GLSLShader::FRAGMENT);
+		prog.compileShader("shader/decay.vs");
+		prog.compileShader("shader/decay.fs");
     	prog.link();
     	prog.use();
     } catch(GLSLProgramException &e ) {

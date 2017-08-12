@@ -11,7 +11,6 @@ using std::cerr;
 using glm::vec3;
 
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform.hpp>
 
 SceneWave::SceneWave() : width(800), height(600), time(0) {}
 
@@ -24,7 +23,6 @@ void SceneWave::initScene()
     glEnable(GL_DEPTH_TEST);
 
     plane = new VBOPlane(13.0f, 10.0f, 200, 2);
-    projection = mat4(1.0f);
 
     prog.setUniform("Light.Intensity", vec3(1.0f,1.0f,1.0f) );
 
@@ -49,8 +47,8 @@ void SceneWave::render()
     prog.setUniform("Material.Ka", 0.2f, 0.2f, 0.2f);
     prog.setUniform("Material.Shininess", 100.0f);
     model = mat4(1.0f);
-    model *= glm::rotate(glm::radians(-10.0f), vec3(0.0f,0.0f,1.0f));
-    model *= glm::rotate(glm::radians(50.0f), vec3(1.0f,0.0f,0.0f));
+    model = glm::rotate(model, glm::radians(-10.0f), vec3(0.0f,0.0f,1.0f));
+    model = glm::rotate(model, glm::radians(50.0f), vec3(1.0f,0.0f,0.0f));
     setMatrices();
     plane->render();
 }

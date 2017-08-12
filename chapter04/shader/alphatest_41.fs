@@ -45,12 +45,7 @@ void main() {
     if(alphaMap.a < 0.15 )
         discard;
     else {
-        if( gl_FrontFacing ) {
-            FragColor = vec4( phongModel(Position,Normal), 1.0 ) *
+        FragColor = vec4( phongModel(Position,Normal), 1.0 ) *
                 baseColor;
-        } else {
-            FragColor = vec4( phongModel(Position,-Normal), 1.0 ) *
-                baseColor;
-        }
     }
 }

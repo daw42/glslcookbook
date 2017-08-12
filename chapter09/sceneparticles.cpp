@@ -13,7 +13,6 @@ using std::cerr;
 using glm::vec3;
 
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform.hpp>
 
 SceneParticles::SceneParticles() : width(800), height(600), time(0) {}
 
@@ -29,9 +28,6 @@ void SceneParticles::initScene()
 
     // Set the point size
     glPointSize(10.0f);
-
-    plane = new VBOPlane(13.0f, 10.0f, 200, 2);
-    projection = mat4(1.0f);
 
 	angle = glm::half_pi<float>();
 
@@ -102,7 +98,6 @@ void SceneParticles::initBuffers()
     glBindBuffer(GL_ARRAY_BUFFER,0);
     delete [] data;
 
-    // Attach these to the torus's vertex array
     glGenVertexArrays(1, &particles);
 	glBindVertexArray(particles);
     glBindBuffer(GL_ARRAY_BUFFER, initVel);
@@ -155,8 +150,8 @@ void SceneParticles::resize(int w, int h)
 void SceneParticles::compileAndLinkShader()
 {
 	try {
-		prog.compileShader("shader/particles.vs",GLSLShader::VERTEX);
-		prog.compileShader("shader/particles.fs",GLSLShader::FRAGMENT);
+		prog.compileShader("shader/particles.vs");
+		prog.compileShader("shader/particles.fs");
 
     	prog.link();
     	prog.use();

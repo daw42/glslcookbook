@@ -1,4 +1,4 @@
-#version 430
+#version 410
 
 in vec3 Position;
 in vec3 Normal;
@@ -7,8 +7,8 @@ in vec2 TexCoord;
 uniform int Width;
 uniform int Height;
 uniform float Radius;
-layout(binding=0) uniform sampler2D RenderTex;
-layout(binding=1) uniform sampler2D NoiseTex;
+uniform sampler2D RenderTex;
+uniform sampler2D NoiseTex;
 
 subroutine vec4 RenderPassType();
 subroutine uniform RenderPassType RenderPass;

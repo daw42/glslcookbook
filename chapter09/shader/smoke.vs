@@ -1,4 +1,4 @@
-#version 430
+#version 410
 
 subroutine void RenderPassType();
 subroutine uniform RenderPassType RenderPass;
@@ -56,7 +56,7 @@ void render() {
         Transp = 1.0 - agePct;
 
         // Intel cards crash when using gl_PointSize
-//        gl_PointSize = mix(MinParticleSize,MaxParticleSize,agePct);
+        gl_PointSize = mix(MinParticleSize,MaxParticleSize,agePct);
 
     }
     gl_Position = MVP * vec4(VertexPosition, 1.0);

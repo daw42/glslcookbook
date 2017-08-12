@@ -13,7 +13,6 @@ using std::cerr;
 using glm::vec3;
 
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform.hpp>
 
 SceneParticlesFeedback::SceneParticlesFeedback() :
 width(800), height(600), drawBuf(1), time(0), deltaT(0) {}
@@ -33,7 +32,6 @@ void SceneParticlesFeedback::initScene()
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    projection = mat4(1.0f);
     model = mat4(1.0f);
 
     initBuffers();

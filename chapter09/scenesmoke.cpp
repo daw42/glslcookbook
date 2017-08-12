@@ -13,7 +13,6 @@ using std::cerr;
 using glm::vec3;
 
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform.hpp>
 
 SceneSmoke::SceneSmoke() :
 width(800), height(600), drawBuf(1), time(0), deltaT(0) {}
@@ -28,13 +27,12 @@ void SceneSmoke::initScene()
 
     glClearColor(1.0f,1.0f,1.0f,1.0f);
 
-    // Intel cards crash when using GL_PROGRAM_POINT_SIZE
-    //  glEnable(GL_PROGRAM_POINT_SIZE);
+    glEnable(GL_PROGRAM_POINT_SIZE);
     glPointSize(10.0);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    projection = mat4(1.0f);
+   // projection = mat4(1.0f);
     model = mat4(1.0f);
 
     initBuffers();

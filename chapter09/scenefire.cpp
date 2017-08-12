@@ -13,7 +13,6 @@ using std::cerr;
 using glm::vec3;
 
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform.hpp>
 
 SceneFire::SceneFire() :
   width(800), height(600), drawBuf(1), time(0), deltaT(0) {}
@@ -31,8 +30,6 @@ void SceneFire::initScene()
     glPointSize(50.0f);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-    projection = mat4(1.0f);
 
 	angle = glm::half_pi<float>();
     model = mat4(1.0f);
@@ -230,8 +227,8 @@ void SceneFire::resize(int w, int h)
 void SceneFire::compileAndLinkShader()
 {
 	try {
-		prog.compileShader("shader/fire.vs",GLSLShader::VERTEX);
-		prog.compileShader("shader/fire.fs",GLSLShader::FRAGMENT);
+		prog.compileShader("shader/fire.vs");
+		prog.compileShader("shader/fire.fs");
 
 	    //////////////////////////////////////////////////////
 		// Setup the transform feedback (must be done before linking the program)
