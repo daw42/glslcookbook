@@ -16,12 +16,12 @@ To compile these examples, you'll need the following:
 
 Compiling the examples
 ----------------------
-All recipes have been tested on Linux, Windows, and MacOS.  Note that the
+The example code builds with [CMake][].  Note that the
 examples for Chapter 10 will not function on MacOS due to lack of support for
 compute shaders on that platform.
 
 1.  Install [GLFW][] by following the instructions on their [web site][GLFW].
-2.  Install the latest version of [GLM][].  Note that for cmake to find GLM      
+2.  Install the latest version of [GLM][].  Note that for [CMake][] to find GLM
     correctly, you need to run the installer or install GLM from your
     favorite package manager.
 3.  Download the example code from [github][ghcookbook], or clone using git.
@@ -29,11 +29,11 @@ compute shaders on that platform.
     set the variables `CMAKE_PREFIX_PATH` to help cmake find them.
 5.  Compile by running `make`.
 
-Any problems, create an issue on [github][ghcookbook].
+Any problems, [create an issue](https://github.com/daw42/glslcookbook/issues) on [github][ghcookbook].
 
 Tips for compiling for Windows with Visual Studio
 ---------------------------------------------
-* Use the Visual Studio target in cmake:  `-G "Visual Studio "`, open the
+* Use the Visual Studio target in [CMake][]:  `-G "Visual Studio..."`, open the
   Visual Studio solution.  You should see one project per chapter.
 * Each chapter requires a command line argument to choose a recipe.  When
   running in VS, be sure to set the 'Command Argument' under 'Properties' for
@@ -44,9 +44,9 @@ OpenGL Function Loading
 
 The OpenGL header file and a function loader for a 4.3 core profile are
 included with this project.  They were generated using
-[GLAD][GLAD].
+[GLAD][].
 
-The code has been tested with OpenGL 4.3 on Windows and OpenGL 4.1 on MacOS.
+The code has been tested with OpenGL 4.3 on Windows/Linux and OpenGL 4.1 on MacOS.
 
 [GLM]: http://glm.g-truc.net
 [GLFW]:  http://glfw.org
