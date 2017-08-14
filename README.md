@@ -2,17 +2,23 @@ Example code from the [OpenGL Shading Language Cookbook][cookbook]
 =========================================================
 
 The example code from the [OpenGL Shading Language Cookbook][cookbook],
-by David Wolff.
+by David Wolff and published by Packt Publishing, 2013 (ISBN: 9781782167020).
+
+**NEW**:
+ * Most examples now run on MacOS!
+ * CMake build now uses package config files when finding GLM and GLFW.  This should make for a more
+ streamlined configuration.  Use `CMAKE_PREFIX_PATH` to point CMake to your installs.
+ * Examples now properly support high-density displays.
 
 Requirements
 -------------
 To compile these examples, you'll need the following:
 
 * The [GLM Mathematics Library][GLM] version 0.9.6 or later.  Note that versions
-  prior to 0.9.6 will not work properly because of a switch from degrees to
+  prior to 0.9.6 may not work properly because of a switch from degrees to
   radians.  GLM 0.9.5 will work, but you'll need to add `#define GLM_FORCE_RADIANS`
   prior to including the glm header files.
-* The [GLFW][] library version 3.0 or later.
+* [GLFW][] version 3.0 or later.
 
 Compiling the examples
 ----------------------
@@ -42,9 +48,9 @@ Tips for compiling for Windows with Visual Studio
 OpenGL Function Loading
 -----------------------
 
-The OpenGL header file and a function loader for a 4.3 core profile are
+An OpenGL header file and a function loader for a 4.3 core profile are
 included with this project.  They were generated using
-[GLAD][].
+[GLAD][].  This loader should also work on MacOS under a 4.1 core profile, but of course not all functions will load.
 
 The code has been tested with OpenGL 4.3 on Windows/Linux and OpenGL 4.1 on MacOS.
 
@@ -53,5 +59,5 @@ The code has been tested with OpenGL 4.3 on Windows/Linux and OpenGL 4.1 on MacO
 [ghcookbook]:  http://github.com/daw42/glslcookbook
 [cookbook]: http://www.packtpub.com/opengl-4-shading-language-cookbook-second-edition/book
 [GLLoadGen]:  https://bitbucket.org/alfonse/glloadgen/wiki/Home
-[CMake]: http://www.cmake.org/cmake/resources/software.html
+[CMake]: http://www.cmake.org/
 [GLAD]: https://github.com/Dav1dde/glad
