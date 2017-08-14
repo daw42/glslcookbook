@@ -7,7 +7,7 @@ by David Wolff and published by Packt Publishing, 2013 (ISBN: 9781782167020).
 **NEW**:
  * Most examples now run on MacOS!
  * CMake build now uses package config files when finding GLM and GLFW.  This should make for a more
- streamlined configuration.  Use `CMAKE_PREFIX_PATH` to point CMake to your installs.
+ streamlined configuration.  Use [`CMAKE_PREFIX_PATH`][cmake_prefix] to point CMake to your installs.
  * Examples now properly support high-density displays.
 
 Requirements
@@ -28,11 +28,11 @@ compute shaders on that platform.
 
 1.  Install [GLFW][] by following the instructions on their [web site][GLFW].
 2.  Install the latest version of [GLM][].  Note that for [CMake][] to find GLM
-    correctly, you need to run the installer or install GLM from your
-    favorite package manager.
-3.  Download the example code from [github][ghcookbook], or clone using git.
+    correctly, you need to run the install "build" (e.g. `make install`) or install GLM from your
+    favorite package manager.  Otherwise, the CMake config files will not be created/available.
+3.  Download this example code from [github][ghcookbook], or clone using git.
 4.  Run cmake.  If cmake has difficulties finding the GLFW or GLM installations,
-    set the variables `CMAKE_PREFIX_PATH` to help cmake find them.
+    set the variable [`CMAKE_PREFIX_PATH`][cmake_prefix] to help cmake find them.
 5.  Compile by running `make`.
 
 Any problems, [create an issue](https://github.com/daw42/glslcookbook/issues) on [github][ghcookbook].
@@ -61,3 +61,4 @@ The code has been tested with OpenGL 4.3 on Windows/Linux and OpenGL 4.1 on MacO
 [GLLoadGen]:  https://bitbucket.org/alfonse/glloadgen/wiki/Home
 [CMake]: http://www.cmake.org/
 [GLAD]: https://github.com/Dav1dde/glad
+[cmake_prefix]: https://cmake.org/cmake/help/latest/variable/CMAKE_PREFIX_PATH.html
