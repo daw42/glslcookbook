@@ -27,8 +27,7 @@ uniform MaterialInfo Material;
 
 layout( location = 0 ) out vec4 FragColor;
 
-uniform float Weight[5] = float[]( 0.2270270270, 0.1945945946, 0.1216216216,
-                                   0.0540540541, 0.0162162162 );
+uniform float Weight[5];
 
 vec3 phongModel( vec3 pos, vec3 norm )
 {
