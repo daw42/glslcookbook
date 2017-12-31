@@ -22,9 +22,6 @@ void SceneADS::initScene()
 
     torus = new VBOTorus(0.7f, 0.3f, 50, 50);
 
-    model = mat4(1.0f);
-    model = glm::rotate(model, glm::radians(-35.0f), vec3(1.0f,0.0f,0.0f));
-    model = glm::rotate(model, glm::radians(35.0f), vec3(0.0f,1.0f,0.0f));
     view = glm::lookAt(vec3(0.0f,0.0f,2.0f), vec3(0.0f,0.0f,0.0f), vec3(0.0f,1.0f,0.0f));
     projection = mat4(1.0f);
     vec4 worldLight = vec4(5.0f,5.0f,2.0f,1.0f);
