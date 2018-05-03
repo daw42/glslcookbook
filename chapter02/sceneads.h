@@ -3,25 +3,16 @@
 
 #include "scene.h"
 #include "glslprogram.h"
-#include "vbotorus.h"
-
+#include "torus.h"
 #include "cookbookogl.h"
-
-#include <glm/glm.hpp>
-using glm::mat4;
 
 class SceneADS : public Scene
 {
 private:
     GLSLProgram prog;
 
-    int width, height;
-    VBOTorus *torus;
+    Torus torus;
     float angle;
-
-    mat4 model;
-    mat4 view;
-    mat4 projection;
 
     void setMatrices();
     void compileAndLinkShader();

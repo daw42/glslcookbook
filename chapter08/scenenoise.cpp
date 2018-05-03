@@ -1,21 +1,15 @@
 #include "scenenoise.h"
+#include "noisetex.h"
 
-#include <cstdio>
-#include <cstdlib>
 #include <iostream>
 using std::cerr;
 using std::endl;
 
-#include "glutils.h"
-#include "noisetex.h"
-
-using glm::vec3;
-
 #include <glm/gtc/matrix_transform.hpp>
+using glm::vec3;
+using glm::mat4;
 
-#include<iostream>
-
-SceneNoise::SceneNoise() : width(800), height(600) { }
+SceneNoise::SceneNoise() { }
 
 void SceneNoise::initScene()
 {

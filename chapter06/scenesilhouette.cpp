@@ -1,19 +1,19 @@
 #include "scenesilhouette.h"
 
-#include <cstdio>
-#include <cstdlib>
 #include <iostream>
 using std::cerr;
 using std::endl;
 
-#include "glutils.h"
-
-using glm::vec3;
-
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/constants.hpp>
+using glm::vec3;
+using glm::mat4;
+using glm::vec4;
+using glm::mat3;
 
-SceneSilhouette::SceneSilhouette() : angle(0.0f), tPrev(0.0f), rotSpeed(glm::pi<float>() / 8.0f) { }
+SceneSilhouette::SceneSilhouette() : angle(0.0f), tPrev(0.0f), rotSpeed(glm::pi<float>() / 8.0f) {
+    ogre = ObjMesh::loadWithAdjacency("../media/bs_ears.obj");
+}
 
 void SceneSilhouette::initScene()
 {
@@ -22,8 +22,6 @@ void SceneSilhouette::initScene()
     glClearColor(0.5f,0.5f,0.5f,1.0f);
 
     glEnable(GL_DEPTH_TEST);
-
-    ogre = new VBOMeshAdj("../media/bs_ears.obj");
 
 	angle = glm::half_pi<float>();
 

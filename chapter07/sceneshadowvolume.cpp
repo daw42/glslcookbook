@@ -1,21 +1,20 @@
 #include "sceneshadowvolume.h"
-
-#include <cstdio>
-
-#include "glutils.h"
-#include "tgaio.h"
-
-using glm::vec3;
+#include "texture.h"
 
 #include <iostream>
 using std::cerr;
 using std::endl;
-#include <cstdlib>
 
 #include <glm/gtc/matrix_transform.hpp>
+using glm::vec3;
+using glm::mat4;
+using glm::vec4;
 
-SceneShadowVolume::SceneShadowVolume() : width(800), height(600), rotSpeed(0.1f), tPrev(0)
-{ }
+SceneShadowVolume::SceneShadowVolume() : rotSpeed(0.1f), tPrev(0),
+                                         plane(10.0f, 10.0f, 2, 2, 5.0f, 5.0f)
+{
+    spot = ObjMesh::loadWithAdjacency("../media/spot/spot_triangulated.obj");
+}
 
 void SceneShadowVolume::initScene()
 {
@@ -27,9 +26,6 @@ void SceneShadowVolume::initScene()
   glEnable(GL_DEPTH_TEST);
 
   angle = 0.0f;
-
-  plane = new VBOPlane(10.0f, 10.0f, 2, 2, 5.0f, 5.0f);
-  spot = new VBOMeshAdj("../media/spot/spot_triangulated.obj");
 
   // Set up the framebuffer object
   setupFBO();
@@ -57,8 +53,8 @@ void SceneShadowVolume::initScene()
 
   //Load textures
   glActiveTexture(GL_TEXTURE2);
-  spotTex = TGAIO::loadTex("../media/spot/spot_texture.tga");
-  brickTex = TGAIO::loadTex("../media/texture/brick1.tga");
+  spotTex = Texture::loadTexture("../media/spot/spot_texture.png");
+  brickTex = Texture::loadTexture("../media/texture/brick1.jpg");
 
   updateLight();
 
@@ -271,18 +267,18 @@ void SceneShadowVolume::drawScene(GLSLProgram &prog, bool onlyShadowCasters)
     prog.setUniform("Shininess", 1.0f);
     model = mat4(1.0f);
     setMatrices(prog);
-    plane->render();
+    plane.render();
     model = mat4(1.0f);
     model = glm::translate(model, vec3(-5.0f,5.0f,0.0f));
     model = glm::rotate(model, glm::radians(90.0f), vec3(1,0,0));
     model = glm::rotate(model, glm::radians(-90.0f),vec3(0.0f,0.0f,1.0f));
     setMatrices(prog);
-    plane->render();
+    plane.render();
     model = mat4(1.0f);
     model = glm::translate(model, vec3(0.0f,5.0f,-5.0f));
     model = glm::rotate(model, glm::radians(90.0f),vec3(1.0f,0.0f,0.0f));
     setMatrices(prog);
-    plane->render();
+    plane.render();
     model = mat4(1.0f);
   }
 }
@@ -293,7 +289,7 @@ void SceneShadowVolume::setMatrices(GLSLProgram &prog)
     prog.setUniform("ModelViewMatrix", mv);
     prog.setUniform("ProjMatrix", projection);
     prog.setUniform("NormalMatrix",
-                    mat3( vec3(mv[0]), vec3(mv[1]), vec3(mv[2]) ));
+                    glm::mat3( vec3(mv[0]), vec3(mv[1]), vec3(mv[2]) ));
 }
 
 void SceneShadowVolume::resize(int w, int h)

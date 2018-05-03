@@ -1,9 +1,10 @@
 #include "scenepointsprite.h"
+#include "texture.h"
 
-#include <cstdio>
 #include <cstdlib>
 using std::rand;
 using std::srand;
+
 #include <ctime>
 using std::time;
 
@@ -11,13 +12,9 @@ using std::time;
 using std::cerr;
 using std::endl;
 
-#include "bmpreader.h"
-
-#include "glutils.h"
-
-using glm::vec3;
-
 #include <glm/gtc/matrix_transform.hpp>
+using glm::vec3;
+using glm::mat4;
 
 ScenePointSprite::ScenePointSprite() {}
 
@@ -61,9 +58,8 @@ void ScenePointSprite::initScene()
     glBindVertexArray(0);
 
     // Load texture file
-    GLuint w, h;
-    const char * texName = "../media/texture/flower.bmp";
-    BMPReader::loadTex(texName, w, h);
+    const char * texName = "../media/texture/flower.png";
+    Texture::loadTexture(texName);
 
     prog.setUniform("SpriteTex", 0);
     prog.setUniform("Size2", 0.15f);

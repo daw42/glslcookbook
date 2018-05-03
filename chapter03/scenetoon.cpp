@@ -1,29 +1,25 @@
 #include "scenetoon.h"
 
-#include <cstdio>
-#include <cstdlib>
-
-#include "glutils.h"
-
 #include <iostream>
 using std::endl;
 using std::cerr;
 
-using glm::vec3;
-
 #include <glm/gtc/matrix_transform.hpp>
+using glm::vec3;
+using glm::mat4;
+using glm::vec4;
 
-SceneToon::SceneToon() : tPrev(0) { }
+SceneToon::SceneToon() : tPrev(0),
+                         plane(50.0f, 50.0f, 1, 1),
+                         teapot(14, glm::mat4(1.0f)),
+                         torus(1.75f * 0.75f, 0.75f * 0.75f, 50, 50)
+{ }
 
 void SceneToon::initScene()
 {
     compileAndLinkShader();
 
     glEnable(GL_DEPTH_TEST);
-
-    plane = new VBOPlane(50.0f, 50.0f, 1, 1);
-    teapot = new VBOTeapot(14, glm::mat4(1.0f));
-    torus = new VBOTorus(1.75f * 0.75f, 0.75f * 0.75f, 50, 50);
 
     view = glm::lookAt(vec3(4.0f,4.0f,6.5f), vec3(0.0f,0.75f,0.0f), vec3(0.0f,1.0f,0.0f));
     projection = mat4(1.0f);
@@ -58,7 +54,7 @@ void SceneToon::render()
     model = glm::rotate(model, glm::radians(45.0f), vec3(0.0f,1.0f,0.0f));
     model = glm::rotate(model, glm::radians(-90.0f), vec3(1.0f,0.0f,0.0f));
     setMatrices();
-    teapot->render();
+    teapot.render();
 
     prog.setUniform("Kd", 0.9f, 0.5f, 0.3f);
     prog.setUniform("Ka", 0.9f * 0.3f, 0.5f * 0.3f, 0.3f * 0.3f);
@@ -67,14 +63,14 @@ void SceneToon::render()
     model = glm::translate(model, vec3(-1.0f,0.75f,3.0f));
     model = glm::rotate(model, glm::radians(-90.0f), vec3(1.0f,0.0f,0.0f));
     setMatrices();
-    torus->render();
+    torus.render();
 
     prog.setUniform("Kd", 0.7f, 0.7f, 0.7f);
     prog.setUniform("Ka", 0.2f, 0.2f, 0.2f);
 
     model = mat4(1.0f);
     setMatrices();
-    plane->render();
+    plane.render();
 }
 
 void SceneToon::setMatrices()
@@ -82,7 +78,7 @@ void SceneToon::setMatrices()
     mat4 mv = view * model;
     prog.setUniform("ModelViewMatrix", mv);
     prog.setUniform("NormalMatrix",
-                    mat3( vec3(mv[0]), vec3(mv[1]), vec3(mv[2]) ));
+                    glm::mat3( vec3(mv[0]), vec3(mv[1]), vec3(mv[2]) ));
     prog.setUniform("MVP", projection * mv);
 }
 

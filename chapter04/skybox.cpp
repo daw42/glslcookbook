@@ -71,5 +71,5 @@ SkyBox::SkyBox()
 void SkyBox::render() const
 {
     glBindVertexArray(vaoHandle);
-    glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, ((GLubyte *)NULL + (0)));
+    glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 }

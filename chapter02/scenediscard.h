@@ -3,24 +3,16 @@
 
 #include "scene.h"
 #include "glslprogram.h"
-#include "vboteapot.h"
+#include "teapot.h"
 
 #include "cookbookogl.h"
-
-#include <glm/glm.hpp>
-using glm::mat4;
 
 class SceneDiscard : public Scene
 {
 private:
     GLSLProgram prog;
 
-    int width, height;
-    VBOTeapot *teapot;
-    
-    mat4 model;
-    mat4 view;
-    mat4 projection;
+    Teapot teapot;
 
     void setMatrices();
     void compileAndLinkShader();

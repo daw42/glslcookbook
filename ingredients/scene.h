@@ -1,10 +1,23 @@
-#ifndef SCENE_H
-#define SCENE_H
+#pragma once
+
+#include <glm/glm.hpp>
 
 class Scene
 {
+protected:
+	glm::mat4 model, view, projection;
+
 public:
-	Scene() : m_animate(true) { }
+    int width;
+    int height;
+
+	Scene() : m_animate(true), width(800), height(600) { }
+	virtual ~Scene() {}
+
+	void setDimensions( int w, int h ) {
+	    width = w;
+	    height = h;
+	}
 	
     /**
       Load textures, initialize shaders, etc.
@@ -33,5 +46,3 @@ public:
 protected:
 	bool m_animate;
 };
-
-#endif // SCENE_H

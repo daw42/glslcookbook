@@ -1,17 +1,14 @@
 #include "scenetexture.h"
+#include "texture.h"
+#include "stb/stb_image.h"
 
-#include <cstdio>
-#include <cstdlib>
 #include <iostream>
 using std::endl;
 using std::cerr;
 
-#include "tgaio.h"
-#include "glutils.h"
-
-using glm::vec3;
-
 #include <glm/gtc/matrix_transform.hpp>
+using glm::vec3;
+using glm::mat4;
 
 SceneTexture::SceneTexture() { }
 
@@ -20,8 +17,6 @@ void SceneTexture::initScene()
     compileAndLinkShader();
 
     glEnable(GL_DEPTH_TEST);
-
-    cube = new VBOCube();
 
     view = glm::lookAt(vec3(1.0f,1.25f,1.25f), vec3(0.0f,0.0f,0.0f), vec3(0.0f,1.0f,0.0f));
     projection = mat4(1.0f);
@@ -33,7 +28,7 @@ void SceneTexture::initScene()
     // Load texture file
     GLint w, h;
     glActiveTexture(GL_TEXTURE0);
-    GLubyte * data = TGAIO::read("../media/texture/brick1.tga", w, h);
+    GLubyte * data = Texture::loadPixels("../media/texture/brick1.jpg", w, h);
 
     GLuint texID;
     glGenTextures(1, &texID);
@@ -48,7 +43,7 @@ void SceneTexture::initScene()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
-    delete [] data;
+    stbi_image_free(data);
 
 #ifdef __APPLE__
     // Set the sampler uniform
@@ -62,7 +57,7 @@ void SceneTexture::render()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    prog.setUniform("Light.Position", vec4(0.0f,0.0f,0.0f,1.0f) );
+    prog.setUniform("Light.Position", glm::vec4(0.0f,0.0f,0.0f,1.0f) );
     prog.setUniform("Material.Kd", 0.9f, 0.9f, 0.9f);
     prog.setUniform("Material.Ks", 0.95f, 0.95f, 0.95f);
     prog.setUniform("Material.Ka", 0.1f, 0.1f, 0.1f);
@@ -70,7 +65,7 @@ void SceneTexture::render()
 
     model = mat4(1.0f);
     setMatrices();
-    cube->render();
+    cube.render();
 }
 
 void SceneTexture::setMatrices()
@@ -78,7 +73,7 @@ void SceneTexture::setMatrices()
     mat4 mv = view * model;
     prog.setUniform("ModelViewMatrix", mv);
     prog.setUniform("NormalMatrix",
-                    mat3( vec3(mv[0]), vec3(mv[1]), vec3(mv[2]) ));
+                    glm::mat3( vec3(mv[0]), vec3(mv[1]), vec3(mv[2]) ));
     prog.setUniform("MVP", projection * mv);
 }
 

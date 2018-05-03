@@ -3,14 +3,12 @@
 
 #include "scene.h"
 #include "glslprogram.h"
-#include "vboplane.h"
-#include "vbocube.h"
-#include "vbosphere.h"
+#include "cube.h"
+#include "sphere.h"
 
 #include "cookbookogl.h"
 
 #include <glm/glm.hpp>
-using glm::mat4;
 
 enum BufferNames {
   COUNTER_BUFFER = 0,
@@ -28,17 +26,13 @@ class SceneOit : public Scene
 private:
     GLSLProgram prog;
 
-    int width, height;
     GLuint buffers[2], fsQuad, headPtrTex;
     GLuint pass1Index, pass2Index;
     GLuint clearBuf;
 
-    VBOCube *cube;
-    VBOSphere *sphere;
+    Cube cube;
+    Sphere sphere;
 
-    mat4 model;
-    mat4 view;
-    mat4 projection;
     float angle, tPrev, rotSpeed;
 
     void setMatrices();

@@ -1,18 +1,17 @@
 #include "sceneshadewire.h"
 
-#include <cstdio>
-#include <cstdlib>
 #include <iostream>
 using std::cerr;
 using std::endl;
 
-#include "glutils.h"
-
-using glm::vec3;
-
 #include <glm/gtc/matrix_transform.hpp>
+using glm::vec3;
+using glm::vec4;
+using glm::mat4;
 
-SceneShadeWire::SceneShadeWire() {}
+SceneShadeWire::SceneShadeWire() {
+    ogre = ObjMesh::load("../media/bs_ears.obj");
+}
 
 void SceneShadeWire::initScene()
 {
@@ -21,7 +20,6 @@ void SceneShadeWire::initScene()
 
     glEnable(GL_DEPTH_TEST);
 
-    ogre = new VBOMesh("../media/bs_ears.obj");
     float c = 1.5f;
     projection = glm::ortho(-0.4f * c, 0.4f * c, -0.3f *c, 0.3f*c, 0.1f, 100.0f);
 
@@ -61,7 +59,7 @@ void SceneShadeWire::setMatrices()
     mat4 mv = view * model;
     prog.setUniform("ModelViewMatrix", mv);
     prog.setUniform("NormalMatrix",
-                    mat3( vec3(mv[0]), vec3(mv[1]), vec3(mv[2]) ));
+                    glm::mat3( vec3(mv[0]), vec3(mv[1]), vec3(mv[2]) ));
     prog.setUniform("MVP", projection * mv);
     prog.setUniform("ViewportMatrix", viewport);
 }

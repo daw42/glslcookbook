@@ -1,16 +1,14 @@
 #include "scenetessteapotdepth.h"
 
-#include <cstdio>
-#include <cstdlib>
 #include <iostream>
 using std::cerr;
 using std::endl;
 
-#include "glutils.h"
-
-using glm::vec3;
-
 #include <glm/gtc/matrix_transform.hpp>
+using glm::vec3;
+using glm::vec4;
+using glm::mat4;
+using glm::mat3;
 
 SceneTessTeapotDepth::SceneTessTeapotDepth() { }
 
@@ -21,8 +19,6 @@ void SceneTessTeapotDepth::initScene()
     glClearColor(0.5f,0.5f,0.5f,1.0f);
 
     glEnable(GL_DEPTH_TEST);
-
-    teapot = new VBOTeapotPatch();
 
     ///////////// Uniforms ////////////////////
     prog.setUniform("MinTessLevel", 2);
@@ -56,28 +52,28 @@ void SceneTessTeapotDepth::render()
     model = glm::translate(model, vec3(0.0f,-1.5f,0.0f));
     model = glm::rotate(model,glm::radians(-90.0f), vec3(1.0f,0.0f,0.0f));
     setMatrices();
-    teapot->render();
+    teapot.render();
 
     model = mat4(1.0f);
     model = glm::translate(model, vec3(2.0f, 0.0f, -5.0f));
     model = glm::translate(model, vec3(0.0f,-1.5f,0.0f));
     model = glm::rotate(model,glm::radians(-90.0f), vec3(1.0f,0.0f,0.0f));
     setMatrices();
-    teapot->render();
+    teapot.render();
 
     model = mat4(1.0f);
     model = glm::translate(model, vec3(7.0f, 0.0f, -10.0f));
     model = glm::translate(model, vec3(0.0f,-1.5f,0.0f));
     model = glm::rotate(model,glm::radians(-90.0f), vec3(1.0f,0.0f,0.0f));
     setMatrices();
-    teapot->render();
+    teapot.render();
 
     model = mat4(1.0f);
     model = glm::translate(model, vec3(17.0f, 0.0f, -20.0f));
     model = glm::translate(model, vec3(0.0f,-1.5f,0.0f));
     model = glm::rotate(model,glm::radians(-90.0f), vec3(1.0f,0.0f,0.0f));
     setMatrices();
-    teapot->render();
+    teapot.render();
 
     glFinish();
 }

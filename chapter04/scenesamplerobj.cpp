@@ -1,27 +1,22 @@
 #include "scenesamplerobj.h"
+#include "texture.h"
 
-#include <cstdio>
-#include <cstdlib>
 #include <iostream>
 using std::endl;
 using std::cerr;
 
-#include "tgaio.h"
-#include "glutils.h"
-
-using glm::vec3;
-
 #include <glm/gtc/matrix_transform.hpp>
+using glm::vec3;
+using glm::mat4;
 
-SceneSamplerObj::SceneSamplerObj() { }
+SceneSamplerObj::SceneSamplerObj() : plane(10.0f, 10.0f, 1, 1) { }
 
 void SceneSamplerObj::initScene()
 {
     compileAndLinkShader();
 
     glEnable(GL_DEPTH_TEST);
-	  glClearColor( 0.9f, 0.9f, 0.9f, 1.0f );
-    plane = new VBOPlane(10.0f, 10.0f, 1, 1);
+    glClearColor( 0.9f, 0.9f, 0.9f, 1.0f );
 
     view = glm::lookAt(vec3(0.0f,0.1f,6.0f), vec3(0.0f,0.0f,0.0f), vec3(0.0f,1.0f,0.0f));
     projection = mat4(1.0f);
@@ -89,7 +84,7 @@ void SceneSamplerObj::render()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    prog.setUniform("Light.Position", vec4(0.0f,20.0f,0.0f,1.0f) );
+    prog.setUniform("Light.Position", glm::vec4(0.0f,20.0f,0.0f,1.0f) );
     prog.setUniform("Material.Kd", 0.9f, 0.9f, 0.9f);
     prog.setUniform("Material.Ks", 0.95f, 0.95f, 0.95f);
     prog.setUniform("Material.Ka", 0.1f, 0.1f, 0.1f);
@@ -100,12 +95,12 @@ void SceneSamplerObj::render()
     model = glm::translate(rot, glm::vec3(-5.01f,0.f,0.f));
     setMatrices();
     glBindSampler(0, nearestSampler);
-    plane->render();
+    plane.render();
 
 	model = glm::translate(rot, glm::vec3(5.01f,0.f,0.f));
     setMatrices();
     glBindSampler(0, linearSampler);
-    plane->render();
+    plane.render();
 }
 
 void SceneSamplerObj::setMatrices()
@@ -113,7 +108,7 @@ void SceneSamplerObj::setMatrices()
     mat4 mv = view * model;
     prog.setUniform("ModelViewMatrix", mv);
     prog.setUniform("NormalMatrix",
-                    mat3( vec3(mv[0]), vec3(mv[1]), vec3(mv[2]) ));
+                    glm::mat3( vec3(mv[0]), vec3(mv[1]), vec3(mv[2]) ));
     prog.setUniform("MVP", projection * mv);
 }
 

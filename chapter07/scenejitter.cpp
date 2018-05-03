@@ -1,22 +1,19 @@
 #include "scenejitter.h"
 
-#include <cstdio>
 #include <iostream>
 using std::cerr;
 using std::endl;
-#include "glutils.h"
-
-using glm::vec3;
-using glm::vec2;
 
 #include <cstdlib>
 
 #include <glm/gtc/matrix_transform.hpp>
+using glm::vec3;
+using glm::mat4;
+using glm::vec4;
+using glm::mat3;
 
-SceneJitter::SceneJitter()
+SceneJitter::SceneJitter() : plane(20.0f, 20.0f, 2, 2)
 {
-    width = 800;
-    height = 600;
     shadowMapWidth = 512;
     shadowMapHeight = 512;
 
@@ -24,6 +21,8 @@ SceneJitter::SceneJitter()
     samplesV = 8;
     jitterMapSize = 8;
     radius = 7.0f;
+
+    mesh = ObjMesh::load("../media/building.obj");
 }
 
 void SceneJitter::initScene()
@@ -35,12 +34,6 @@ void SceneJitter::initScene()
     glEnable(GL_DEPTH_TEST);
 
     angle = glm::two_pi<float>() * 0.85f;
-
-    teapot = new VBOTeapot(14, mat4(1.0f));
-    plane = new VBOPlane(20.0f, 20.0f, 2, 2);
-    float scale = 2.0f;
-    torus = new VBOTorus(0.7f * scale,0.3f * scale,50,50);
-    mesh = new VBOMesh("../media/building.obj");
 
     // Set up the framebuffer object
     setupFBO();
@@ -56,12 +49,11 @@ void SceneJitter::initScene()
                         vec4(0.5f,0.5f,0.5f,1.0f)
                         );
 
-    lightFrustum = new Frustum(Projection::PERSPECTIVE);
     lightPos = vec3(-2.5f,2.0f,-2.5f);  // World coords
-    lightFrustum->orient(lightPos,vec3(0.0f),vec3(0.0f,1.0f,0.0f));
-    lightFrustum->setPerspective(40.0f, 1.0f, 0.1f, 100.0f);
+    lightFrustum.orient(lightPos,vec3(0.0f),vec3(0.0f,1.0f,0.0f));
+    lightFrustum.setPerspective(40.0f, 1.0f, 0.1f, 100.0f);
 
-    lightPV = shadowScale * lightFrustum->getProjectionMatrix() * lightFrustum->getViewMatrix();
+    lightPV = shadowScale * lightFrustum.getProjectionMatrix() * lightFrustum.getViewMatrix();
 
     prog.setUniform("Light.Intensity", vec3(0.85f));
 
@@ -176,8 +168,8 @@ void SceneJitter::update( float t )
 void SceneJitter::render()
 {
     // Pass 1 (shadow map generation)
-    view = lightFrustum->getViewMatrix();
-    projection = lightFrustum->getProjectionMatrix();
+    view = lightFrustum.getViewMatrix();
+    projection = lightFrustum.getProjectionMatrix();
     glBindFramebuffer(GL_FRAMEBUFFER, shadowFBO);
     glClear(GL_DEPTH_BUFFER_BIT);
     glViewport(0,0,shadowMapWidth,shadowMapHeight);
@@ -193,7 +185,7 @@ void SceneJitter::render()
     vec3 cameraPos(1.8f * cos(angle),0.7f,1.8f * sin(angle));
     view = glm::lookAt(cameraPos,vec3(0.0f,-0.175f,0.0f),vec3(0.0f,1.0f,0.0f));
 
-    prog.setUniform("Light.Position", view * vec4(lightFrustum->getOrigin(),1.0));
+    prog.setUniform("Light.Position", view * vec4(lightFrustum.getOrigin(),1.0));
     projection = glm::perspective(glm::radians(50.0f), (float)width/height, 0.1f, 100.0f);
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -222,49 +214,7 @@ void SceneJitter::drawBuildingScene()
     prog.setUniform("Material.Shininess", 1.0f);
     model = mat4(1.0f);
     setMatrices();
-    plane->render();
-}
-
-void SceneJitter::drawScene()
-{
-    vec3 color = vec3(0.7f,0.5f,0.3f);
-    prog.setUniform("Material.Ka", color * 0.05f);
-    prog.setUniform("Material.Kd", color);
-    prog.setUniform("Material.Ks", vec3(0.9f,0.9f,0.9f));
-    prog.setUniform("Material.Shininess", 150.0f);
-    model = mat4(1.0f);
-    model = glm::rotate(model, glm::radians(-90.0f), vec3(1.0f,0.0f,0.0f));
-    setMatrices();
-    teapot->render();
-
-    prog.setUniform("Material.Ka", color * 0.05f);
-    prog.setUniform("Material.Kd", color);
-    prog.setUniform("Material.Ks", vec3(0.9f,0.9f,0.9f));
-    prog.setUniform("Material.Shininess", 150.0f);
-    model = mat4(1.0f);
-    model = glm::translate(model, vec3(0.0f,2.0f,5.0f));
-    model = glm::rotate(model, glm::radians(-45.0f), vec3(1.0f,0.0f,0.0f));
-    setMatrices();
-    torus->render();
-
-    prog.setUniform("Material.Kd", 0.25f, 0.25f, 0.25f);
-    prog.setUniform("Material.Ks", 0.0f, 0.0f, 0.0f);
-    prog.setUniform("Material.Ka", 0.05f, 0.05f, 0.05f);
-    prog.setUniform("Material.Shininess", 1.0f);
-    model = mat4(1.0f);
-    setMatrices();
-    plane->render();
-    model = mat4(1.0f);
-    model = glm::translate(model, vec3(-5.0f,5.0f,0.0f));
-    model = glm::rotate(model, glm::radians(-90.0f),vec3(0.0f,0.0f,1.0f));
-    setMatrices();
-    plane->render();
-    model = mat4(1.0f);
-    model = glm::translate(model, vec3(0.0f,5.0f,-5.0f));
-    model = glm::rotate(model, glm::radians(90.0f),vec3(1.0f,0.0f,0.0f));
-    setMatrices();
-    plane->render();
-    model = mat4(1.0f);
+    plane.render();
 }
 
 void SceneJitter::setMatrices()

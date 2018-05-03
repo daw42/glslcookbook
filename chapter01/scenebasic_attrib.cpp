@@ -11,7 +11,7 @@ using std::endl;
 
 #include "glutils.h"
 
-SceneBasic_Attrib::SceneBasic_Attrib() : width(0), height(0) { }
+SceneBasic_Attrib::SceneBasic_Attrib() { }
 
 void SceneBasic_Attrib::initScene()
 {

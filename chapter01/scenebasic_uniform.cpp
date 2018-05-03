@@ -15,7 +15,7 @@ using std::endl;
 #include <glm/gtc/matrix_transform.hpp>
 using glm::vec3;
 
-SceneBasic_Uniform::SceneBasic_Uniform() : width(0), height(0), angle(0.0f) {}
+SceneBasic_Uniform::SceneBasic_Uniform() : angle(0.0f) {}
 
 void SceneBasic_Uniform::initScene()
 {
@@ -97,9 +97,9 @@ void SceneBasic_Uniform::render()
 {
     glClear(GL_COLOR_BUFFER_BIT);
 
-    rotationMatrix = glm::rotate(mat4(1.0f), angle, vec3(0.0f,0.0f,1.0f));
+    rotationMatrix = glm::rotate(glm::mat4(1.0f), angle, vec3(0.0f,0.0f,1.0f));
 
-	  GLuint programHandle = prog.getHandle();
+    GLuint programHandle = prog.getHandle();
     GLuint location = glGetUniformLocation(programHandle, "RotationMatrix");
     glUniformMatrix4fv(location, 1, GL_FALSE, &rotationMatrix[0][0]);
     

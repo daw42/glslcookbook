@@ -1,21 +1,15 @@
 #include "scenesky.h"
-
-#include <cstdio>
-#include <cstdlib>
+#include "noisetex.h"
 
 #include <iostream>
 using std::cerr;
 using std::endl;
-#include "glutils.h"
-#include "noisetex.h"
-
-using glm::vec3;
 
 #include <glm/gtc/matrix_transform.hpp>
+using glm::vec3;
+using glm::mat4;
 
-#include<iostream>
-
-SceneSky::SceneSky(): width(800), height(600) { }
+SceneSky::SceneSky() { }
 
 void SceneSky::initScene()
 {

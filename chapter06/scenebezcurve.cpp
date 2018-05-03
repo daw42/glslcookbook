@@ -1,16 +1,13 @@
 #include "scenebezcurve.h"
 
-#include <cstdio>
-#include <cstdlib>
 #include <iostream>
 using std::endl;
 using std::cerr;
 
-#include "glutils.h"
-
-using glm::vec3;
-
 #include <glm/gtc/matrix_transform.hpp>
+using glm::vec3;
+using glm::vec4;
+using glm::mat4;
 
 SceneBezCurve::SceneBezCurve() {}
 
@@ -94,13 +91,6 @@ void SceneBezCurve::setMatrices()
 void SceneBezCurve::resize(int w, int h)
 {
     glViewport(0,0,w,h);
-
-    float w2 = w / 2.0f;
-    float h2 = h / 2.0f;
-    viewport = mat4( vec4(w2,0.0f,0.0f,0.0f),
-                     vec4(0.0f,h2,0.0f,0.0f),
-                     vec4(0.0f,0.0f,1.0f,0.0f),
-                     vec4(w2+0, h2+0, 0.0f, 1.0f));
 }
 
 void SceneBezCurve::compileAndLinkShader()

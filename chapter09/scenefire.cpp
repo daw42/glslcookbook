@@ -1,21 +1,15 @@
 #include "scenefire.h"
+#include "texture.h"
 
-#include <cstdio>
-#include <cstdlib>
 #include <iostream>
 using std::endl;
 using std::cerr;
 
-#include "bmpreader.h"
-
-#include "glutils.h"
-
-using glm::vec3;
-
 #include <glm/gtc/matrix_transform.hpp>
+using glm::vec3;
+using glm::mat4;
 
-SceneFire::SceneFire() :
-  width(800), height(600), drawBuf(1), time(0), deltaT(0) {}
+SceneFire::SceneFire() : drawBuf(1), time(0), deltaT(0) {}
 
 void SceneFire::initScene()
 {
@@ -36,9 +30,9 @@ void SceneFire::initScene()
 
     initBuffers();
 
-    const char * texName = "../media/texture/fire.bmp";
+    const char * texName = "../media/texture/fire.png";
     glActiveTexture(GL_TEXTURE0);
-    BMPReader::loadTex(texName);
+    Texture::loadTexture(texName);
 
     prog.setUniform("ParticleTex", 0);
     prog.setUniform("ParticleLifetime", 4.0f);

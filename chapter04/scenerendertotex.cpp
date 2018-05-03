@@ -4,17 +4,14 @@
 using std::cout;
 using std::endl;
 using std::cerr;
-#include <cstdio>
-#include <cstdlib>
-
-#include "glutils.h"
-
-using glm::vec3;
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/constants.hpp>
+using glm::vec3;
+using glm::mat4;
 
-SceneRenderToTex::SceneRenderToTex() : angle(0.0f), tPrev(0.0f), rotSpeed(glm::pi<float>()/8.0f) { }
+SceneRenderToTex::SceneRenderToTex() : angle(0.0f), tPrev(0.0f), rotSpeed(glm::pi<float>()/8.0f),
+                                       teapot(14, mat4(1.0f)) { }
 
 void SceneRenderToTex::initScene()
 {
@@ -22,14 +19,8 @@ void SceneRenderToTex::initScene()
 
     glEnable(GL_DEPTH_TEST);
 
-    cube = new VBOCube();
-
     projection = mat4(1.0f);
-
-    teapot = new VBOTeapot(14, mat4(1.0f));
-
     angle = glm::radians(140.0f);
-
     prog.setUniform("Light.Intensity", vec3(1.0f,1.0f,1.0f) );
     setupFBO();
 
@@ -111,8 +102,6 @@ void SceneRenderToTex::render()
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     renderScene();
-
-	GLUtils::checkForOpenGLError(__FILE__,__LINE__);
 }
 
 void SceneRenderToTex::renderToTexture() {
@@ -123,7 +112,7 @@ void SceneRenderToTex::renderToTexture() {
     view = glm::lookAt(vec3(0.0f,0.0f,7.0f), vec3(0.0f,0.0f,0.0f), vec3(0.0f,1.0f,0.0f));
     projection = glm::perspective(glm::radians(60.0f), 1.0f, 0.3f, 100.0f);
 
-    prog.setUniform("Light.Position", vec4(0.0f,0.0f,0.0f,1.0f) );
+    prog.setUniform("Light.Position", glm::vec4(0.0f,0.0f,0.0f,1.0f) );
     prog.setUniform("Material.Kd", 0.9f, 0.9f, 0.9f);
     prog.setUniform("Material.Ks", 0.95f, 0.95f, 0.95f);
     prog.setUniform("Material.Ka", 0.1f, 0.1f, 0.1f);
@@ -133,7 +122,7 @@ void SceneRenderToTex::renderToTexture() {
     model = glm::translate(model, vec3(0.0f,-1.5f,0.0f));
     model = glm::rotate(model, glm::radians(-90.0f), vec3(1.0f,0.0f,0.0f));
     setMatrices();
-    teapot->render();
+    teapot.render();
 }
 
 void SceneRenderToTex::renderScene() {
@@ -146,7 +135,7 @@ void SceneRenderToTex::renderScene() {
 
     projection = glm::perspective(glm::radians(45.0f), (float)width/height, 0.3f, 100.0f);
 
-    prog.setUniform("Light.Position", vec4(0.0f,0.0f,0.0f,1.0f) );
+    prog.setUniform("Light.Position", glm::vec4(0.0f,0.0f,0.0f,1.0f) );
     prog.setUniform("Material.Kd", 0.9f, 0.9f, 0.9f);
     prog.setUniform("Material.Ks", 0.0f, 0.0f, 0.0f);
     prog.setUniform("Material.Ka", 0.1f, 0.1f, 0.1f);
@@ -154,7 +143,7 @@ void SceneRenderToTex::renderScene() {
 
     model = mat4(1.0f);
     setMatrices();
-    cube->render();
+    cube.render();
 }
 
 void SceneRenderToTex::setMatrices()
@@ -162,7 +151,7 @@ void SceneRenderToTex::setMatrices()
     mat4 mv = view * model;
     prog.setUniform("ModelViewMatrix", mv);
     prog.setUniform("NormalMatrix",
-                    mat3( vec3(mv[0]), vec3(mv[1]), vec3(mv[2]) ));
+                    glm::mat3( vec3(mv[0]), vec3(mv[1]), vec3(mv[2]) ));
     prog.setUniform("MVP", projection * mv);
 }
 

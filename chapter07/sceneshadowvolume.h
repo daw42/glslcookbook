@@ -3,15 +3,12 @@
 
 #include "scene.h"
 #include "glslprogram.h"
-#include "vboplane.h"
-#include "vbomeshadj.h"
+#include "plane.h"
+#include "objmesh.h"
 
 #include "cookbookogl.h"
 
 #include <glm/glm.hpp>
-using glm::mat4;
-using glm::vec4;
-using glm::vec3;
 
 class SceneShadowVolume : public Scene
 {
@@ -20,13 +17,10 @@ private:
     GLuint colorDepthFBO, fsQuad;
     GLuint spotTex, brickTex;
 
-    VBOPlane *plane;
-    VBOMeshAdj *spot;
+    Plane plane;
+    std::unique_ptr<ObjMesh> spot;
 
-    int width, height;
-
-    vec4 lightPos;
-    mat4 model, view, projection;
+    glm::vec4 lightPos;
     float angle, tPrev, rotSpeed;
 
     void setMatrices(GLSLProgram &);

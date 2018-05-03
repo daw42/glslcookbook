@@ -3,25 +3,17 @@
 
 #include "scene.h"
 #include "glslprogram.h"
-#include "vbomesh.h"
+#include "objmesh.h"
 
 #include "cookbookogl.h"
-
-#include <glm/glm.hpp>
-using glm::mat4;
 
 class SceneFlat : public Scene
 {
 private:
     GLSLProgram prog;
 
-    int width, height;
-    VBOMesh *ogre;
+    std::unique_ptr<ObjMesh> ogre;
     float angle;
-
-    mat4 model;
-    mat4 view;
-    mat4 projection;
 
     void setMatrices();
     void compileAndLinkShader();

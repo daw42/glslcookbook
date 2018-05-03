@@ -1,20 +1,17 @@
 #include "scenedecay.h"
+#include "noisetex.h"
 
-#include <cstdio>
-#include <cstdlib>
 #include <iostream>
 using std::cerr;
 using std::endl;
-#include "glutils.h"
-#include "noisetex.h"
-
-using glm::vec3;
 
 #include <glm/gtc/matrix_transform.hpp>
+using glm::vec3;
+using glm::mat4;
+using glm::vec4;
 
-#include<iostream>
-
-SceneDecay::SceneDecay() : width(800), height(600) { }
+SceneDecay::SceneDecay() : teapot(14, mat4(1.0f))
+{ }
 
 void SceneDecay::initScene()
 {
@@ -27,8 +24,6 @@ void SceneDecay::initScene()
     GLuint noiseTex = NoiseTex::generate2DTex(10.0f);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, noiseTex);
-
-    teapot = new VBOTeapot(14, mat4(1.0f));
 
     prog.setUniform("Light.Intensity", vec3(1.0f,1.0f,1.0f));
     lightPos = vec4(0.0f,0.0f,0.0f,1.0f);
@@ -61,7 +56,7 @@ void SceneDecay::drawScene()
     prog.setUniform("Material.Ks", 1.0f, 1.0f, 1.0f);
     prog.setUniform("Material.Shininess", 100.0f);
 
-    teapot->render();
+    teapot.render();
 }
 
 void SceneDecay::setMatrices()
@@ -69,7 +64,7 @@ void SceneDecay::setMatrices()
     mat4 mv = view * model;
     prog.setUniform("ModelViewMatrix", mv);
     prog.setUniform("NormalMatrix",
-                    mat3( vec3(mv[0]), vec3(mv[1]), vec3(mv[2]) ));
+                    glm::mat3( vec3(mv[0]), vec3(mv[1]), vec3(mv[2]) ));
     prog.setUniform("MVP", projection * mv);
 }
 

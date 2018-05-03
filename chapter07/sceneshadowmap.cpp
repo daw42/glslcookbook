@@ -1,19 +1,20 @@
 #include "sceneshadowmap.h"
 
-#include <cstdio>
-
-#include "glutils.h"
-
-using glm::vec3;
-
 #include <iostream>
 using std::cerr;
 using std::endl;
 
 #include <glm/gtc/matrix_transform.hpp>
+using glm::vec3;
+using glm::mat4;
+using glm::vec3;
+using glm::vec4;
 
-SceneShadowMap::SceneShadowMap() : tPrev(0), width(800), height(600), shadowMapWidth(512),
-shadowMapHeight(512) {}
+SceneShadowMap::SceneShadowMap() : tPrev(0),
+                                   shadowMapWidth(512), shadowMapHeight(512),
+                                   teapot(14, glm::mat4(1.0f)), plane(40.0f, 40.0f, 2, 2),
+                                   torus(0.7f * 2.0f,0.3f * 2.0f,50,50)
+{}
 
 void SceneShadowMap::initScene()
 {
@@ -25,10 +26,6 @@ void SceneShadowMap::initScene()
 
 	angle = glm::quarter_pi<float>();
 
-    teapot = new VBOTeapot(14, mat4(1.0f));
-    plane = new VBOPlane(40.0f, 40.0f, 2, 2);
-    float scale = 2.0f;
-    torus = new VBOTorus(0.7f * scale,0.3f * scale,50,50);
     // Set up the framebuffer object
     setupFBO();
 
@@ -42,15 +39,13 @@ void SceneShadowMap::initScene()
                         vec4(0.5f,0.5f,0.5f,1.0f)
                         );
 
-    lightFrustum = new Frustum(Projection::PERSPECTIVE);
     float c = 1.65f;
     vec3 lightPos = vec3(0.0f,c * 5.25f, c * 7.5f);  // World coords
-    lightFrustum->orient( lightPos, vec3(0.0f), vec3(0.0f,1.0f,0.0f));
-    lightFrustum->setPerspective( 50.0f, 1.0f, 1.0f, 25.0f);
-    lightPV = shadowBias * lightFrustum->getProjectionMatrix() * lightFrustum->getViewMatrix();
+    lightFrustum.orient( lightPos, vec3(0.0f), vec3(0.0f,1.0f,0.0f));
+    lightFrustum.setPerspective( 50.0f, 1.0f, 1.0f, 25.0f);
+    lightPV = shadowBias * lightFrustum.getProjectionMatrix() * lightFrustum.getViewMatrix();
 
     prog.setUniform("Light.Intensity", vec3(0.85f));
-
     prog.setUniform("ShadowMap", 0);
 }
 
@@ -137,8 +132,8 @@ void SceneShadowMap::render()
 {
     prog.use();
     // Pass 1 (shadow map generation)
-    view = lightFrustum->getViewMatrix();
-    projection = lightFrustum->getProjectionMatrix();
+    view = lightFrustum.getViewMatrix();
+    projection = lightFrustum.getProjectionMatrix();
     glBindFramebuffer(GL_FRAMEBUFFER, shadowFBO);
     glClear(GL_DEPTH_BUFFER_BIT);
     glViewport(0,0,shadowMapWidth,shadowMapHeight);
@@ -153,10 +148,10 @@ void SceneShadowMap::render()
     //spitOutDepthBuffer(); // This is just used to get an image of the depth buffer
 
     // Pass 2 (render)
-    float c = 1.0f;
+    float c = 2.0f;
     vec3 cameraPos(c * 11.5f * cos(angle),c * 7.0f,c * 11.5f * sin(angle));
     view = glm::lookAt(cameraPos,vec3(0.0f),vec3(0.0f,1.0f,0.0f));
-    prog.setUniform("Light.Position", view * vec4(lightFrustum->getOrigin(),1.0f));
+    prog.setUniform("Light.Position", view * vec4(lightFrustum.getOrigin(),1.0f));
     projection = glm::perspective(glm::radians(50.0f), (float)width/height, 0.1f, 100.0f);
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -166,13 +161,11 @@ void SceneShadowMap::render()
     drawScene();
 
     // Uncomment to draw the light's frustum
-//    solidProg.use();
-//    solidProg.setUniform("Color", vec4(1.0f,0.0f,0.0f,1.0f));
-//    model = mat4(1.0f);
-//    mat4 mv = view * model;
-//    solidProg.setUniform("MVP", projection * mv);
-//    lightFrustum->render();
-//    glFinish();
+    solidProg.use();
+    solidProg.setUniform("Color", vec4(1.0f,0.0f,0.0f,1.0f));
+    mat4 mv = view * lightFrustum.getInverseViewMatrix();
+    solidProg.setUniform("MVP", projection * mv);
+    lightFrustum.render();
 }
 
 void SceneShadowMap::drawScene()
@@ -185,7 +178,7 @@ void SceneShadowMap::drawScene()
     model = mat4(1.0f);
     model = glm::rotate(model, glm::radians(-90.0f), vec3(1.0f,0.0f,0.0f));
     setMatrices();
-    teapot->render();
+    teapot.render();
 
     prog.setUniform("Material.Ka", color * 0.05f);
     prog.setUniform("Material.Kd", color);
@@ -195,7 +188,7 @@ void SceneShadowMap::drawScene()
     model = glm::translate(model, vec3(0.0f,2.0f,5.0f));
     model = glm::rotate(model, glm::radians(-45.0f), vec3(1.0f,0.0f,0.0f));
     setMatrices();
-    torus->render();
+    torus.render();
 
     prog.setUniform("Material.Kd", 0.25f, 0.25f, 0.25f);
     prog.setUniform("Material.Ks", 0.0f, 0.0f, 0.0f);
@@ -203,17 +196,17 @@ void SceneShadowMap::drawScene()
     prog.setUniform("Material.Shininess", 1.0f);
     model = mat4(1.0f);
     setMatrices();
-    plane->render();
+    plane.render();
     model = mat4(1.0f);
     model = glm::translate(model, vec3(-5.0f,5.0f,0.0f));
     model = glm::rotate(model, glm::radians(-90.0f),vec3(0.0f,0.0f,1.0f));
     setMatrices();
-    plane->render();
+    plane.render();
     model = mat4(1.0f);
     model = glm::translate(model, vec3(0.0f,5.0f,-5.0f));
     model = glm::rotate(model, glm::radians(90.0f),vec3(1.0f,0.0f,0.0f));
     setMatrices();
-    plane->render();
+    plane.render();
     model = mat4(1.0f);
 }
 
@@ -222,7 +215,7 @@ void SceneShadowMap::setMatrices()
     mat4 mv = view * model;
     prog.setUniform("ModelViewMatrix", mv);
     prog.setUniform("NormalMatrix",
-                    mat3( vec3(mv[0]), vec3(mv[1]), vec3(mv[2]) ));
+                    glm::mat3( vec3(mv[0]), vec3(mv[1]), vec3(mv[2]) ));
     prog.setUniform("MVP", projection * mv);
     prog.setUniform("ShadowMatrix", lightPV * model);
 }
@@ -243,9 +236,9 @@ void SceneShadowMap::compileAndLinkShader()
     	prog.use();
 
         // Used when rendering light frustum
-    	//solidProg.compileShader("shader/solid.vs", GLSLShader::VERTEX);
-    	//solidProg.compileShader("shader/solid.fs", GLSLShader::FRAGMENT);
-    	//solidProg.link();
+    	solidProg.compileShader("shader/solid.vs", GLSLShader::VERTEX);
+    	solidProg.compileShader("shader/solid.fs", GLSLShader::FRAGMENT);
+    	solidProg.link();
     } catch(GLSLProgramException &e ) {
     	cerr << e.what() << endl;
  		exit( EXIT_FAILURE );

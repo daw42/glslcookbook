@@ -1,16 +1,15 @@
 #include "scenequadtess.h"
 
-#include <cstdio>
-#include <cstdlib>
 #include <iostream>
 using std::cerr;
 using std::endl;
 
 #include "glutils.h"
 
-using glm::vec3;
-
 #include <glm/gtc/matrix_transform.hpp>
+using glm::vec3;
+using glm::mat4;
+using glm::vec4;
 
 SceneQuadTess::SceneQuadTess() { }
 

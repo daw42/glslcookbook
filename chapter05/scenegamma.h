@@ -3,32 +3,23 @@
 
 #include "scene.h"
 #include "glslprogram.h"
-#include "vboplane.h"
-#include "vbocube.h"
-#include "vbotorus.h"
-#include "vboteapot.h"
-#include "vbomesh.h"
+#include "plane.h"
+#include "torus.h"
+#include "objmesh.h"
 
 #include "cookbookogl.h"
 
 #include <glm/glm.hpp>
-using glm::mat4;
 
 class SceneGamma : public Scene
 {
 private:
     GLSLProgram prog;
 
-    int width, height;
+    Plane plane;
+    Torus torus;
+    std::unique_ptr<ObjMesh> ogre;
 
-    VBOPlane *plane;
-    VBOTorus *torus;
-    VBOMesh *ogre;
-    VBOCube *cube;
-
-    mat4 model;
-    mat4 view;
-    mat4 projection;
     float angle, tPrev, rotSpeed;
 
     void setMatrices();

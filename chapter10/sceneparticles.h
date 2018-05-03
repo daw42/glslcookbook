@@ -3,18 +3,15 @@
 
 #include "scene.h"
 #include "glslprogram.h"
-
 #include "cookbookogl.h"
 
 #include <glm/glm.hpp>
-using glm::mat4;
 
 class SceneParticles : public Scene
 {
 private:
     GLSLProgram renderProg, computeProg;
 
-    int width, height;
     glm::ivec3 nParticles;
     GLuint totalParticles;
 
@@ -22,8 +19,6 @@ private:
     GLuint particlesVao;
     GLuint bhVao, bhBuf;  // black hole VAO and buffer
     glm::vec4 bh1, bh2;
-
-    glm::mat4 view, model, projection;
 
     void compileAndLinkShader();
     void initBuffers();

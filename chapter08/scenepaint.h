@@ -3,28 +3,20 @@
 
 #include "scene.h"
 #include "glslprogram.h"
-
 #include "cookbookogl.h"
+#include "teapot.h"
 
 #include <glm/glm.hpp>
-using glm::mat4;
-using glm::vec4;
-using glm::vec3;
-
-#include "vboteapot.h"
 
 class ScenePaint : public Scene
 {
 private:
     GLSLProgram prog;
 
-    VBOTeapot *teapot;
-
+    Teapot teapot;
     GLuint quad;
-    int width, height;
 
-    mat4 model, view, projection;
-    vec4 lightPos;
+    glm::vec4 lightPos;
     float angle;
 
     void setMatrices();

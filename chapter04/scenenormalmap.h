@@ -3,25 +3,17 @@
 
 #include "scene.h"
 #include "glslprogram.h"
-#include "vbomesh.h"
-
-// OpenGL headers
-#include "cookbookogl.h"
+#include "objmesh.h"
 
 #include <glm/glm.hpp>
-using glm::mat4;
 
 class SceneNormalMap : public Scene
 {
 private:
     GLSLProgram prog;
 
-    int width, height;
-    VBOMesh *ogre;
+    std::unique_ptr<ObjMesh> ogre;
 
-    mat4 model;
-    mat4 view;
-    mat4 projection;
     float angle, tPrev, rotSpeed;
 
     void setMatrices();

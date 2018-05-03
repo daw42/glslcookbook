@@ -1,21 +1,15 @@
 #include "scenewood.h"
+#include "noisetex.h"
 
-#include <cstdio>
-#include <cstdlib>
 #include <iostream>
 using std::cerr;
 using std::endl;
 
-#include "glutils.h"
-#include "noisetex.h"
-
-using glm::vec3;
-
 #include <glm/gtc/matrix_transform.hpp>
+using glm::vec3;
+using glm::mat4;
 
-#include<iostream>
-
-SceneWood::SceneWood(): width(800), height(600) { }
+SceneWood::SceneWood() { }
 
 void SceneWood::initScene()
 {
@@ -61,7 +55,7 @@ void SceneWood::initScene()
 
     glBindVertexArray(0);
 
-    prog.setUniform("Color", vec4(1.0f,0.0f,0.0f,1.0f));
+    prog.setUniform("Color", glm::vec4(1.0f,0.0f,0.0f,1.0f));
     prog.setUniform("NoiseTex", 0);
 
     mat4 slice;

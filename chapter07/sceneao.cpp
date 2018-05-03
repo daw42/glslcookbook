@@ -1,20 +1,17 @@
 #include "sceneao.h"
+#include "texture.h"
 
-#include <cstdio>
 #include <iostream>
 using std::cerr;
 using std::endl;
-#include "bmpreader.h"
-
-#include "glutils.h"
-
-#include <cstdlib>
-
-using glm::vec3;
 
 #include <glm/gtc/matrix_transform.hpp>
+using glm::vec3;
+using glm::mat4;
 
-SceneAo::SceneAo() {}
+SceneAo::SceneAo() {
+    ogre = ObjMesh::load("../media/bs_ears.obj", false, true);
+}
 
 void SceneAo::initScene()
 {
@@ -26,8 +23,6 @@ void SceneAo::initScene()
 
 	angle = glm::pi<float>() / 2.0f;
 
-    ogre = new VBOMesh("../media/bs_ears.obj", false, true);
-
     lightPos = glm::vec4(0.0f,0.0f,0.0f,1.0f);  // Camera coords
 
     prog.setUniform("Light.Position", lightPos);
@@ -37,13 +32,13 @@ void SceneAo::initScene()
     projection = glm::ortho(-0.4f * c, 0.4f * c, -0.3f *c, 0.3f*c, 0.1f, 100.0f);
 
     glActiveTexture(GL_TEXTURE0);
-    const char * texName = "../media/texture/ao_ears.bmp";
-    BMPReader::loadTex(texName);
+    const char * texName = "../media/texture/ao_ears.png";
+    Texture::loadTexture(texName);
     prog.setUniform("AOTex", 0);
 
     glActiveTexture(GL_TEXTURE1);
-    const char * diffTexName = "../media/texture/diffuse.bmp";
-    BMPReader::loadTex(diffTexName);
+    const char * diffTexName = "../media/texture/ogre_diffuse.png";
+    Texture::loadTexture(diffTexName);
     prog.setUniform("DiffTex", 1);
 }
 
@@ -74,7 +69,7 @@ void SceneAo::setMatrices()
     mat4 mv = view * model;
     prog.setUniform("ModelViewMatrix", mv);
     prog.setUniform("NormalMatrix",
-                    mat3( vec3(mv[0]), vec3(mv[1]), vec3(mv[2]) ));
+                    glm::mat3( vec3(mv[0]), vec3(mv[1]), vec3(mv[2]) ));
     prog.setUniform("MVP", projection * mv);
 }
 

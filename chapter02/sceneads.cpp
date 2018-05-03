@@ -1,18 +1,17 @@
 #include "sceneads.h"
 
-#include <cstdio>
-#include <cstdlib>
 #include <iostream>
 using std::cerr;
 using std::endl;
 
-#include "glutils.h"
-
-using glm::vec3;
-
 #include <glm/gtc/matrix_transform.hpp>
+using glm::vec3;
+using glm::mat4;
 
-SceneADS::SceneADS() : angle(0.0f) { }
+SceneADS::SceneADS() :
+        angle(0.0f),
+        torus(0.7f, 0.3f, 50, 50)
+{ }
 
 void SceneADS::initScene()
 {
@@ -20,11 +19,9 @@ void SceneADS::initScene()
 
     glEnable(GL_DEPTH_TEST);
 
-    torus = new VBOTorus(0.7f, 0.3f, 50, 50);
-
     view = glm::lookAt(vec3(0.0f,0.0f,2.0f), vec3(0.0f,0.0f,0.0f), vec3(0.0f,1.0f,0.0f));
     projection = mat4(1.0f);
-    vec4 worldLight = vec4(5.0f,5.0f,2.0f,1.0f);
+    glm::vec4 worldLight = glm::vec4(5.0f,5.0f,2.0f,1.0f);
 
     prog.setUniform("Material.Kd", 0.9f, 0.5f, 0.3f);
     prog.setUniform("Light.Ld", 1.0f, 1.0f, 1.0f);
@@ -48,7 +45,7 @@ void SceneADS::render()
     model = glm::rotate(model, glm::radians(35.0f), vec3(0.0f,1.0f,0.0f));
 
     setMatrices();
-    torus->render();
+    torus.render();
 }
 
 void SceneADS::setMatrices()
@@ -56,7 +53,7 @@ void SceneADS::setMatrices()
     mat4 mv = view * model;
     prog.setUniform("ModelViewMatrix", mv);
     prog.setUniform("NormalMatrix",
-                    mat3( vec3(mv[0]), vec3(mv[1]), vec3(mv[2]) ));
+                    glm::mat3( vec3(mv[0]), vec3(mv[1]), vec3(mv[2]) ));
     prog.setUniform("MVP", projection * mv);
 }
 

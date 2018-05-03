@@ -3,15 +3,10 @@
 
 #include "scene.h"
 #include "glslprogram.h"
-#include "vboplane.h"
-#include "vbocube.h"
-#include "vboteapot.h"
-
-// OpenGL headers
-#include "cookbookogl.h"
+#include "cube.h"
+#include "teapot.h"
 
 #include <glm/glm.hpp>
-using glm::mat4;
 
 class SceneRenderToTex : public Scene
 {
@@ -19,13 +14,9 @@ private:
     GLSLProgram prog;
 
     GLuint fboHandle;
-    int width, height;
-    VBOCube *cube;
-    VBOTeapot *teapot;
+    Cube cube;
+    Teapot teapot;
 
-    mat4 model;
-    mat4 view;
-    mat4 projection;
     float angle;
     float tPrev, rotSpeed;
 

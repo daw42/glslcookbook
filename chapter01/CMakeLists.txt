@@ -23,5 +23,4 @@ target_link_libraries( ${target}
         ${OPENGL_gl_LIBRARY}
 		)
 
-
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/shader DESTINATION ${CMAKE_CURRENT_BINARY_DIR})

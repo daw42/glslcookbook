@@ -1,22 +1,18 @@
 #include "scenealphatest.h"
-
-#include <cstdio>
-#include <cstdlib>
-
-#include "tgaio.h"
-
-#include "glutils.h"
+#include "texture.h"
 
 #include <iostream>
 using std::endl;
 using std::cerr;
 
-using glm::vec3;
-
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/constants.hpp>
+using glm::vec3;
+using glm::mat4;
 
-SceneAlphaTest::SceneAlphaTest() : angle(0.0f), tPrev(0.0f), rotSpeed(glm::pi<float>() / 2.0f) { }
+SceneAlphaTest::SceneAlphaTest() : angle(0.0f), tPrev(0.0f), rotSpeed(glm::pi<float>() / 2.0f),
+                                   teapot(14, glm::mat4(1.0f))
+{ }
 
 void SceneAlphaTest::initScene()
 {
@@ -24,19 +20,17 @@ void SceneAlphaTest::initScene()
 
     glEnable(GL_DEPTH_TEST);
 
-    teapot = new VBOTeapot(14, mat4(1.0f));
-
     projection = mat4(1.0f);
 
     prog.setUniform("Light.Intensity", vec3(1.0f,1.0f,1.0f) );
 
     // Load cement texture file
     glActiveTexture(GL_TEXTURE0);
-    TGAIO::loadTex("../media/texture/cement.tga");
+    Texture::loadTexture("../media/texture/cement.jpg");
 
     // Load moss texture file
     glActiveTexture(GL_TEXTURE1);
-    TGAIO::loadTex("../media/texture/moss.tga");
+    Texture::loadTexture("../media/texture/moss.png");
 
 #ifdef __APPLE__
   prog.setUniform("BaseTex", 0);
@@ -64,7 +58,7 @@ void SceneAlphaTest::render()
     vec3 cameraPos = vec3(6.0f * cos(angle), 0.25f, 6.0f * sin(angle));
     view = glm::lookAt(cameraPos, vec3(0.0f,0.0f,0.0f), vec3(0.0f,1.0f,0.0f));
 
-    prog.setUniform("Light.Position", vec4(0.0f,0.0f,0.0f,1.0f) );
+    prog.setUniform("Light.Position", glm::vec4(0.0f,0.0f,0.0f,1.0f) );
     prog.setUniform("Material.Kd", 0.9f, 0.9f, 0.9f);
     prog.setUniform("Material.Ks", 0.0f, 0.0f, 0.0f);
     prog.setUniform("Material.Ka", 0.1f, 0.1f, 0.1f);
@@ -74,7 +68,7 @@ void SceneAlphaTest::render()
     model = glm::translate(model, vec3(0.0f,-1.5f,0.0f));
     model = glm::rotate(model, glm::radians(-90.0f), vec3(1.0f,0.0f,0.0f));
     setMatrices();
-    teapot->render();
+    teapot.render();
 }
 
 void SceneAlphaTest::setMatrices()
@@ -82,7 +76,7 @@ void SceneAlphaTest::setMatrices()
     mat4 mv = view * model;
     prog.setUniform("ModelViewMatrix", mv);
     prog.setUniform("NormalMatrix",
-                    mat3( vec3(mv[0]), vec3(mv[1]), vec3(mv[2]) ));
+                    glm::mat3( vec3(mv[0]), vec3(mv[1]), vec3(mv[2]) ));
     prog.setUniform("MVP", projection * mv);
 }
 

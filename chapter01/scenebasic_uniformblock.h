@@ -7,16 +7,13 @@
 #include "glslprogram.h"
 
 #include <glm/glm.hpp>
-using glm::mat4;
 
 class SceneBasic_UniformBlock : public Scene
 {
 private:
-    int width, height;
     GLuint vaoHandle;
     GLSLProgram prog;
     float angle;
-    mat4 rotationMatrix;
 
     void compile();
     void initUniformBlockBuffer();

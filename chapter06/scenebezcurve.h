@@ -3,16 +3,10 @@
 
 #include "scene.h"
 #include "glslprogram.h"
-#include "vboplane.h"
-#include "vbocube.h"
-#include "vbotorus.h"
-#include "vboteapot.h"
-#include "vbomeshadj.h"
 
 #include "cookbookogl.h"
 
 #include <glm/glm.hpp>
-using glm::mat4;
 
 class SceneBezCurve : public Scene
 {
@@ -21,10 +15,6 @@ private:
     GLSLProgram solidProg;
 
     GLuint vaoHandle;
-
-    mat4 model;
-    mat4 view, viewport;
-    mat4 projection;
 
     void setMatrices();
     void compileAndLinkShader();

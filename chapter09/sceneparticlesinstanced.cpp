@@ -1,18 +1,16 @@
 #include "sceneparticlesinstanced.h"
 
-#include <cstdio>
-#include <cstdlib>
 #include <iostream>
 using std::endl;
 using std::cerr;
 
-#include "glutils.h"
-
-using glm::vec3;
-
 #include <glm/gtc/matrix_transform.hpp>
+using glm::vec3;
+using glm::mat4;
 
-SceneParticlesInstanced::SceneParticlesInstanced() : width(800), height(600), time(0), deltaT(0) {}
+SceneParticlesInstanced::SceneParticlesInstanced() : time(0), deltaT(0),
+                                                     torus(0.7f * 0.15f, 0.3f * 0.15f, 20, 20)
+{}
 
 void SceneParticlesInstanced::initScene()
 {
@@ -21,10 +19,6 @@ void SceneParticlesInstanced::initScene()
     glClearColor(0.5f,0.5f,0.5f,1.0f);
 
     glEnable(GL_DEPTH_TEST);
-
-    plane = new VBOPlane(13.0f, 10.0f, 200, 2);
-    float c = 0.15f;
-    torus = new VBOTorus(0.7f * c, 0.3f * c, 20, 20);
 
 	angle = glm::half_pi<float>();
     model = mat4(1.0f);
@@ -90,7 +84,7 @@ void SceneParticlesInstanced::initBuffers()
     delete [] data;
 
     // Attach these to the torus's vertex array
-    glBindVertexArray(torus->getVertexArrayHandle());
+    glBindVertexArray(torus.getVao());
     glBindBuffer(GL_ARRAY_BUFFER, initVel);
     glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 0, NULL);
     glEnableVertexAttribArray(3);
@@ -122,7 +116,7 @@ void SceneParticlesInstanced::render()
 
     view = glm::lookAt(vec3(3.0f * cos(angle),1.5f,3.0f * sin(angle)), vec3(0.0f,1.5f,0.0f), vec3(0.0f,1.0f,0.0f));
 
-    prog.setUniform("Light.Position", vec4(0.0f,0.0f,0.0f,1.0f) );
+    prog.setUniform("Light.Position", glm::vec4(0.0f,0.0f,0.0f,1.0f) );
     prog.setUniform("Material.Kd", 0.9f, 0.5f, 0.2f);
     prog.setUniform("Material.Ks", 0.95f, 0.95f, 0.95f);
     prog.setUniform("Material.Ka", 0.1f, 0.1f, 0.1f);
@@ -130,7 +124,7 @@ void SceneParticlesInstanced::render()
     model = mat4(1.0f);
     setMatrices();
 
-    glBindVertexArray(torus->getVertexArrayHandle());
+    glBindVertexArray(torus.getVao());
     glDrawElementsInstanced(GL_TRIANGLES, 6 * 20 * 20, GL_UNSIGNED_INT, 0, nParticles);
 }
 
@@ -139,7 +133,7 @@ void SceneParticlesInstanced::setMatrices()
     mat4 mv = view * model;
     prog.setUniform("ModelViewMatrix", mv);
     prog.setUniform("NormalMatrix",
-                    mat3( vec3(mv[0]), vec3(mv[1]), vec3(mv[2]) ));
+                    glm::mat3( vec3(mv[0]), vec3(mv[1]), vec3(mv[2]) ));
     prog.setUniform("ProjectionMatrix", projection);
 }
 

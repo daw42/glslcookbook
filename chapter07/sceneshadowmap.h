@@ -3,18 +3,14 @@
 
 #include "scene.h"
 #include "glslprogram.h"
-#include "vboplane.h"
-#include "vbocube.h"
-#include "vbotorus.h"
-#include "vboteapot.h"
+#include "plane.h"
+#include "torus.h"
+#include "teapot.h"
 #include "frustum.h"
 
 #include "cookbookogl.h"
 
 #include <glm/glm.hpp>
-using glm::mat4;
-using glm::vec4;
-using glm::vec3;
 
 class SceneShadowMap : public Scene
 {
@@ -22,20 +18,17 @@ private:
     GLSLProgram prog, solidProg;
     GLuint shadowFBO, pass1Index, pass2Index;
 
-    VBOTeapot *teapot;
-    VBOPlane *plane;
-    VBOTorus *torus;
+    Teapot teapot;
+    Plane plane;
+    Torus torus;
 
-    int width, height;
     int shadowMapWidth, shadowMapHeight;
     float tPrev;
 
-    mat4 model, view, projection;
-    mat4 lightPV;
-    mat4 shadowBias;
+    glm::mat4 lightPV, shadowBias;
     float angle;
 
-    Frustum *lightFrustum;
+    Frustum lightFrustum;
 
     void setMatrices();
     void compileAndLinkShader();

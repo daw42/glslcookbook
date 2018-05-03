@@ -2,51 +2,33 @@
 #define FRUSTUM_H
 
 #include "cookbookogl.h"
+#include "drawable.h"
 
 #include <glm/glm.hpp>
-using glm::vec3;
-using glm::vec4;
-using glm::mat4;
+#include <vector>
 
-namespace Projection {
-    enum ProjType {
-        PERSPECTIVE, ORTHO
-    };
-}
-
-class Frustum
+class Frustum : public Drawable
 {
 private:
-    Projection::ProjType type;
-
-    vec3 origin;
-    vec3 at;
-    vec3 up;
-
-    float mNear;
-    float mFar;
-    float xmin, xmax, ymin, ymax;
-    float fovy, ar;
-
-    mat4 view, proj;
-    GLuint handle[2];
+    GLuint vao;
+    glm::vec3 center, u, v, n;
+    float mNear, mFar, fovy, ar;
+    std::vector<GLuint> buffers;
 
 public:
-    Frustum( Projection::ProjType type );
+    Frustum();
+    ~Frustum();
 
-    void orient( const vec3 &pos, const vec3& a, const vec3& u );
-    void setOrthoBounds( float xmin, float xmax, float ymin, float ymax,
-                         float , float  );
+    void orient( const glm::vec3 &pos, const glm::vec3& a, const glm::vec3& u );
     void setPerspective( float , float , float , float  );
-    void enclose( const Frustum & );
 
-    mat4 getViewMatrix() const;
-    mat4 getProjectionMatrix() const;
-    vec3 getOrigin() const;
-    vec3 getCenter() const;
+    glm::mat4 getViewMatrix() const;
+    glm::mat4 getInverseViewMatrix() const;
+    glm::mat4 getProjectionMatrix() const;
+    glm::vec3 getOrigin() const;
 
-    void printInfo() const;
-    void render() const;
+    void render() const override;
+    void deleteBuffers();
 };
 
 #endif // FRUSTUM_H

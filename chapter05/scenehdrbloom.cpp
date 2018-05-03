@@ -1,20 +1,22 @@
 #include "scenehdrbloom.h"
 
-#include <cstdio>
-#include <cstdlib>
 #include <sstream>
-
-#include "glutils.h"
 
 #include <iostream>
 using std::endl;
 using std::cerr;
-using glm::vec3;
 
 #include <glm/gtc/matrix_transform.hpp>
+using glm::vec3;
+using glm::vec4;
+using glm::mat4;
+using glm::mat3;
 
-SceneHdrBloom::SceneHdrBloom() : width(800), height(600), angle(0.0f), tPrev(0.0f),
-  bloomBufWidth(width/8), bloomBufHeight(height/8)
+SceneHdrBloom::SceneHdrBloom() : angle(0.0f), tPrev(0.0f),
+                                 bloomBufWidth(0), bloomBufHeight(0),
+                                 plane(20.0f, 10.0f, 1, 1),
+                                 teapot(14, glm::mat4(1.0)), sphere(2.0f, 50, 50)
+
 {}
 
 void SceneHdrBloom::initScene()
@@ -24,10 +26,6 @@ void SceneHdrBloom::initScene()
     glClearColor(0.5f,0.5f,0.5f,1.0f);
 
     glEnable(GL_DEPTH_TEST);
-
-    plane = new VBOPlane(20.0f, 10.0f, 1, 1);
-    teapot = new VBOTeapot(14, mat4(1.0));
-    sphere = new VBOSphere(2.0f, 50, 50);
 
     vec3 intense = vec3(0.6f);
     prog.setUniform("Lights[0].Intensity", intense );
@@ -171,6 +169,8 @@ void SceneHdrBloom::setupFBO() {
 
     // Create two texture objects to ping-pong for the bright-pass filter
     // and the two-pass blur
+    bloomBufWidth = width / 8;
+    bloomBufHeight = height / 8;
     glGenTextures(1, &tex1);
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, tex1);
@@ -210,14 +210,16 @@ void SceneHdrBloom::render()
 
 void SceneHdrBloom::computeLogAveLuminance()
 {
-  GLfloat *texData = new GLfloat[width*height*3];
+   GLfloat *texData = new GLfloat[width*height*3];
    glActiveTexture(GL_TEXTURE0);
    glBindTexture(GL_TEXTURE_2D, hdrTex);
    glGetTexImage(GL_TEXTURE_2D, 0, GL_RGB, GL_FLOAT, texData);
    float sum = 0.0f;
    for( int i = 0; i < width * height; i++ ) {
-     float lum = glm::dot(vec3(texData[i*3+0], texData[i*3+1], texData[i*3+2]),
-         vec3(0.2126f, 0.7152f, 0.0722f) );
+     float lum = glm::dot(
+             glm::vec3(texData[i*3+0], texData[i*3+1], texData[i*3+2]),
+             glm::vec3(0.2126f, 0.7152f, 0.0722f)
+     );
      sum += logf( lum + 0.00001f );
    }
 
@@ -379,29 +381,29 @@ void SceneHdrBloom::drawScene()
     // The backdrop plane
     model = glm::rotate(mat4(1.0f), glm::radians(90.0f), vec3(1.0f,0.0f,0.0f) );
     setMatrices();
-    plane->render();
+    plane.render();
 
     // The bottom plane
     model = glm::translate(mat4(1.0f), vec3(0.0f,-5.0f,0.0f));
     setMatrices();
-    plane->render();
+    plane.render();
 
     // Top plane
     model = glm::translate(mat4(1.0f), vec3(0.0f,5.0f,0.0f));
     model = glm::rotate( model, glm::radians(180.0f), vec3(1.0f, 0.0f, 0.0f));
     setMatrices();
-    plane->render();
+    plane.render();
 
     // Sphere
     prog.setUniform("Material.Kd", vec3(0.4f, 0.9f, 0.4f));
     model = glm::translate(mat4(1.0f), vec3(-3.0f,-3.0f,2.0f));
     setMatrices();
-    sphere->render();
+    sphere.render();
 
     // Teapot
     prog.setUniform("Material.Kd", vec3(0.4f, 0.4f, 0.9f));
     model = glm::translate(mat4(1.0f), vec3(4.0f,-5.0f,1.5f));
     model = glm::rotate(model, glm::radians(-90.0f), vec3(1.0f,0.0f,0.0f));
     setMatrices();
-    teapot->render();
+    teapot.render();
 }

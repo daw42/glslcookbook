@@ -1,32 +1,26 @@
 #include "sceneprojtex.h"
-
-#include <cstdio>
-#include <cstdlib>
+#include "texture.h"
 
 #include <iostream>
 using std::cout;
 using std::cerr;
 using std::endl;
 
-#include "tgaio.h"
-
-#include "glutils.h"
-
-using glm::vec3;
-
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/constants.hpp>
+using glm::vec3;
+using glm::mat4;
 
-SceneProjTex::SceneProjTex() : angle(0.0f), tPrev(0.0f), rotSpeed(glm::pi<float>() / 8.0f) { }
+SceneProjTex::SceneProjTex() : angle(0.0f), tPrev(0.0f),
+                               rotSpeed(glm::pi<float>() / 8.0f),
+                               teapot(14, mat4(1.0f)),
+                               plane(100.0f,100.0f,1,1) { }
 
 void SceneProjTex::initScene()
 {
     compileAndLinkShader();
 
     glEnable(GL_DEPTH_TEST);
-
-    teapot = new VBOTeapot(14, mat4(1.0f));
-    plane = new VBOPlane(100.0f,100.0f,1,1);
 
     projection = mat4(1.0f);
 
@@ -42,11 +36,11 @@ void SceneProjTex::initScene()
 
     // Load texture file
     glActiveTexture(GL_TEXTURE0);
-    TGAIO::loadTex("../media/texture/flower.tga");
+    Texture::loadTexture("../media/texture/flower.png");
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
 
-    prog.setUniform("Light.Position", vec4(0.0f,0.0f,0.0f,1.0f) );
+    prog.setUniform("Light.Position", glm::vec4(0.0f,0.0f,0.0f,1.0f) );
     prog.setUniform("Light.Intensity", vec3(1.0f,1.0f,1.0f));
 
 #ifdef __APPLE__
@@ -80,7 +74,7 @@ void SceneProjTex::render()
     model = glm::translate(model, vec3(0.0f,-1.0f,0.0f));
     model = glm::rotate(model, glm::radians(-90.0f), vec3(1.0f,0.0f,0.0f));
     setMatrices();
-    teapot->render();
+    teapot.render();
 
     prog.setUniform("Material.Kd", 0.4f, 0.4f, 0.4f);
     prog.setUniform("Material.Ks", 0.0f, 0.0f, 0.0f);
@@ -89,7 +83,7 @@ void SceneProjTex::render()
     model = mat4(1.0f);
     model = glm::translate(model, vec3(0.0f,-0.75f,0.0f));
     setMatrices();
-    plane->render();
+    plane.render();
 }
 
 void SceneProjTex::setMatrices()
@@ -98,7 +92,7 @@ void SceneProjTex::setMatrices()
     prog.setUniform("ModelMatrix", model);
     prog.setUniform("ModelViewMatrix", mv);
     prog.setUniform("NormalMatrix",
-                    mat3( vec3(mv[0]), vec3(mv[1]), vec3(mv[2]) ));
+                    glm::mat3( vec3(mv[0]), vec3(mv[1]), vec3(mv[2]) ));
     prog.setUniform("MVP", projection * mv);
 }
 

@@ -9,7 +9,6 @@
 class SceneBasic_Debug : public Scene
 {
 private:
-    int width, height;
     GLuint vaoHandle;
     GLSLProgram prog;
 

@@ -3,27 +3,18 @@
 
 #include "scene.h"
 #include "glslprogram.h"
-#include "vboplane.h"
-#include "vbocube.h"
-#include "vbotorus.h"
-#include "vboteapot.h"
-#include "vbomeshadj.h"
+#include "objmesh.h"
 
 #include "cookbookogl.h"
 
 #include <glm/glm.hpp>
-using glm::mat4;
 
 class SceneSilhouette : public Scene
 {
 private:
     GLSLProgram prog;
 
-    VBOMeshAdj *ogre;
-
-    mat4 model;
-    mat4 view, viewport;
-    mat4 projection;
+    std::unique_ptr<ObjMesh> ogre;
     float angle, tPrev, rotSpeed;
 
     void setMatrices();

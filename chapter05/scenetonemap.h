@@ -3,36 +3,27 @@
 
 #include "scene.h"
 #include "glslprogram.h"
-#include "vboplane.h"
-#include "vbocube.h"
-#include "vbotorus.h"
-#include "vboteapot.h"
-#include "vbomesh.h"
-#include "vbosphere.h"
+#include "plane.h"
+#include "teapot.h"
+#include "sphere.h"
 
 #include "cookbookogl.h"
 
 #include <glm/glm.hpp>
-using glm::mat4;
 
 class SceneToneMap : public Scene
 {
 private:
     GLSLProgram prog;
 
-    int width, height;
     GLuint hdrFBO;
     GLuint quad, pass1Index, pass2Index;
     GLuint hdrTex, avgTex;
 
-    VBOPlane *plane;
-    VBOTorus *torus;
-    VBOTeapot *teapot;
-    VBOSphere *sphere;
+    Plane plane;
+    Teapot teapot;
+    Sphere sphere;
 
-    mat4 model;
-    mat4 view;
-    mat4 projection;
     float angle, tPrev, rotSpeed;
 
     void setMatrices();

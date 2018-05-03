@@ -1,20 +1,15 @@
 #include "scenemsaa.h"
 
-#include <cstdio>
-#include <cstdlib>
-
-#include "glutils.h"
-
 #include <iostream>
 using std::endl;
 using std::cerr;
 
-using glm::vec3;
-
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/constants.hpp>
+using glm::vec3;
+using glm::mat4;
 
-SceneMsaa::SceneMsaa() : width(800), height(600), angle(0.0f), tPrev(0.0f), rotSpeed(glm::pi<float>() / 8.0f)
+SceneMsaa::SceneMsaa() : angle(0.0f), tPrev(0.0f), rotSpeed(glm::pi<float>() / 8.0f)
 { }
 
 void SceneMsaa::initScene()
@@ -27,8 +22,6 @@ void SceneMsaa::initScene()
 
     float c = 5.0f;
     projection = glm::ortho(-0.4f * c, 0.4f * c, -0.3f *c, 0.3f*c, 0.1f, 100.0f);
-
-    plane = new VBOPlane(50.0f, 50.0f, 1, 1);
 
 	angle = glm::pi<float>() / 2.0f;
 
@@ -97,7 +90,6 @@ void SceneMsaa::render()
     // Render the quad
     glBindVertexArray(quad);
     glDrawArrays(GL_TRIANGLES, 0, 6);
-
     glFinish();
 }
 

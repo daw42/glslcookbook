@@ -1,24 +1,21 @@
 #include "sceneoit.h"
 
-#include <cstdio>
-#include <cstdlib>
-
-#include "glutils.h"
-
 #include <iostream>
 using std::endl;
 using std::cerr;
-
-using glm::vec3;
 
 #include <vector>
 using std::vector;
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/constants.hpp>
+using glm::vec3;
+using glm::mat4;
+using glm::vec3;
+using glm::vec4;
 
-SceneOit::SceneOit() : width(800), height(600), angle(0.0f), tPrev(0.0f),
-rotSpeed(glm::pi<float>() / 8.0f)
+SceneOit::SceneOit() : angle(0.0f), tPrev(0.0f),
+                       rotSpeed(glm::pi<float>() / 8.0f), sphere(1.0f, 40, 40)
 { }
 
 void SceneOit::initScene()
@@ -28,10 +25,6 @@ void SceneOit::initScene()
   glClearColor(0.5f,0.5f,0.5f,1.0f);
 
   glEnable(GL_DEPTH_TEST);
-
-  cube = new VBOCube();
-  sphere = new VBOSphere(1.0f, 40, 40);
-
   angle = glm::radians(210.0f);
 
   //  glEnable(GL_BLEND);
@@ -134,7 +127,7 @@ void SceneOit::setMatrices()
   mat4 mv = view * model;
 
   prog.setUniform("NormalMatrix",
-      mat3( vec3(mv[0]), vec3(mv[1]), vec3(mv[2]) ) );
+      glm::mat3( vec3(mv[0]), vec3(mv[1]), vec3(mv[2]) ) );
   prog.setUniform("ModelViewMatrix", mv);
   prog.setUniform("MVP", projection * mv);
 }
@@ -172,7 +165,7 @@ void SceneOit::drawScene() {
           model = glm::translate(mat4(1.0f), vec3(i-3, j-3, k-3));
           model = glm::scale( model, vec3(size) );
           setMatrices();
-          sphere->render();
+          cube.render();
         }
       }
 
@@ -182,35 +175,35 @@ void SceneOit::drawScene() {
   model = glm::translate(mat4(1.0f), vec3(-pos, -pos, pos) );
   model = glm::scale( model, vec3(size) );
   setMatrices();
-  cube->render();
+  cube.render();
   model = glm::translate(mat4(1.0f), vec3(-pos, -pos, -pos) );
   model = glm::scale( model, vec3(size) );
   setMatrices();
-  cube->render();
+  cube.render();
   model = glm::translate(mat4(1.0f), vec3(-pos, pos, pos) );
   model = glm::scale( model, vec3(size) );
   setMatrices();
-  cube->render();
+  cube.render();
   model = glm::translate(mat4(1.0f), vec3(-pos, pos, -pos) );
   model = glm::scale( model, vec3(size) );
   setMatrices();
-  cube->render();
+  cube.render();
   model = glm::translate(mat4(1.0f), vec3(pos, pos, pos) );
   model = glm::scale( model, vec3(size) );
   setMatrices();
-  cube->render();
+  cube.render();
   model = glm::translate(mat4(1.0f), vec3(pos, pos, -pos) );
   model = glm::scale( model, vec3(size) );
   setMatrices();
-  cube->render();
+  cube.render();
   model = glm::translate(mat4(1.0f), vec3(pos, -pos, pos) );
   model = glm::scale( model, vec3(size) );
   setMatrices();
-  cube->render();
+  cube.render();
   model = glm::translate(mat4(1.0f), vec3(pos, -pos, -pos) );
   model = glm::scale( model, vec3(size) );
   setMatrices();
-  cube->render();
+  cube.render();
 }
 
 void SceneOit::initShaderStorage()

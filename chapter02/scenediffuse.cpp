@@ -1,28 +1,22 @@
 #include "scenediffuse.h"
 
-#include <cstdio>
-#include <cstdlib>
 #include <iostream>
 using std::cerr;
 using std::endl;
 
-#include "glutils.h"
-
-using glm::vec3;
-
 #include <glm/gtc/matrix_transform.hpp>
+using glm::vec3;
+using glm::mat4;
 
-SceneDiffuse::SceneDiffuse()
-{
-}
+
+SceneDiffuse::SceneDiffuse() : torus(0.7f, 0.3f, 30, 30)
+{ }
 
 void SceneDiffuse::initScene()
 {
     compileAndLinkShader();
 
     glEnable(GL_DEPTH_TEST);
-
-    torus = new VBOTorus(0.7f, 0.3f, 30, 30);
 
     model = mat4(1.0f);
     model = glm::rotate(model, glm::radians(-35.0f), vec3(1.0f,0.0f,0.0f));
@@ -32,8 +26,7 @@ void SceneDiffuse::initScene()
 
     prog.setUniform("Kd", 0.9f, 0.5f, 0.3f);
     prog.setUniform("Ld", 1.0f, 1.0f, 1.0f);
-    prog.setUniform("LightPosition", view * vec4(5.0f,5.0f,2.0f,1.0f) );
-
+    prog.setUniform("LightPosition", view * glm::vec4(5.0f,5.0f,2.0f,1.0f) );
 }
 
 void SceneDiffuse::update( float t )
@@ -46,7 +39,7 @@ void SceneDiffuse::render()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     setMatrices();
-    torus->render();
+    torus.render();
 }
 
 void SceneDiffuse::setMatrices()
@@ -54,7 +47,7 @@ void SceneDiffuse::setMatrices()
     mat4 mv = view * model;
     prog.setUniform("ModelViewMatrix", mv);
     prog.setUniform("NormalMatrix",
-                    mat3( vec3(mv[0]), vec3(mv[1]), vec3(mv[2]) ));
+                    glm::mat3( vec3(mv[0]), vec3(mv[1]), vec3(mv[2]) ));
     prog.setUniform("MVP", projection * mv);
 }
 

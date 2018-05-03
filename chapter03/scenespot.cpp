@@ -1,31 +1,26 @@
 #include "scenespot.h"
 
-#include <cstdio>
-#include <cstdlib>
-
-#include "glutils.h"
-
-using glm::vec3;
-
 #include <iostream>
 using std::endl;
 using std::cerr;
 
 #include <glm/gtc/matrix_transform.hpp>
+using glm::vec3;
+using glm::mat4;
+using glm::vec4;
+using glm::mat3;
 
-SceneSpot::SceneSpot() : tPrev(0)
-{
-}
+SceneSpot::SceneSpot() : tPrev(0),
+                         plane(50.0f, 50.0f, 1, 1),
+                         teapot(14, glm::mat4(1.0f)),
+                         torus(1.75f * 0.75f, 0.75f * 0.75f, 50, 50)
+{ }
 
 void SceneSpot::initScene()
 {
     compileAndLinkShader();
 
     glEnable(GL_DEPTH_TEST);
-
-    plane = new VBOPlane(50.0f, 50.0f, 1, 1);
-    teapot = new VBOTeapot(14, glm::mat4(1.0f));
-    torus = new VBOTorus(1.75f * 0.75f, 0.75f * 0.75f, 50, 50);
 
     view = glm::lookAt(vec3(5.0f,5.0f,7.5f), vec3(0.0f,0.75f,0.0f), vec3(0.0f,1.0f,0.0f));
     projection = mat4(1.0f);
@@ -66,7 +61,7 @@ void SceneSpot::render()
     model = glm::rotate(model, glm::radians(45.0f), vec3(0.0f,1.0f,0.0f));
     model = glm::rotate(model, glm::radians(-90.0f), vec3(1.0f,0.0f,0.0f));
     setMatrices();
-    teapot->render();
+    teapot.render();
 
     prog.setUniform("Kd", 0.9f, 0.5f, 0.3f);
     prog.setUniform("Ks", 0.95f, 0.95f, 0.95f);
@@ -77,7 +72,7 @@ void SceneSpot::render()
     model = glm::translate(model, vec3(-1.0f,0.75f,3.0f));
     model = glm::rotate(model, glm::radians(-90.0f), vec3(1.0f,0.0f,0.0f));
     setMatrices();
-    torus->render();
+    torus.render();
 
     prog.setUniform("Kd", 0.7f, 0.7f, 0.7f);
     prog.setUniform("Ks", 0.9f, 0.9f, 0.9f);
@@ -86,7 +81,7 @@ void SceneSpot::render()
 
     model = mat4(1.0f);
     setMatrices();
-    plane->render();
+    plane.render();
 }
 
 void SceneSpot::setMatrices()

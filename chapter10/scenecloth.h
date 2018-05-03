@@ -3,18 +3,15 @@
 
 #include "scene.h"
 #include "glslprogram.h"
-
 #include "cookbookogl.h"
 
 #include <glm/glm.hpp>
-using glm::mat4;
 
 class SceneCloth : public Scene
 {
 private:
     GLSLProgram renderProg, computeProg, computeProgNorm;
 
-    int width, height;
     GLuint clothVao;
     GLuint numElements;
 
@@ -25,8 +22,6 @@ private:
     GLuint readBuf;
     GLuint posBufs[2], velBufs[2];
     GLuint normBuf, elBuf, tcBuf;
-
-    glm::mat4 view, model, projection;
 
     void compileAndLinkShader();
     void initBuffers();

@@ -1,21 +1,18 @@
 #include "scenemultilight.h"
 
-#include <cstdio>
-#include <cstdlib>
 #include <sstream>
-
-#include "glutils.h"
-
 #include <iostream>
 using std::endl;
 using std::cerr;
 
-using glm::vec3;
-
 #include <glm/gtc/matrix_transform.hpp>
+using glm::vec3;
+using glm::mat4;
 
-SceneMultiLight::SceneMultiLight()
+SceneMultiLight::SceneMultiLight() :
+        plane(10.0f, 10.0f, 100, 100)
 {
+    mesh = ObjMesh::load("../media/pig_triangulated.obj",true);
 }
 
 void SceneMultiLight::initScene()
@@ -23,9 +20,6 @@ void SceneMultiLight::initScene()
     compileAndLinkShader();
 
     glEnable(GL_DEPTH_TEST);
-
-    plane = new VBOPlane(10.0f, 10.0f, 100, 100);
-    mesh = new VBOMesh("../media/pig_triangulated.obj",true);
 
     view = glm::lookAt(vec3(0.5f,0.75f,0.75f), vec3(0.0f,0.0f,0.0f), vec3(0.0f,1.0f,0.0f));
     projection = mat4(1.0f);
@@ -36,7 +30,7 @@ void SceneMultiLight::initScene()
         name << "lights[" << i << "].Position";
         x = 2.0f * cosf((glm::two_pi<float>() / 5) * i);
         z = 2.0f * sinf((glm::two_pi<float>() / 5) * i);
-        prog.setUniform(name.str().c_str(), view * vec4(x, 1.2f, z + 1.0f, 1.0f) );
+        prog.setUniform(name.str().c_str(), view * glm::vec4(x, 1.2f, z + 1.0f, 1.0f) );
     }
 
     prog.setUniform("lights[0].Intensity", vec3(0.0f,0.8f,0.8f) );
@@ -73,7 +67,7 @@ void SceneMultiLight::render()
     model = mat4(1.0f);
     model = glm::translate(model,vec3(0.0f,-0.45f,0.0f));
     setMatrices();
-    plane->render();
+    plane.render();
 }
 
 void SceneMultiLight::setMatrices()
@@ -81,7 +75,7 @@ void SceneMultiLight::setMatrices()
     mat4 mv = view * model;
     prog.setUniform("ModelViewMatrix", mv);
     prog.setUniform("NormalMatrix",
-                    mat3( vec3(mv[0]), vec3(mv[1]), vec3(mv[2]) ));
+                    glm::mat3( vec3(mv[0]), vec3(mv[1]), vec3(mv[2]) ));
     prog.setUniform("MVP", projection * mv);
 }
 
@@ -96,8 +90,8 @@ void SceneMultiLight::resize(int w, int h)
 void SceneMultiLight::compileAndLinkShader()
 {
 	try {
-		prog.compileShader("shader/multilight.vert",GLSLShader::VERTEX);
-		prog.compileShader("shader/multilight.frag",GLSLShader::FRAGMENT);
+		prog.compileShader("shader/multilight.vert");
+		prog.compileShader("shader/multilight.frag");
     	prog.link();
     	prog.use();
     } catch(GLSLProgramException & e) {

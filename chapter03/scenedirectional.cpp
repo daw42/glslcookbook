@@ -1,21 +1,16 @@
 #include "scenedirectional.h"
 
-#include <cstdio>
-#include <cstdlib>
-
-#include "glutils.h"
-
 #include <iostream>
 using std::endl;
 using std::cerr;
 
-using glm::vec3;
-
 #include <glm/gtc/matrix_transform.hpp>
+using glm::vec3;
+using glm::mat4;
 
-SceneDirectional::SceneDirectional()
-{
-}
+
+SceneDirectional::SceneDirectional() : torus(0.7f, 0.3f, 50, 50)
+{ }
 
 void SceneDirectional::initScene()
 {
@@ -23,13 +18,10 @@ void SceneDirectional::initScene()
 
     glEnable(GL_DEPTH_TEST);
 
-    plane = new VBOPlane(10.0f, 10.0f, 100, 100);
-    torus = new VBOTorus(0.7f, 0.3f, 50, 50);
-
     view = glm::lookAt(vec3(1.0f,1.0f,1.0f), vec3(0.0f,0.0f,0.0f), vec3(0.0f,1.0f,0.0f));
     projection = mat4(1.0f);
 
-    prog.setUniform("LightPosition", view * vec4(1.0f, 0.0f, 0.0f, 0.0f) );
+    prog.setUniform("LightPosition", view * glm::vec4(1.0f, 0.0f, 0.0f, 0.0f) );
     prog.setUniform("LightIntensity", vec3(0.8f,0.8f,0.8f) );
 }
 
@@ -50,17 +42,7 @@ void SceneDirectional::render()
     model = mat4(1.0f);
     model = glm::rotate(model, glm::radians(90.0f), vec3(0.0f,1.0f,0.0f));
     setMatrices();
-    torus->render();
-
-    prog.setUniform("Kd", 0.4f, 0.4f, 0.4f);
-    prog.setUniform("Ks", 0.9f, 0.9f, 0.9f);
-    prog.setUniform("Ka", 0.1f, 0.1f, 0.1f);
-    prog.setUniform("Shininess", 180.0f);
-
-    model = mat4(1.0f);
-    model = glm::translate(model, vec3(0.0f,-0.45f,0.0f));
-    setMatrices();
-    //plane->render();
+    torus.render();
 }
 
 void SceneDirectional::setMatrices()
@@ -68,7 +50,7 @@ void SceneDirectional::setMatrices()
     mat4 mv = view * model;
     prog.setUniform("ModelViewMatrix", mv);
     prog.setUniform("NormalMatrix",
-                    mat3( vec3(mv[0]), vec3(mv[1]), vec3(mv[2]) ));
+                    glm::mat3( vec3(mv[0]), vec3(mv[1]), vec3(mv[2]) ));
     prog.setUniform("MVP", projection * mv);
 }
 

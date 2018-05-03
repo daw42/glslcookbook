@@ -16,7 +16,7 @@ using std::cerr;
 #include <glm/gtc/matrix_transform.hpp>
 using glm::vec3;
 
-SceneBasic_UniformBlock::SceneBasic_UniformBlock() : width(0), height(0), angle(0.0f) { }
+SceneBasic_UniformBlock::SceneBasic_UniformBlock() : angle(0.0f) { }
 
 void SceneBasic_UniformBlock::initUniformBlockBuffer()
 {

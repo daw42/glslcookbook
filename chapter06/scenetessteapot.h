@@ -3,12 +3,11 @@
 
 #include "scene.h"
 #include "glslprogram.h"
-#include "vboteapotpatch.h"
+#include "teapotpatch.h"
 
 #include "cookbookogl.h"
 
 #include <glm/glm.hpp>
-using glm::mat4;
 
 class SceneTessTeapot : public Scene
 {
@@ -17,11 +16,8 @@ private:
 
     GLuint vaoHandle;
 
-    VBOTeapotPatch *teapot;
-
-    mat4 model;
-    mat4 view, viewport;
-    mat4 projection;
+    TeapotPatch teapot;
+    glm::mat4 viewport;
     float angle, tPrev, rotSpeed;
 
     void setMatrices();

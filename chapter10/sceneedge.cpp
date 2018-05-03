@@ -1,19 +1,17 @@
 #include "sceneedge.h"
 
-#include <cstdio>
-#include <cstdlib>
-
-#include "glutils.h"
-
 #include <iostream>
 using std::endl;
 using std::cerr;
-using glm::vec3;
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/constants.hpp>
+using glm::vec3;
+using glm::mat4;
+using glm::vec4;
 
-SceneEdge::SceneEdge() : width(800), height(600), angle(0.0f), tPrev(0.0f), rotSpeed(glm::pi<float>() / 4.0f)
+SceneEdge::SceneEdge() : angle(0.0f), tPrev(0.0f), rotSpeed(glm::pi<float>() / 4.0f),
+                         plane(50.0f, 50.0f, 1, 1), teapot(14, mat4(1.0f)), torus(0.7f * 1.5f, 0.3f * 1.5f, 50,50)
 {}
 
 void SceneEdge::initScene()
@@ -24,13 +22,7 @@ void SceneEdge::initScene()
 
     glEnable(GL_DEPTH_TEST);
 
-    plane = new VBOPlane(50.0f, 50.0f, 1, 1);
-    teapot = new VBOTeapot(14, mat4(1.0f));
-    float c = 1.5f;
-    torus = new VBOTorus(0.7f * c, 0.3f * c, 50,50);
-
     projection = mat4(1.0f);
-
 	angle = glm::pi<float>() / 4.0f;
 
     setupFBO();
@@ -162,7 +154,7 @@ void SceneEdge::pass1()
     model = glm::translate(model, vec3(0.0f,0.0f,0.0f));
     model = glm::rotate(model, glm::radians(-90.0f), vec3(1.0f,0.0f,0.0f));
     setMatrices();
-    teapot->render();
+    teapot.render();
 
     prog.setUniform("Material.Kd", 0.4f, 0.4f, 0.4f);
     prog.setUniform("Material.Ks", 0.0f, 0.0f, 0.0f);
@@ -171,7 +163,7 @@ void SceneEdge::pass1()
     model = mat4(1.0f);
     model = glm::translate(model, vec3(0.0f,-0.75f,0.0f));
     setMatrices();
-    plane->render();
+    plane.render();
 
     prog.setUniform("Light.Position", vec4(0.0f,0.0f,0.0f,1.0f) );
     prog.setUniform("Material.Kd", 0.9f, 0.5f, 0.2f);
@@ -182,7 +174,7 @@ void SceneEdge::pass1()
     model = glm::translate(model, vec3(1.0f,1.0f,3.0f));
     model = glm::rotate(model, glm::radians(90.0f), vec3(1.0f,0.0f,0.0f));
     setMatrices();
-    torus->render();
+    torus.render();
 }
 
 void SceneEdge::pass2()
@@ -206,7 +198,7 @@ void SceneEdge::setMatrices()
     mat4 mv = view * model;
     prog.setUniform("ModelViewMatrix", mv);
     prog.setUniform("NormalMatrix",
-                    mat3( vec3(mv[0]), vec3(mv[1]), vec3(mv[2]) ));
+                    glm::mat3( vec3(mv[0]), vec3(mv[1]), vec3(mv[2]) ));
     prog.setUniform("MVP", projection * mv);
 }
 

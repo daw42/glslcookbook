@@ -1,3 +1,4 @@
+.DS_Store
 *.suo
 *~
 *.user
@@ -14,6 +15,7 @@ cmake_install.cmake
 CMakeCache.txt
 Makefile
 **/*.dir/
+cmake-build-*/
 
 # Compiled output
 ingredients/libingredients.a

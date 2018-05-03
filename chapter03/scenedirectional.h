@@ -3,26 +3,18 @@
 
 #include "scene.h"
 #include "glslprogram.h"
-#include "vboplane.h"
-#include "vbotorus.h"
+#include "torus.h"
 
 #include "cookbookogl.h"
 
 #include <glm/glm.hpp>
-using glm::mat4;
 
 class SceneDirectional : public Scene
 {
 private:
     GLSLProgram prog;
 
-    int width, height;
-    VBOPlane *plane;
-    VBOTorus *torus;
-
-    mat4 model;
-    mat4 view;
-    mat4 projection;
+    Torus torus;
 
     void setMatrices();
     void compileAndLinkShader();

@@ -3,34 +3,21 @@
 
 #include "scene.h"
 #include "glslprogram.h"
-#include "vboplane.h"
-#include "vbocube.h"
-#include "vbotorus.h"
-#include "vboteapot.h"
-
 #include "cookbookogl.h"
+#include "torus.h"
 
 #include <glm/glm.hpp>
-using glm::mat4;
 
 class SceneParticlesInstanced : public Scene
 {
 private:
     GLSLProgram prog;
 
-    int width, height;
-
-    GLuint particleArray;
+    //GLuint particleArray;
     GLuint initVel, startTime;
+    Torus torus;
 
     int nParticles;
-
-    VBOPlane *plane;
-    VBOTorus *torus;
-
-    mat4 model;
-    mat4 view;
-    mat4 projection;
     float angle;
     float time, deltaT;
 

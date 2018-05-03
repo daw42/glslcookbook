@@ -8,7 +8,6 @@
 class SceneBasic : public Scene
 {
 private:
-    int width, height;
     GLuint vaoHandle;
 
     void linkMe(GLint vertShader, GLint fragShader);

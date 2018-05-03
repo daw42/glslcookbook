@@ -3,27 +3,20 @@
 
 #include "scene.h"
 #include "glslprogram.h"
-#include "vboplane.h"
-#include "vbocube.h"
-#include "vbotorus.h"
-#include "vboteapot.h"
-#include "vbomesh.h"
+#include "objmesh.h"
 
 #include "cookbookogl.h"
 
 #include <glm/glm.hpp>
-using glm::mat4;
 
 class SceneShadeWire : public Scene
 {
 private:
     GLSLProgram prog;
 
-    VBOMesh *ogre;
+    std::unique_ptr<ObjMesh> ogre;
 
-    mat4 model;
-    mat4 view, viewport;
-    mat4 projection;
+    glm::mat4 viewport;
 
     void setMatrices();
     void compileAndLinkShader();

@@ -1,20 +1,15 @@
 #include "sceneparticles.h"
+#include "texture.h"
 
-#include <cstdio>
-#include <cstdlib>
 #include <iostream>
 using std::endl;
 using std::cerr;
 
-#include "bmpreader.h"
-
-#include "glutils.h"
-
-using glm::vec3;
-
 #include <glm/gtc/matrix_transform.hpp>
+using glm::vec3;
+using glm::mat4;
 
-SceneParticles::SceneParticles() : width(800), height(600), time(0) {}
+SceneParticles::SceneParticles() : time(0) {}
 
 void SceneParticles::initScene()
 {
@@ -35,9 +30,9 @@ void SceneParticles::initScene()
 	initBuffers();
 
     // The particle texture
-    const char * texName = "../media/texture/bluewater.bmp";
+    const char * texName = "../media/texture/bluewater.png";
     glActiveTexture(GL_TEXTURE0);
-    BMPReader::loadTex(texName);
+    Texture::loadTexture(texName);
 
     prog.setUniform("ParticleTex", 0);
     prog.setUniform("ParticleLifetime", 3.5f);

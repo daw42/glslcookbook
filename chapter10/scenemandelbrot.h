@@ -3,21 +3,18 @@
 
 #include "scene.h"
 #include "glslprogram.h"
-
 #include "cookbookogl.h"
-#include "vbocube.h"
+#include "cube.h"
 
 #include <glm/glm.hpp>
-using glm::mat4;
 
 class SceneMandelbrot : public Scene
 {
 private:
     GLSLProgram renderProg, computeProg;
 
-    int width, height;
     GLuint dataBuf, fsQuad;
-    VBOCube *cube;
+    Cube cube;
 
     glm::vec2 center;
     float cheight;

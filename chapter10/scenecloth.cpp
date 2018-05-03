@@ -1,29 +1,21 @@
 #include "scenecloth.h"
+#include "texture.h"
 
-#include <cstdio>
-#include <cstdlib>
 #include <iostream>
 using std::endl;
 using std::cerr;
 
-#include "glutils.h"
-
 #include <vector>
 using std::vector;
 
-using glm::vec3;
-
-#include "tgaio.h"
-
 #include <glm/gtc/matrix_transform.hpp>
+using glm::vec3;
 
 #define PRIM_RESTART 0xffffff
 
-SceneCloth::SceneCloth():
-  width(800), height(600), clothVao(0), numElements(0),
-  nParticles(40,40), clothSize(4.0f, 3.0f),
-  time(0.0f), deltaT(0.0f), speed(200.0f),
-  readBuf(0)
+SceneCloth::SceneCloth(): clothVao(0), numElements(0),
+                          nParticles(40,40), clothSize(4.0f, 3.0f),
+                          time(0.0f), deltaT(0.0f), speed(200.0f), readBuf(0)
 {
 }
 
@@ -53,7 +45,7 @@ void SceneCloth::initScene()
   computeProg.setUniform("RestLengthDiag", sqrtf(dx * dx + dy * dy));
 
   glActiveTexture(GL_TEXTURE0);
-  TGAIO::loadTex("../media/texture/me_textile.tga");
+  Texture::loadTexture("../media/texture/me_textile.png");
 }
 
 void SceneCloth::initBuffers()
@@ -206,7 +198,7 @@ void SceneCloth::render()
 void SceneCloth::setMatrices() {
   renderProg.use();
   glm::mat4 mv = view * model;
-  glm::mat3 norm =  mat3( vec3(mv[0]), vec3(mv[1]), vec3(mv[2]) );
+  glm::mat3 norm = glm::mat3( vec3(mv[0]), vec3(mv[1]), vec3(mv[2]) );
 
   renderProg.setUniform("ModelViewMatrix", mv);
   renderProg.setUniform("NormalMatrix", norm);

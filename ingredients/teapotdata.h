@@ -1,5 +1,4 @@
-#ifndef TEAPOTDATA_H
-#define TEAPOTDATA_H
+#pragma once
 
 /* Copyright (c) Mark J. Kilgard, 1994. */
 
@@ -49,7 +48,7 @@ OpenGL(TM) is a trademark of Silicon Graphics, Inc.
 /* Rim, body, lid, and bottom data must be reflected in x and
    y; handle and spout data across the y axis only.  */
 
-namespace Teapot {
+namespace TeapotData {
 static int patchdata[][16] =
 {
     /* rim */
@@ -202,5 +201,3 @@ static float cpdata[][3] =
 };
 
 }
-
-#endif // TEAPOTDATA_H

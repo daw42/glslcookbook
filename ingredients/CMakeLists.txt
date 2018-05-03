@@ -1,24 +1,29 @@
-set( ingredients_SOURCES vboteapotpatch.cpp
-	vboteapot.cpp
-	drawable.cpp 
-	vbomeshadj.cpp 
-	vbotorus.cpp 
-	glutils.cpp 
-	vbomesh.cpp 
-	glslprogram.cpp 
-	vbocube.cpp 
-	vboplane.cpp 
-        vbosphere.cpp
-	bmpreader.cpp
-	tgaio.cpp
-		cookbookogl.h
-		scene.h
-		teapotdata.h
-		glad/src/glad.c)
+set(target ingredients)
 
-add_library( ingredients STATIC ${ingredients_SOURCES} )
+set(ingredients_SOURCES
+        teapotpatch.cpp
+        teapot.cpp
+        torus.cpp
+        glutils.cpp
+        objmesh.cpp
+        glslprogram.cpp
+        cube.cpp
+        plane.cpp
+        sphere.cpp
+        cookbookogl.h
+        scene.h
+        teapotdata.h
+        glad/src/glad.c trianglemesh.cpp trianglemesh.h aabb.h
+        scenerunner.h
+        texture.h texture.cpp
+        utils.h)
 
-target_include_directories( ingredients PUBLIC glad/include )
+add_library(${target} STATIC ${ingredients_SOURCES})
 
-target_link_libraries( ingredients PUBLIC glm )
+target_include_directories(${target} PUBLIC glad/include)
+
+target_link_libraries(${target} PUBLIC glm)
+
+set_property(TARGET ${target} PROPERTY CXX_STANDARD 17)
+set_property(TARGET ${target} PROPERTY CXX_STANDARD_REQUIRED ON)
 

@@ -3,29 +3,24 @@
 
 #include "scene.h"
 #include "glslprogram.h"
-#include "vboplane.h"
-#include "vboteapot.h"
-#include "vbotorus.h"
+#include "plane.h"
+#include "teapot.h"
+#include "torus.h"
 
 #include "cookbookogl.h"
 
 #include <glm/glm.hpp>
-using glm::mat4;
 
 class SceneSpot : public Scene
 {
 private:
     GLSLProgram prog;
 
-    int width, height;
     float tPrev;
-    VBOPlane *plane;
-    VBOTeapot *teapot;
-    VBOTorus *torus;
+    Plane plane;
+    Teapot teapot;
+    Torus torus;
 
-    mat4 model;
-    mat4 view;
-    mat4 projection;
     float angle;
 
     void setMatrices();

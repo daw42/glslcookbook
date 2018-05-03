@@ -7,17 +7,15 @@
 #include "glslprogram.h"
 
 #include <glm/glm.hpp>
-using glm::mat4;
 
 class SceneBasic_Uniform : public Scene
 {
 private:
-    int width, height;
     GLuint vaoHandle;
     GLSLProgram prog;
     float angle;
 
-    mat4 rotationMatrix;
+    glm::mat4 rotationMatrix;
 
     void compile();
 

@@ -1,29 +1,21 @@
 #include "scenemultitex.h"
-
-#include <cstdio>
-#include <cstdlib>
-
-#include "tgaio.h"
-
-#include "glutils.h"
+#include "texture.h"
 
 #include <iostream>
 using std::endl;
 using std::cerr;
 
-using glm::vec3;
-
 #include <glm/gtc/matrix_transform.hpp>
+using glm::vec3;
+using glm::mat4;
 
-SceneMultiTex::SceneMultiTex() { }
+SceneMultiTex::SceneMultiTex() : cube() { }
 
 void SceneMultiTex::initScene()
 {
     compileAndLinkShader();
 
     glEnable(GL_DEPTH_TEST);
-
-    cube = new VBOCube();
 
     view = glm::lookAt(vec3(1.0f,1.25f,1.25f), vec3(0.0f,0.0f,0.0f), vec3(0.0f,1.0f,0.0f));
     projection = mat4(1.0f);
@@ -32,11 +24,11 @@ void SceneMultiTex::initScene()
 
     // Load brick texture file into channel 0
     glActiveTexture(GL_TEXTURE0);
-    TGAIO::loadTex("../media/texture/brick1.tga");
+    Texture::loadTexture("../media/texture/brick1.jpg");
 
     // Load moss texture file into channel 1
     glActiveTexture(GL_TEXTURE1);
-    TGAIO::loadTex("../media/texture/moss.tga");
+    Texture::loadTexture("../media/texture/moss.png");
 
 #ifdef __APPLE__
     prog.setUniform("BaseTex", 0);
@@ -50,7 +42,7 @@ void SceneMultiTex::render()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    prog.setUniform("Light.Position", vec4(0.0f,0.0f,0.0f,1.0f) );
+    prog.setUniform("Light.Position", glm::vec4(0.0f,0.0f,0.0f,1.0f) );
     prog.setUniform("Material.Kd", 0.9f, 0.9f, 0.9f);
     prog.setUniform("Material.Ks", 0.95f, 0.95f, 0.95f);
     prog.setUniform("Material.Ka", 0.1f, 0.1f, 0.1f);
@@ -58,7 +50,7 @@ void SceneMultiTex::render()
 
     model = mat4(1.0f);
     setMatrices();
-    cube->render();
+    cube.render();
 }
 
 void SceneMultiTex::setMatrices()
@@ -66,7 +58,7 @@ void SceneMultiTex::setMatrices()
     mat4 mv = view * model;
     prog.setUniform("ModelViewMatrix", mv);
     prog.setUniform("NormalMatrix",
-                    mat3( vec3(mv[0]), vec3(mv[1]), vec3(mv[2]) ));
+                    glm::mat3( vec3(mv[0]), vec3(mv[1]), vec3(mv[2]) ));
     prog.setUniform("MVP", projection * mv);
 }
 

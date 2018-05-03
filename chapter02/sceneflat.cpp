@@ -1,26 +1,23 @@
 #include "sceneflat.h"
 
-#include <cstdio>
-#include <cstdlib>
 #include <iostream>
 using std::cerr;
 using std::endl;
 
-#include "glutils.h"
-
-using glm::vec3;
-
 #include <glm/gtc/matrix_transform.hpp>
+using glm::vec3;
+using glm::mat4;
 
-SceneFlat::SceneFlat() : angle(0.0f) { }
+SceneFlat::SceneFlat() : angle(0.0f)
+{
+    ogre = ObjMesh::load("../media/bs_ears.obj");
+}
 
 void SceneFlat::initScene()
 {
     compileAndLinkShader();
 
     glEnable(GL_DEPTH_TEST);
-
-    ogre = new VBOMesh("../media/bs_ears.obj");
 
     view = glm::lookAt(vec3(0.0f,0.35f,0.85f), vec3(0.0f,-0.25f,0.0f), vec3(0.0f,1.0f,0.0f));
     projection = mat4(1.0f);
@@ -42,7 +39,7 @@ void SceneFlat::render()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
-    vec4 worldLight = vec4(2.0f,4.0f,1.0f,1.0f);
+    glm::vec4 worldLight = glm::vec4(2.0f,4.0f,1.0f,1.0f);
     model = glm::rotate(mat4(), glm::radians(angle), vec3(0.0f,1.0f,0.0f));
     prog.setUniform("Light.Position", view * model * worldLight );
 
@@ -58,7 +55,7 @@ void SceneFlat::setMatrices()
     mat4 mv = view * model;
     prog.setUniform("ModelViewMatrix", mv);
     prog.setUniform("NormalMatrix",
-                    mat3( vec3(mv[0]), vec3(mv[1]), vec3(mv[2]) ));
+                    glm::mat3( vec3(mv[0]), vec3(mv[1]), vec3(mv[2]) ));
     prog.setUniform("MVP", projection * mv);
 }
 

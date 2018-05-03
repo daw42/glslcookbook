@@ -11,7 +11,7 @@ using std::endl;
 
 #include "glutils.h"
 
-SceneBasic_Debug::SceneBasic_Debug() : width(0), height(0) { }
+SceneBasic_Debug::SceneBasic_Debug() { }
 
 void SceneBasic_Debug::initScene()
 {

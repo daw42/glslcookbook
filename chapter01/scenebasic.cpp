@@ -12,7 +12,7 @@ using std::string;
 
 #include "glutils.h"
 
-SceneBasic::SceneBasic() : width(0), height(0) { }
+SceneBasic::SceneBasic() { }
 
 void SceneBasic::initScene()
 {

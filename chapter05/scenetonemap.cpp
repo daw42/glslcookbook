@@ -1,29 +1,25 @@
 #include "scenetonemap.h"
 
-#include <cstdio>
-#include <cstdlib>
-
-#include "glutils.h"
-
 #include <iostream>
 using std::endl;
 using std::cerr;
-using glm::vec3;
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/constants.hpp>
+using glm::vec3;
+using glm::mat4;
+using glm::vec4;
+using glm::mat3;
 
-SceneToneMap::SceneToneMap() : width(800), height(600), angle(0.0f), tPrev(0.0f), rotSpeed(glm::pi<float>() / 8.0f) { }
+SceneToneMap::SceneToneMap() : angle(0.0f), tPrev(0.0f), rotSpeed(glm::pi<float>() / 8.0f),
+                               plane(20.0f, 10.0f, 1, 1),  teapot(14, mat4(1.0)), sphere(2.0f, 50, 50)
+{ }
 
 void SceneToneMap::initScene()
 {
     compileAndLinkShader();
 
     glEnable(GL_DEPTH_TEST);
-
-    plane = new VBOPlane(20.0f, 10.0f, 1, 1);
-    teapot = new VBOTeapot(14, mat4(1.0));
-    sphere = new VBOSphere(2.0f, 50, 50);
 
 	angle = glm::pi<float>() / 2.0f;
 
@@ -235,28 +231,27 @@ void SceneToneMap::drawScene()
     // The backdrop plane
     model = glm::rotate(mat4(1.0f), glm::radians(90.0f), vec3(1.0f,0.0f,0.0f) );
     setMatrices();
-    plane->render();
+    plane.render();
 
     // The bottom plane
     model = glm::translate(mat4(1.0f), vec3(0.0f,-5.0f,0.0f));
     setMatrices();
-    plane->render();
+    plane.render();
 
     // Top plane
     model = glm::translate(mat4(1.0f), vec3(0.0f,5.0f,0.0f));
     model = glm::rotate( model, glm::radians(180.0f), vec3(1.0f, 0.0f, 0.0f));
     setMatrices();
-    plane->render();
+    plane.render();
 
     prog.setUniform("Material.Kd", vec3(0.4f, 0.9f, 0.4f));
     model = glm::translate(mat4(1.0f), vec3(-3.0f,-3.0f,2.0f));
     setMatrices();
-    sphere->render();
+    sphere.render();
 
     prog.setUniform("Material.Kd", vec3(0.4f, 0.4f, 0.9f));
     model = glm::translate(mat4(1.0f), vec3(3.0f,-5.0f,1.5f));
     model = glm::rotate(model, glm::radians(-90.0f), vec3(1.0f,0.0f,0.0f));
-    //model = glm::scale(model, vec3(0.f));
     setMatrices();
-    teapot->render();
+    teapot.render();
 }

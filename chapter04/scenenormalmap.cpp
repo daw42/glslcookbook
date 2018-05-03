@@ -1,30 +1,25 @@
 #include "scenenormalmap.h"
-
-#include <cstdio>
-#include <cstdlib>
-
-#include "tgaio.h"
-
-#include "glutils.h"
+#include "texture.h"
 
 #include <iostream>
 using std::endl;
 using std::cerr;
 
-using glm::vec3;
-
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/constants.hpp>
+using glm::vec3;
+using glm::mat4;
 
-SceneNormalMap::SceneNormalMap() : angle(0.0f), tPrev(0.0f), rotSpeed(glm::pi<float>() / 8.0f) { }
+SceneNormalMap::SceneNormalMap() : angle(0.0f), tPrev(0.0f), rotSpeed(glm::pi<float>() / 8.0f)
+{
+    ogre = ObjMesh::load("../media/bs_ears.obj",false,true);
+}
 
 void SceneNormalMap::initScene()
 {
     compileAndLinkShader();
 
     glEnable(GL_DEPTH_TEST);
-
-    ogre = new VBOMesh("../media/bs_ears.obj",false,true,true);
 
     view = glm::lookAt(vec3(-1.0f,0.25f,2.0f), vec3(0.0f,0.0f,0.0f), vec3(0.0f,1.0f,0.0f));
     projection = mat4(1.0f);
@@ -35,11 +30,11 @@ void SceneNormalMap::initScene()
 
     // Load diffuse texture
     glActiveTexture(GL_TEXTURE0);
-    TGAIO::loadTex("../media/texture/ogre_diffuse.tga");
+    Texture::loadTexture("../media/texture/ogre_diffuse.png");
 
     // Load normal map
     glActiveTexture(GL_TEXTURE1);
-    TGAIO::loadTex("../media/texture/ogre_normalmap.tga");
+    Texture::loadTexture("../media/texture/ogre_normalmap.png");
 
 #ifdef __APPLE__
     prog.setUniform("ColorTex", 0);
@@ -63,7 +58,7 @@ void SceneNormalMap::render()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    prog.setUniform("Light.Position", view * vec4(10.0f * cos(angle),1.0f,10.0f * sin(angle),1.0f) );
+    prog.setUniform("Light.Position", view * glm::vec4(10.0f * cos(angle),1.0f,10.0f * sin(angle),1.0f) );
     prog.setUniform("Material.Ks", 0.2f, 0.2f, 0.2f);
     prog.setUniform("Material.Ka", 0.1f, 0.1f, 0.1f);
     prog.setUniform("Material.Shininess", 1.0f);
@@ -78,7 +73,7 @@ void SceneNormalMap::setMatrices()
     mat4 mv = view * model;
     prog.setUniform("ModelViewMatrix", mv);
     prog.setUniform("NormalMatrix",
-                    mat3( vec3(mv[0]), vec3(mv[1]), vec3(mv[2]) ));
+                    glm::mat3( vec3(mv[0]), vec3(mv[1]), vec3(mv[2]) ));
     prog.setUniform("MVP", projection * mv);
 }
 

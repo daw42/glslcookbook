@@ -1,26 +1,19 @@
 #include "sceneparticles.h"
+#include "texture.h"
 
-#include <cstdio>
-#include <cstdlib>
 #include <iostream>
 using std::endl;
 using std::cerr;
 
-#include "glutils.h"
-
 #include <vector>
 using std::vector;
 
-using glm::vec3;
-
-#include "tgaio.h"
-
 #include <glm/gtc/matrix_transform.hpp>
+using glm::vec3;
 
 #define PRIM_RESTART 0xffffff
 
 SceneParticles::SceneParticles():
-  width(800), height(600),
   nParticles(100,100,100),
   time(0.0f), deltaT(0.0f), speed(35.0f), angle(0.0f),
   bh1(5,0,0,1), bh2(-5,0,0,1)
@@ -39,7 +32,6 @@ void SceneParticles::initScene()
 
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
 }
 
 void SceneParticles::initBuffers()
@@ -168,7 +160,7 @@ void SceneParticles::render()
 void SceneParticles::setMatrices() {
   renderProg.use();
   glm::mat4 mv = view * model;
-  glm::mat3 norm =  mat3( vec3(mv[0]), vec3(mv[1]), vec3(mv[2]) );
+  glm::mat3 norm = glm::mat3( vec3(mv[0]), vec3(mv[1]), vec3(mv[2]) );
 
   renderProg.setUniform("ModelViewMatrix", mv);
   renderProg.setUniform("NormalMatrix", norm);

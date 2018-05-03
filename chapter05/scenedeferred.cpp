@@ -1,19 +1,19 @@
 #include "scenedeferred.h"
 
-#include <cstdio>
-#include <cstdlib>
-
-#include "glutils.h"
-
 #include <iostream>
 using std::endl;
 using std::cerr;
-using glm::vec3;
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/constants.hpp>
+using glm::vec3;
+using glm::mat4;
 
-SceneDeferred::SceneDeferred() : width(800), height(600), angle(0.0f), tPrev(0.0f), rotSpeed(glm::pi<float>() / 8.0f) { }
+SceneDeferred::SceneDeferred() : angle(0.0f), tPrev(0.0f), rotSpeed(glm::pi<float>() / 8.0f),
+                                 plane(50.0f, 50.0f, 1, 1),
+                                 torus(0.7f * 1.5f, 0.3f * 1.5f, 50,50),
+                                 teapot(14, mat4(1.0))
+{ }
 
 void SceneDeferred::initScene()
 {
@@ -22,9 +22,6 @@ void SceneDeferred::initScene()
     glEnable(GL_DEPTH_TEST);
 
     float c = 1.5f;
-    plane = new VBOPlane(50.0f, 50.0f, 1, 1);
-    torus = new VBOTorus(0.7f * c, 0.3f * c, 50,50);
-    teapot = new VBOTeapot(14, mat4(1.0));
 
 	angle = glm::pi<float>() / 2.0f;
 
@@ -150,28 +147,28 @@ void SceneDeferred::pass1()
     view = glm::lookAt(vec3(7.0f * cos(angle),4.0f,7.0f * sin(angle)), vec3(0.0f,0.0f,0.0f), vec3(0.0f,1.0f,0.0f));
     projection = glm::perspective(glm::radians(60.0f), (float)width/height, 0.3f, 100.0f);
 
-    prog.setUniform("Light.Position", vec4(0.0f,0.0f,0.0f,1.0f) );
+    prog.setUniform("Light.Position", glm::vec4(0.0f,0.0f,0.0f,1.0f) );
     prog.setUniform("Material.Kd", 0.9f, 0.9f, 0.9f);
 
     model = mat4(1.0f);
     model = glm::translate(model, vec3(0.0f,0.0f,0.0f));
     model = glm::rotate(model, glm::radians(-90.0f), vec3(1.0f,0.0f,0.0f));
     setMatrices();
-    teapot->render();
+    teapot.render();
 
     prog.setUniform("Material.Kd", 0.4f, 0.4f, 0.4f);
     model = mat4(1.0f);
     model = glm::translate(model, vec3(0.0f,-0.75f,0.0f));
     setMatrices();
-    plane->render();
+    plane.render();
 
-    prog.setUniform("Light.Position", vec4(0.0f,0.0f,0.0f,1.0f) );
+    prog.setUniform("Light.Position", glm::vec4(0.0f,0.0f,0.0f,1.0f) );
     prog.setUniform("Material.Kd", 0.9f, 0.5f, 0.2f);
     model = mat4(1.0f);
     model = glm::translate(model, vec3(1.0f,1.0f,3.0f));
     model = glm::rotate(model, glm::radians(90.0f), vec3(1.0f,0.0f,0.0f));
     setMatrices();
-    torus->render();
+    torus.render();
 
     glFinish();
 }
@@ -201,7 +198,7 @@ void SceneDeferred::setMatrices()
     mat4 mv = view * model;
     prog.setUniform("ModelViewMatrix", mv);
     prog.setUniform("NormalMatrix",
-                    mat3( vec3(mv[0]), vec3(mv[1]), vec3(mv[2]) ));
+                    glm::mat3( vec3(mv[0]), vec3(mv[1]), vec3(mv[2]) ));
     prog.setUniform("MVP", projection * mv);
 }
 

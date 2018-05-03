@@ -1,8 +1,3 @@
-#ifndef _GLSLCOOKBOOK_OGL
-#define _GLSLCOOKBOOK_OGL
+#pragma once
 
 #include <glad/glad.h>
-
-#define GLM_FORCE_RADIANS
-
-#endif

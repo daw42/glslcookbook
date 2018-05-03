@@ -1,18 +1,14 @@
 #include "scenewave.h"
 
-#include <cstdio>
-#include <cstdlib>
 #include <iostream>
 using std::endl;
 using std::cerr;
 
-#include "glutils.h"
-
-using glm::vec3;
-
 #include <glm/gtc/matrix_transform.hpp>
+using glm::vec3;
+using glm::mat4;
 
-SceneWave::SceneWave() : width(800), height(600), time(0) {}
+SceneWave::SceneWave() : time(0), plane(13.0f, 10.0f, 200, 2) {}
 
 void SceneWave::initScene()
 {
@@ -21,8 +17,6 @@ void SceneWave::initScene()
     glClearColor(0.5f,0.5f,0.5f,1.0f);
 
     glEnable(GL_DEPTH_TEST);
-
-    plane = new VBOPlane(13.0f, 10.0f, 200, 2);
 
     prog.setUniform("Light.Intensity", vec3(1.0f,1.0f,1.0f) );
 
@@ -50,7 +44,7 @@ void SceneWave::render()
     model = glm::rotate(model, glm::radians(-10.0f), vec3(0.0f,0.0f,1.0f));
     model = glm::rotate(model, glm::radians(50.0f), vec3(1.0f,0.0f,0.0f));
     setMatrices();
-    plane->render();
+    plane.render();
 }
 
 void SceneWave::setMatrices()
@@ -58,7 +52,7 @@ void SceneWave::setMatrices()
     mat4 mv = view * model;
     prog.setUniform("ModelViewMatrix", mv);
     prog.setUniform("NormalMatrix",
-                    mat3( vec3(mv[0]), vec3(mv[1]), vec3(mv[2]) ));
+                    glm::mat3( vec3(mv[0]), vec3(mv[1]), vec3(mv[2]) ));
     prog.setUniform("MVP", projection * mv);
 }
 

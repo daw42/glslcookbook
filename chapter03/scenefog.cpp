@@ -1,31 +1,24 @@
 #include "scenefog.h"
 
-#include <cstdio>
-#include <cstdlib>
-
-#include "glutils.h"
-
 #include <iostream>
 using std::endl;
 using std::cerr;
 
-using glm::vec3;
-
 #include <glm/gtc/matrix_transform.hpp>
+using glm::vec3;
+using glm::mat4;
+using glm::vec4;
 
-SceneFog::SceneFog() : tPrev(0.0f)
-{
-}
+SceneFog::SceneFog() : tPrev(0.0f),
+                       plane(50.0f, 50.0f, 1, 1),
+                       teapot(14, glm::mat4(1.0f))
+{ }
 
 void SceneFog::initScene()
 {
     compileAndLinkShader();
 
     glEnable(GL_DEPTH_TEST);
-
-    plane = new VBOPlane(50.0f, 50.0f, 1, 1);
-    teapot = new VBOTeapot(14, glm::mat4(1.0f));
-    torus = new VBOTorus(1.75f * 0.75f, 0.75f * 0.75f, 50, 50);
 
     view = glm::lookAt(vec3(0.0f,4.0f,6.0f), vec3(0.0f,2.0f,0.0f), vec3(0.0f,1.0f,0.0f));
     projection = mat4(1.0f);
@@ -66,7 +59,7 @@ void SceneFog::render()
         model = glm::translate(model, vec3(dist * 0.6f - 1.0f,0.0f,-dist));
         model = glm::rotate(model, glm::radians(-90.0f), vec3(1.0f,0.0f,0.0f));
         setMatrices();
-        teapot->render();
+        teapot.render();
         dist += 7.0f;
     }
 
@@ -77,7 +70,7 @@ void SceneFog::render()
 
     model = mat4(1.0f);
     setMatrices();
-    plane->render();
+    plane.render();
 }
 
 void SceneFog::setMatrices()
@@ -85,7 +78,7 @@ void SceneFog::setMatrices()
     mat4 mv = view * model;
     prog.setUniform("ModelViewMatrix", mv);
     prog.setUniform("NormalMatrix",
-                    mat3( vec3(mv[0]), vec3(mv[1]), vec3(mv[2]) ));
+                    glm::mat3( vec3(mv[0]), vec3(mv[1]), vec3(mv[2]) ));
     prog.setUniform("MVP", projection * mv);
 }
 

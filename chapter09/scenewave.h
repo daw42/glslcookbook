@@ -3,28 +3,18 @@
 
 #include "scene.h"
 #include "glslprogram.h"
-#include "vboplane.h"
-#include "vbocube.h"
-#include "vbotorus.h"
-#include "vboteapot.h"
-
+#include "plane.h"
 #include "cookbookogl.h"
 
 #include <glm/glm.hpp>
-using glm::mat4;
 
 class SceneWave : public Scene
 {
 private:
     GLSLProgram prog;
 
-    int width, height;
+    Plane plane;
 
-    VBOPlane *plane;
-
-    mat4 model;
-    mat4 view;
-    mat4 projection;
     float angle;
     float time;
 

@@ -1,19 +1,13 @@
 #include "scenemandelbrot.h"
 
-#include <cstdio>
-#include <cstdlib>
 #include <iostream>
 using std::endl;
 using std::cerr;
 
-#include "glutils.h"
-
+#include <glm/gtc/matrix_transform.hpp>
 using glm::vec3;
 
-#include <glm/gtc/matrix_transform.hpp>
-
-SceneMandelbrot::SceneMandelbrot():
-  width(800), height(600), dataBuf(0), fsQuad(0),
+SceneMandelbrot::SceneMandelbrot(): dataBuf(0), fsQuad(0),
   center(0.001643721971153f, 0.822467633298876f), cheight(2.0f),
   time(0.0f), deltaT(0.0f), speed(200.0f), angle(0.0f), rotSpeed(60.0f)
 {
@@ -34,8 +28,6 @@ void SceneMandelbrot::initScene()
   renderProg.setUniform("Ka", glm::vec3(0.2f));
   renderProg.setUniform("Ks", glm::vec3(0.2f));
   renderProg.setUniform("Shininess", 80.0f);
-
-  cube = new VBOCube();
 }
 
 void SceneMandelbrot::setWindow() {
@@ -90,14 +82,14 @@ void SceneMandelbrot::render()
   glm::mat4 view = glm::lookAt( glm::vec3(0,0,2), glm::vec3(0,0,0), glm::vec3(0,1,0) );
   glm::mat4 model = glm::rotate( glm::mat4(1.0f), glm::radians(angle), glm::vec3(1,1.5f,0.5f));
   glm::mat4 mv = view * model;
-  glm::mat3 norm =  mat3( vec3(mv[0]), vec3(mv[1]), vec3(mv[2]) );
+  glm::mat3 norm = glm::mat3( vec3(mv[0]), vec3(mv[1]), vec3(mv[2]) );
   glm::mat4 proj = glm::perspective(glm::radians(60.0f), (float)width/height, 1.0f, 100.0f);
 
   renderProg.setUniform("ModelViewMatrix", mv);
   renderProg.setUniform("NormalMatrix", norm);
   renderProg.setUniform("MVP", proj * mv);
 
-  cube->render();
+  cube.render();
 }
 
 void SceneMandelbrot::resize(int w, int h)
