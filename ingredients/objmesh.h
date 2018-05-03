@@ -7,6 +7,7 @@
 #include <vector>
 #include <glm/glm.hpp>
 #include <string>
+#include <memory>
 
 class ObjMesh : public TriangleMesh {
 private:

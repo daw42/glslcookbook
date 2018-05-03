@@ -3,6 +3,10 @@ set (CMAKE_CXX_STANDARD 11)
 
 project (GLSLCOOKBOOK)
 
+if(MSVC)
+  add_definitions(/DNOMINMAX)
+endif()
+
 find_package( glm CONFIG REQUIRED )
 find_package( glfw3 CONFIG REQUIRED )
 find_package( OpenGL REQUIRED )

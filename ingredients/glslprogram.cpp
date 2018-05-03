@@ -225,7 +225,7 @@ void GLSLProgram::findUniformLocations() {
 
     GLenum properties[] = {GL_NAME_LENGTH, GL_TYPE, GL_LOCATION, GL_BLOCK_INDEX};
 
-    for( GLuint i = 0; i < numUniforms; ++i ) {
+    for( GLint i = 0; i < numUniforms; ++i ) {
       GLint results[4];
       glGetProgramResourceiv(handle, GL_UNIFORM, i, 4, properties, 4, NULL, results);
 

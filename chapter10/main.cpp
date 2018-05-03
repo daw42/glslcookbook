@@ -4,6 +4,8 @@
 #include "sceneparticles.h"
 #include "sceneedge.h"
 
+#include <memory>
+
 std::map<std::string, std::string> sceneInfo = {
         { "particles", "Simple particle simulation" },
         { "mandelbrot", "Mandelbrot set with compute shader" },

@@ -22,11 +22,11 @@ Torus::Torus(GLfloat outerRadius, GLfloat innerRadius, GLuint nsides, GLuint nri
     float ringFactor = glm::two_pi<float>() / nrings;
 	float sideFactor = glm::two_pi<float>() / nsides;
     int idx = 0, tidx = 0;
-    for( int ring = 0; ring <= nrings; ring++ ) {
+    for( GLuint ring = 0; ring <= nrings; ring++ ) {
         float u = ring * ringFactor;
         float cu = cos(u);
         float su = sin(u);
-        for( int side = 0; side < nsides; side++ ) {
+        for( GLuint side = 0; side < nsides; side++ ) {
             float v = side * sideFactor;
             float cv = cos(v);
             float sv = sin(v);
@@ -55,7 +55,7 @@ Torus::Torus(GLfloat outerRadius, GLfloat innerRadius, GLuint nsides, GLuint nri
     for( GLuint ring = 0; ring < nrings; ring++ ) {
         GLuint ringStart = ring * nsides;
         GLuint nextRingStart = (ring + 1) * nsides;
-        for( int side = 0; side < nsides; side++ ) {
+        for( GLuint side = 0; side < nsides; side++ ) {
             int nextSide = (side+1) % nsides;
             // The quad
             el[idx] = (ringStart + side);

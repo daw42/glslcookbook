@@ -108,7 +108,7 @@ void Frustum::render() const
 
 void Frustum::deleteBuffers() {
     if( ! buffers.empty() ) {
-        glDeleteBuffers( buffers.size(), buffers.data() );
+        glDeleteBuffers( (GLsizei)buffers.size(), buffers.data() );
         buffers.clear();
     }
 

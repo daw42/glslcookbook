@@ -6,6 +6,8 @@
 #include "scenebasic_uniform.h"
 #include "scenebasic_uniformblock.h"
 
+#include <memory>
+
 static std::map< std::string, std::string > sceneData = {
 		{"basic", "Basic scene."},
 		{"basic-attrib", "Prints active attributes."},

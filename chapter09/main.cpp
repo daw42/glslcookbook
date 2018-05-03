@@ -6,6 +6,8 @@
 #include "scenesmoke.h"
 #include "scenewave.h"
 
+#include <memory>
+
 std::map<std::string, std::string> sceneInfo = {
 		{ "fire", "particles simulating fire" },
 		{ "particles", "a fountain of particles" },

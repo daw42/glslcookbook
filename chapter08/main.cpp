@@ -6,6 +6,8 @@
 #include "scenewood.h"
 #include "scenenoise.h"
 
+#include <memory>
+
 std::map<std::string, std::string> sceneInfo = {
 		{ "noise", "just display the raw noise texture" },
 		{ "decay", "decay of a teapot" },

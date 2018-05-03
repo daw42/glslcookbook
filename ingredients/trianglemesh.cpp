@@ -12,7 +12,7 @@ void TriangleMesh::initBuffers(
     if( indices == nullptr || points == nullptr || normals == nullptr )
         return;
 
-    nVerts = indices->size();
+    nVerts = (GLuint)indices->size();
 
     GLuint indexBuf = 0, posBuf = 0, normBuf = 0, tcBuf = 0, tangentBuf = 0;
     glGenBuffers(1, &indexBuf);
@@ -89,7 +89,7 @@ TriangleMesh::~TriangleMesh() {
 
 void TriangleMesh::deleteBuffers() {
     if( buffers.size() > 0 ) {
-        glDeleteBuffers( buffers.size(), buffers.data() );
+        glDeleteBuffers( (GLsizei)buffers.size(), buffers.data() );
         buffers.clear();
     }
 

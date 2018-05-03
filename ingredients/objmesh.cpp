@@ -302,8 +302,8 @@ void ObjMesh::ObjMeshData::toGlMesh(GlMeshData & data) {
                 data.tangents.push_back( tang.w );
             }
 
-            data.faces.push_back(vIdx);
-            vertexMap[vertStr] = vIdx;
+            data.faces.push_back((GLuint)vIdx);
+            vertexMap[vertStr] = (GLuint)vIdx;
         } else {
             data.faces.push_back(it->second);
         }
