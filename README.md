@@ -1,10 +1,12 @@
 Example code from the [OpenGL Shading Language Cookbook][cookbook]
 =========================================================
 
+:tada: **NEW** *Coming soon: 3rd Edition!!!* :tada:
+
 The example code from the [OpenGL Shading Language Cookbook][cookbook],
 by David Wolff and published by Packt Publishing, 2013 (ISBN: 9781782167020).
 
-**NEW**:
+Recent changes:
  * Most examples now run on MacOS!
  * CMake build now uses package config files when finding GLM and GLFW.  This should make for a more
  streamlined configuration.  Use [`CMAKE_PREFIX_PATH`][cmake_prefix] to point CMake to your installs.
