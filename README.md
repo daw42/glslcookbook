@@ -1,9 +1,10 @@
-Example code from the [OpenGL Shading Language Cookbook][cookbook]
+
+:tada: **NEW** *The [3rd Edition is now available][cookbookv3]!!!* :tada:
+
+Example code from the [OpenGL Shading Language Cookbook, 2nd Edition][cookbook]
 =========================================================
 
-:tada: **NEW** *Coming soon: 3rd Edition!!!* :tada:
-
-The example code from the [OpenGL Shading Language Cookbook][cookbook],
+The example code from the [OpenGL Shading Language Cookbook, 2nd Edition][cookbook],
 by David Wolff and published by Packt Publishing, 2013 (ISBN: 9781782167020).
 
 Recent changes:
@@ -60,6 +61,7 @@ The code has been tested with OpenGL 4.3 on Windows/Linux and OpenGL 4.1 on MacO
 [GLFW]:  http://glfw.org
 [ghcookbook]:  http://github.com/daw42/glslcookbook
 [cookbook]: http://www.packtpub.com/opengl-4-shading-language-cookbook-second-edition/book
+[cookbookv3]: https://github.com/PacktPublishing/OpenGL-4-Shading-Language-Cookbook-Third-Edition
 [GLLoadGen]:  https://bitbucket.org/alfonse/glloadgen/wiki/Home
 [CMake]: http://www.cmake.org/
 [GLAD]: https://github.com/Dav1dde/glad
