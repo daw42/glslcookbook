@@ -31,7 +31,7 @@ void SceneProjTex::initScene()
     vec3 projUp = vec3(0.0f,1.0f,0.0f);
     mat4 projView = glm::lookAt(projPos, projAt, projUp);
     mat4 projProj = glm::perspective(glm::radians(30.0f), 1.0f, 0.2f, 1000.0f);
-    mat4 projScaleTrans = glm::translate(mat4(), vec3(0.5f)) * glm::scale(mat4(), vec3(0.5f));
+    mat4 projScaleTrans = glm::translate(mat4(1.0f), vec3(0.5f)) * glm::scale(mat4(1.0f), vec3(0.5f));
     prog.setUniform("ProjectorMatrix", projScaleTrans * projProj * projView);
 
     // Load texture file
